@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二十四节气作品展示 - 雅致月历版</title>
+    <style>
+        :root {
+            --color-primary: #97A87A;    
+            --color-secondary: #A8BBA3;  
+            --color-background: #FCF9EA; 
+            --color-bg-dark: #F2EEDA;
+            --color-accent: #FFA239;    
+            --color-text-main: #FFFFFF; 
+            --color-gray: #889670;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at 75% 50%, var(--color-background) 0%, var(--color-bg-dark) 100%);
+            font-family: "PingFang SC", "Hiragino Sans GB", "STHeiti", sans-serif;
+            display: flex;
+            color: var(--color-primary);
+            overflow: hidden;
+        }
+
+        /* --- 左侧面板：月历风格 --- */
+        .left-panel {
+            width: 38%;
+            padding: 40px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header h1 { font-size: 3rem; margin: 0; letter-spacing: 15px; font-weight: 300; }
+        .header .subtitle { font-size: 0.9rem; letter-spacing: 4px; color: var(--color-secondary); margin-bottom: 40px; }
+
+        /* 月历容器 */
+        .calendar-box {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(151, 168, 122, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--color-secondary);
+            padding-bottom: 10px;
+        }
+
+        .cal-month { font-size: 1.8rem; font-weight: bold; }
+        .cal-year { font-size: 1.2rem; opacity: 0.7; }
+
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+
+        .weekday { font-size: 0.8rem; font-weight: bold; color: var(--color-secondary); padding-bottom: 10px; }
+        
+        .day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            position: relative;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 今天的样式 */
+        .day.today {
+            outline: 2px solid var(--color-primary);
+            background: #fff;
+        }
+
+        /* 节气高亮样式 */
+        .day.is-term {
+            background-color: var(--color-accent) !important;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 162, 57, 0.4);
+        }
+
+        .term-label {
+            font-size: 0.6rem;
+            margin-top: 2px;
+            position: absolute;
+            bottom: 4px;
+        }
+
+        /* --- 右侧面板：圆环 --- */
+        .right-panel {
+            width: 62%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #ring-wrapper { width: 92vmin; height: 92vmin; max-width: 850px; }
+
+        svg { width: 100%; height: 100%; overflow: visible; }
+
+        .term-group { cursor: pointer; transition: all 0.6s cubic-bezier(0.2, 1, 0.3, 1); }
+        .term-path {
+            fill: var(--color-secondary);
+            stroke: var(--color-background);
+            stroke-width: 3;
+            transition: fill 0.3s;
+        }
+        .term-group:hover .term-path { fill: var(--color-accent); }
+        .term-group:hover { transform: scale(1.02); filter: drop-shadow(0 20px 40px rgba(0,0,0,0.1)); }
+
+        /* 圆环文字：更大且居中 */
+        .term-name { fill: var(--color-text-main); font-size: 24px; font-weight: 600; pointer-events: none; }
+        .term-date { fill: rgba(255,255,255,0.8); font-size: 12px; pointer-events: none; }
+
+        .progress-track { fill: none; stroke: rgba(151, 168, 122, 0.1); stroke-width: 4; }
+        .progress-bar { fill: none; stroke: var(--color-primary); stroke-width: 4; stroke-linecap: round; opacity: 0.4; }
+    </style>
+</head>
+<body>
+
+    <div class="left-panel">
+        <div class="header">
+            <h1>二十四节气</h1>
+            <div class="subtitle">TIMELESS CALENDAR</div>
+        </div>
+
+        <div class="calendar-box">
+            <div class="cal-header">
+                <div class="cal-month" id="display-month">4月</div>
+                <div class="cal-year" id="display-year">2026年</div>
+            </div>
+            <div class="cal-grid" id="calendar-days">
+                <div class="weekday">一</div><div class="weekday">二</div><div class="weekday">三</div>
+                <div class="weekday">四</div><div class="weekday">五</div><div class="weekday">六</div><div class="weekday">日</div>
+                </div>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <div id="ring-wrapper">
+            <svg viewBox="0 0 1000 1000">
+                <circle cx="500" cy="500" r="245" class="progress-track" />
+                <circle id="sync-bar" cx="500" cy="500" r="245" class="progress-bar" transform="rotate(-90 500 500)" />
+                <g id="terms-layer"></g>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        const solarTerms = [
+            { name: "立春", m: 1, d: 4 }, { name: "雨水", m: 1, d: 18 },
+            { name: "惊蛰", m: 2, d: 5 }, { name: "春分", m: 2, d: 20 },
+            { name: "清明", m: 3, d: 4 }, { name: "谷雨", m: 3, d: 20 },
+            { name: "立夏", m: 4, d: 5 }, { name: "小满", m: 4, d: 20 },
+            { name: "芒种", m: 5, d: 5 }, { name: "夏至", m: 5, d: 21 },
+            { name: "小暑", m: 6, d: 7 }, { name: "大暑", m: 6, d: 22 },
+            { name: "立秋", m: 7, d: 7 }, { name: "处暑", m: 7, d: 23 },
+            { name: "白露", m: 8, d: 7 }, { name: "秋分", m: 8, d: 22 },
+            { name: "寒露", m: 9, d: 8 }, { name: "霜降", m: 9, d: 23 },
+            { name: "立冬", m: 10, d: 7 }, { name: "小雪", m: 10, d: 22 },
+            { name: "大雪", m: 11, d: 7 }, { name: "冬至", m: 11, d: 21 },
+            { name: "小寒", m: 0, d: 5 }, { name: "大寒", m: 0, d: 20 }
+        ];
+
+        function init() {
+            const now = new Date();
+            const currM = now.getMonth();
+            const currY = now.getFullYear();
+
+            // 1. 渲染月历
+            renderCalendar(currY, currM, now.getDate());
+
+            // 2. 渲染圆环
+            const container = document.getElementById('terms-layer');
+            const centerX = 500, centerY = 500;
+            const outerR = 480, innerR = 260; // 这里的差值决定了块的厚度
+            const angleStep = 360 / 24;
+
+            solarTerms.forEach((item, i) => {
+                const startAngle = i * angleStep - 90 - (angleStep/2);
+                const endAngle = (i + 1) * angleStep - 90 - (angleStep/2);
+                const r1 = startAngle * Math.PI / 180, r2 = endAngle * Math.PI / 180;
+
+                const pathD = `M ${centerX + outerR * Math.cos(r1)} ${centerY + outerR * Math.sin(r1)} 
+                             A ${outerR} ${outerR} 0 0 1 ${centerX + outerR * Math.cos(r2)} ${centerY + outerR * Math.sin(r2)} 
+                             L ${centerX + innerR * Math.cos(r2)} ${centerY + innerR * Math.sin(r2)} 
+                             A ${innerR} ${innerR} 0 0 0 ${centerX + innerR * Math.cos(r1)} ${centerY + innerR * Math.sin(r1)} Z`;
+
+                const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                g.setAttribute("class", "term-group");
+
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute("d", pathD);
+                path.setAttribute("class", "term-path");
+
+                const midR = (r1 + r2) / 2;
+                const tx = centerX + (outerR + innerR) / 2 * Math.cos(midR);
+                const ty = centerY + (outerR + innerR) / 2 * Math.sin(midR);
+
+                const nameT = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                nameT.setAttribute("x", tx); nameT.setAttribute("y", ty - 10);
+                nameT.setAttribute("text-anchor", "middle"); nameT.setAttribute("class", "term-name");
+                nameT.textContent = item.name;
+
+                const dateT = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                dateT.setAttribute("x", tx); dateT.setAttribute("y", ty + 20);
+                dateT.setAttribute("text-anchor", "middle"); dateT.setAttribute("class", "term-date");
+                dateT.textContent = `${(item.m+1).toString().padStart(2,'0')}.${item.d}`;
+
+                // 悬浮位移
+                const mx = 25 * Math.cos(midR), my = 25 * Math.sin(midR);
+                g.onmouseenter = () => g.style.transform = `translate(${mx}px, ${my}px)`;
+                g.onmouseleave = () => g.style.transform = `translate(0, 0)`;
+
+                g.appendChild(path); g.appendChild(nameT); g.appendChild(dateT);
+                container.appendChild(g);
+            });
+
+            // 3. 进度条进度
+            const bar = document.getElementById('sync-bar');
+            const circ = 2 * Math.PI * 245;
+            const progress = (now - new Date(currY, 0, 1)) / (1000*60*60*24*365);
+            bar.style.strokeDasharray = `${circ} ${circ}`;
+            bar.style.strokeDashoffset = circ - (progress * circ);
+        }
+
+        function renderCalendar(year, month, today) {
+            document.getElementById('display-month').textContent = (month + 1) + "月";
+            document.getElementById('display-year').textContent = year + "年";
+
+            const firstDay = new Date(year, month, 1).getDay(); // 周几
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const grid = document.getElementById('calendar-days');
+
+            // 修正周起始（JS 0是周日，改为从周一开始）
+            let offset = firstDay === 0 ? 6 : firstDay - 1;
+
+            for(let i=0; i<offset; i++) grid.appendChild(document.createElement('div'));
+
+            for(let d=1; d<=daysInMonth; d++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'day';
+                if(d === today) dayDiv.classList.add('today');
+
+                // 检查是否是节气
+                const term = solarTerms.find(t => t.m === month && t.d === d);
+                if(term) {
+                    dayDiv.classList.add('is-term');
+                    dayDiv.innerHTML = `${d}<span class="term-label">${term.name}</span>`;
+                } else {
+                    dayDiv.textContent = d;
+                }
+                grid.appendChild(dayDiv);
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
