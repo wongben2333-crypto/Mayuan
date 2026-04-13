@@ -95,6 +95,7 @@
         .right-panel {
             width: 62%;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             position: relative;
@@ -102,13 +103,14 @@
 
         .wheel-container {
             position: relative;
-            width: 90vmin;
-            height: 90vmin;
-            max-width: 800px;
-            max-height: 800px;
+            width: 85vmin;
+            height: 85vmin;
+            max-width: 750px;
+            max-height: 750px;
             display: flex;
             justify-content: center;
             align-items: center;
+            top: 20px; /* 1. 圆环整体下移 */
         }
 
         #wheel-svg {
@@ -123,14 +125,13 @@
             cursor: pointer;
             stroke: none;
             outline: none;
-            /* 强制开启 GPU 加速防止抽动 */
             transform: translate(0,0);
             will-change: transform;
         }
 
         .term-label-wheel {
             position: absolute;
-            pointer-events: auto; /* 允许点击 */
+            pointer-events: auto; 
             cursor: pointer;
             text-align: center;
             transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
@@ -191,6 +192,29 @@
             margin-top: 10px;
             letter-spacing: 2px;
         }
+
+        /* --- 诗词显示区域 --- */
+        .poetry-container {
+            margin-top: -10px; /* 2. 诗词位置上移 */
+            height: 60px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+
+        #poetry-display {
+            font-size: 1.4rem;
+            color: #555;
+            font-family: 'STSong', 'SimSun', serif;
+            letter-spacing: 3px;
+            opacity: 0; 
+            transition: opacity 0.4s ease-in-out;
+            text-align: center;
+            border-bottom: 1px solid rgba(151, 168, 122, 0.2);
+            padding-bottom: 5px;
+            min-width: 300px;
+        }
     </style>
 </head>
 <body>
@@ -224,6 +248,9 @@
                 <div class="center-subtitle">2026 · 岁月流转</div>
             </div>
         </div>
+        <div class="poetry-container">
+            <div id="poetry-display"></div>
+        </div>
     </div>
 
     <script>
@@ -238,6 +265,33 @@
             { name: '冬至', m: 11, d: 21 }, { name: '小寒', m: 0, d: 5 }, { name: '大寒', m: 0, d: 20 }
         ];
 
+        const poetryData = {
+            "立春": ["立春后五日，春态已撩人。", "律回岁晚冰霜少，春到人间草木知。", "东风带雨逐西风，点滴立春映照中。"],
+            "雨水": ["雨水洗春容，平田已见龙。", "随风潜入夜，润物细无声。", "天街小雨润如酥，草色遥看近却无。"],
+            "惊蛰": ["微雨众卉新，一雷惊蛰始。", "惊蛰未闻雷出地，丰收有望看春耕。", "浮云不肯留，惊蛰忽已过。"],
+            "春分": ["仲春初九日，春色正春分。", "溪边风物已春分，画戟森森静不闻。", "日月阳阴两均天，玄鸟不辞桃花寒。"],
+            "清明": ["清明时节雨纷纷，路上行人欲断魂。", "燕子来时新社，梨花落后清明。", "素衣莫起风尘叹，犹及清明可到家。"],
+            "谷雨": ["正好清明连谷雨，一杯香茗暂留客。", "谷雨收寒，茶烟飏晓，又是清明时候。", "谷雨初晴，燕子飞归。"],
+            "立夏": ["槐柳阴初密，帘栊暑尚微。", "立夏微风起，江河水色新。", "别院深深夏席清，石榴开遍透帘明。"],
+            "小满": ["小满赶天晴，动车响不停。", "枇杷黄后杨梅紫，正是河豚欲上时。", "小满江河满，麦收指日待。"],
+            "芒种": ["乙酉甲申雷雨惊，乘潮香稻立芒种。", "芒种才过雪不霁，伊人隔岸在何方。", "连夜收麦趁天晴，芒种时节最繁忙。"],
+            "夏至": ["昼晷已云极，宵漏自此长。", "夏至一阴生，稍觉凉吟入。", "东边日出西边雨，道是无晴却有晴.。"],
+            "小暑": ["倏忽温风至，因循小暑来。", "熏风愠解引新凉，小暑催红荔枝香。", "荷风送香气，竹露滴清响。"],
+            "大暑": ["赫赫炎晖翠幕重，大暑运金风。", "大暑三秋近，林间一叶飞。", "桂轮开子夜，萤火照空城。"],
+            "立秋": ["乳鸦啼散玉屏空，一枕新凉一扇风。", "睡起秋色向晚，一叶落而知立秋。", "伏中余热尚徘徊，立秋新凉已渐来。"],
+            "处暑": ["离离暑云散，袅袅凉风起。", "处暑无三日，新凉直万金。", "四时俱可喜，最好新秋时.。"],
+            "白露": ["露从今夜白，月是故乡明。", "蒹葭苍苍，白露为霜。", "庭前木叶飘零尽，唯有金风送白露。"],
+            "秋分": ["漏钟仍夜浅，时节正秋分。", "燕将明日去，秋向此时分。", "金气秋分，风清露冷。"],
+            "寒露": ["袅袅凉风动，凄凄寒露零。", "寒露惊秋晚，朝看菊渐黄。", "昨夜清霜冷，今朝寒露浓。"],
+            "霜降": ["气肃霜降，露凝为霜。", "停车坐爱枫林晚，霜叶红于二月花。", "楼台侧畔杨柳疏，霜降时节感岁除。"],
+            "立冬": ["细雨生微澜，立冬初过晚。", "冻笔新诗懒写，寒炉美酒时温。", "昨夜清霜冷，今朝立冬初.。"],
+            "小雪": ["晚来天欲雪，能饮一杯无？", "小雪气寒而将雪，地寒未甚而滞。", "荷尽已无擎雨盖，菊残犹有傲霜枝。"],
+            "大雪": ["忽如一夜春风来，千树万树梨花开。", "大雪满弓刀，何处望乡关。", "孤舟蓑笠翁，独钓寒江雪。"],
+            "冬至": ["天时人事日相催，冬至阳生春又来。", "家家捣米做汤圆，知是冬至岁已寒。", "邯郸驿里逢冬至，抱膝灯前影伴身。"],
+            "小寒": ["莫怪严凝切，春归向此时。", "小寒连大寒，准备过新年。", "寒夜客来茶当酒，竹炉汤沸火初红。"],
+            "大寒": ["大寒宜近火，无事莫离家。", "心到大寒常觉暖，身处闹市亦清幽。", "岁序已云殚，大寒气森冽。"]
+        };
+
         const seasonColors = ["#A8B892", "#EED886", "#D69A6B", "#8EA4B8"];
 
         function interpolateColor(color1, color2, factor) {
@@ -251,14 +305,11 @@
             const grid = document.getElementById('calendar-days');
             const dayDivs = grid.querySelectorAll('.day');
             dayDivs.forEach(d => d.remove());
-
             document.getElementById('display-month').textContent = (month + 1) + "月";
             document.getElementById('display-year').textContent = year + "年";
-            
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             let offset = firstDay === 0 ? 6 : firstDay - 1;
-            
             for(let i=0; i<offset; i++) grid.appendChild(document.createElement('div'));
             for(let d=1; d<=daysInMonth; d++) {
                 const dayDiv = document.createElement('div');
@@ -273,9 +324,12 @@
             }
         }
 
+        let currentActiveTerm = null;
+
         function initWheel() {
             const sectorsContainer = document.getElementById('sectors-container');
             const labelsContainer = document.getElementById('labels-container');
+            const poetryDisplay = document.getElementById('poetry-display');
             sectorsContainer.innerHTML = ''; labelsContainer.innerHTML = '';
             
             const CX = 200, CY = 200, INNER_R = 98, OUTER_R = 155, MOVE_DIST = 8;
@@ -296,7 +350,6 @@
 
                 const r1 = startAngle * Math.PI / 180;
                 const r2 = endAngle * Math.PI / 180;
-
                 const x1 = CX + OUTER_R * Math.cos(r1), y1 = CY + OUTER_R * Math.sin(r1);
                 const x2 = CX + OUTER_R * Math.cos(r2), y2 = CY + OUTER_R * Math.sin(r2);
                 const x3 = CX + INNER_R * Math.cos(r2), y3 = CY + INNER_R * Math.sin(r2);
@@ -321,7 +374,6 @@
                 label.style.left = `calc(50% + ${labelX}px)`;
                 label.style.top = `calc(50% + ${labelY}px)`;
                 
-                // 交互函数：统一跳转逻辑
                 const handleJump = (e) => {
                     e.stopPropagation();
                     window.location.href = `detail.html?name=${encodeURIComponent(term.name)}`;
@@ -330,16 +382,34 @@
                 path.onclick = handleJump;
                 label.onclick = handleJump;
 
-                // 交互：丝滑弹起逻辑
                 const mx = MOVE_DIST * Math.cos(midRad), my = MOVE_DIST * Math.sin(midRad);
                 
                 const onOver = () => {
                     path.style.transform = `translate(${mx}px, ${my}px)`;
                     label.style.transform = `translate(calc(-50% + ${mx * scale}px), calc(-50% + ${my * scale}px)) scale(1.1)`;
+                    
+                    if (currentActiveTerm === term.name) return;
+                    currentActiveTerm = term.name;
+
+                    poetryDisplay.style.opacity = 0;
+                    
+                    setTimeout(() => {
+                        if (currentActiveTerm === term.name) {
+                            const poems = poetryData[term.name];
+                            const randomPoem = poems[Math.floor(Math.random() * poems.length)];
+                            poetryDisplay.textContent = randomPoem;
+                            poetryDisplay.style.color = termColor;
+                            poetryDisplay.style.opacity = 1;
+                        }
+                    }, 200); 
                 };
+
                 const onOut = () => {
                     path.style.transform = `translate(0, 0)`;
                     label.style.transform = `translate(-50%, -50%) scale(1)`;
+                    
+                    currentActiveTerm = null;
+                    poetryDisplay.style.opacity = 0;
                 };
 
                 path.onmouseenter = onOver;
@@ -347,9 +417,7 @@
                 label.onmouseenter = onOver;
                 label.onmouseleave = onOut;
                 
-                // 初始位置设置
                 label.style.transform = `translate(-50%, -50%)`;
-
                 sectorsContainer.appendChild(path);
                 labelsContainer.appendChild(label);
             });
