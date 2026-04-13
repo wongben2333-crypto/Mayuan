@@ -119,16 +119,21 @@
         }
 
         .term-sector {
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             cursor: pointer;
-            stroke: none; /* 移除描边，使边缘平整 */
+            stroke: none;
+            outline: none;
+            /* 强制开启 GPU 加速防止抽动 */
+            transform: translate(0,0);
+            will-change: transform;
         }
 
         .term-label-wheel {
             position: absolute;
-            pointer-events: none;
+            pointer-events: auto; /* 允许点击 */
+            cursor: pointer;
             text-align: center;
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             z-index: 10;
             user-select: none;
             display: flex;
@@ -136,6 +141,7 @@
             align-items: center;
             justify-content: center;
             width: 60px;
+            will-change: transform;
         }
 
         .term-name-wheel { 
@@ -274,7 +280,8 @@
             
             const CX = 200, CY = 200, INNER_R = 98, OUTER_R = 155, MOVE_DIST = 8;
             const step = 360 / 24;
-            const scale = document.querySelector('.wheel-container').getBoundingClientRect().width / 400;
+            const containerWidth = document.querySelector('.wheel-container').getBoundingClientRect().width;
+            const scale = containerWidth / 400;
 
             solarTerms.forEach((term, i) => {
                 const seasonIndex = Math.floor(i / 6);
@@ -282,7 +289,6 @@
                 const factor = (i % 6) / 6;
                 const termColor = interpolateColor(seasonColors[seasonIndex], seasonColors[nextSeasonIndex], factor);
 
-                // 旋转角度校准：立春起始在正上方
                 const startAngle = i * step - 90 - (step/2);
                 const endAngle = (i + 1) * step - 90 - (step/2);
                 const midAngle = (startAngle + endAngle) / 2;
@@ -291,7 +297,6 @@
                 const r1 = startAngle * Math.PI / 180;
                 const r2 = endAngle * Math.PI / 180;
 
-                // 修正平整度：使用精确的弧线坐标
                 const x1 = CX + OUTER_R * Math.cos(r1), y1 = CY + OUTER_R * Math.sin(r1);
                 const x2 = CX + OUTER_R * Math.cos(r2), y2 = CY + OUTER_R * Math.sin(r2);
                 const x3 = CX + INNER_R * Math.cos(r2), y3 = CY + INNER_R * Math.sin(r2);
@@ -315,17 +320,35 @@
                 const labelY = (textRadius * Math.sin(midRad)) * scale;
                 label.style.left = `calc(50% + ${labelX}px)`;
                 label.style.top = `calc(50% + ${labelY}px)`;
-                label.style.transform = `translate(-50%, -50%)`;
+                
+                // 交互函数：统一跳转逻辑
+                const handleJump = (e) => {
+                    e.stopPropagation();
+                    window.location.href = `detail.html?name=${encodeURIComponent(term.name)}`;
+                };
 
+                path.onclick = handleJump;
+                label.onclick = handleJump;
+
+                // 交互：丝滑弹起逻辑
                 const mx = MOVE_DIST * Math.cos(midRad), my = MOVE_DIST * Math.sin(midRad);
-                path.onmouseenter = () => {
+                
+                const onOver = () => {
                     path.style.transform = `translate(${mx}px, ${my}px)`;
                     label.style.transform = `translate(calc(-50% + ${mx * scale}px), calc(-50% + ${my * scale}px)) scale(1.1)`;
                 };
-                path.onmouseleave = () => {
+                const onOut = () => {
                     path.style.transform = `translate(0, 0)`;
                     label.style.transform = `translate(-50%, -50%) scale(1)`;
                 };
+
+                path.onmouseenter = onOver;
+                path.onmouseleave = onOut;
+                label.onmouseenter = onOver;
+                label.onmouseleave = onOut;
+                
+                // 初始位置设置
+                label.style.transform = `translate(-50%, -50%)`;
 
                 sectorsContainer.appendChild(path);
                 labelsContainer.appendChild(label);
@@ -338,7 +361,9 @@
             initWheel();
         };
 
-        window.onresize = initWheel;
+        window.onresize = () => {
+            initWheel();
+        };
     </script>
 </body>
 </html>
