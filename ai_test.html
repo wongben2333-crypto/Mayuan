@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>二十四节气作品展</title>
+    <style>
+        body { font-family: "Microsoft YaHei", serif; background-color: #f4f4f4; text-align: center; }
+        .content { margin-top: 100px; }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>春生夏长 · 秋收冬藏</h1>
+        <p>欢迎来到二十四节气数字展，点击右下角 AI 助手开始互动。</p>
+    </div>
+
+    <script src="https://sf-cdn.coze.cn/.../index.js"></script>
+    <script>
+        new CozeWebSDK.WebChatClient({
+            config: { bot_id: '123456789' },
+            componentProps: { title: '节气助手' }
+        });
+    </script>
+
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.19/libs/cn/index.js"></script>
+<script>
+  new CozeWebSDK.WebChatClient({
+    config: {
+      bot_id: '7628258410576003122',
+    },
+    componentProps: {
+      title: 'Coze',
+    },
+    auth: {
+      type: 'token',
+      token: 'pat_********',
+      onRefreshToken: function () {
+        return 'pat_********'
+      }
+    }
+  });
+</script>
+</body>
+</html>
