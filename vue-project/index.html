@@ -376,7 +376,8 @@
                 
                 const handleJump = (e) => {
                     e.stopPropagation();
-                    window.location.href = `./${term.name}/${term.name}.html`;
+                    const url = `./${term.name}/${term.name}.html`;
+                    window.open(url, '_blank', 'noopener,noreferrer');
                 };
 
                 path.onclick = handleJump;
