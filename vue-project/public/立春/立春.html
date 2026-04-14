@@ -103,7 +103,102 @@
             color: rgba(255,255,255,0.6); 
             font-size: 13px;
         }
+        /* AI 按钮容器：悬浮在页面右下角，不遮挡主内容 */
+        .button-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 999;
+        }
+
+        .ai-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2d5a27;
+            border: 1px solid #d4a017; /* 金色边框 */
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .ai-btn:hover {
+            background: #2d5a27;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        /* 侧边对话框升级 */
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 380px;
+            height: 100%;
+            background: #fff;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.15);
+            transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .drawer.active { right: 0; }
+
+        .drawer-header {
+            padding: 20px;
+            background: #2d5a27;
+            color: #f1e5c9; /* 鹅黄色文字 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .drawer-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #fcfaf2; /* 宣纸色背景 */
+        }
+
+        /* 连续对话输入框区域 */
+        .drawer-footer {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            background: #fff;
+        }
+
+        .drawer-footer input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .drawer-footer button {
+            padding: 8px 15px;
+            background: #2d5a27;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* 消息气泡样式 */
+        .msg { margin-bottom: 15px; padding: 10px; border-radius: 8px; font-size: 14px; }
+        .msg.user { background: #e8f5e9; text-align: right; margin-left: 20%; }
+        .msg.ai { background: #fff; border: 1px solid #eee; margin-right: 20%; }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
@@ -113,6 +208,25 @@
         <p style="margin-top: 50px; font-size: 15px; opacity: 0.9;">向下滚动探索 ↓</p>
     </header>
 
+    <div class="button-container">
+        <button class="ai-btn" onclick="askAI('立春吃什么最好？')">🍱 立春食补</button>
+        <button class="ai-btn" onclick="askAI('立春有什么文化内涵？')">📜 文化内涵</button>
+        <button class="ai-btn" onclick="askAI('立春的特点是什么？')">🌤️ 气候特点</button>
+    </div>
+
+    <div id="ai-drawer" class="drawer">
+        <div class="drawer-header">
+            <span style="font-weight: bold; letter-spacing: 1px;">问答节气 · AI 专家</span>
+            <span class="close-btn" style="cursor:pointer" onclick="closeDrawer()">✕</span>
+        </div>
+        <div id="ai-content" class="drawer-body">
+            <div class="msg ai">你好，我是节气知识专家。关于立春，你想了解什么？</div>
+        </div>
+        <div class="drawer-footer">
+            <input type="text" id="user-input" placeholder="还可以继续问我哦..." onkeypress="if(event.keyCode==13) sendMessage()">
+            <button onclick="sendMessage()">发送</button>
+        </div>
+    </div>
     <nav>
         <div class="nav-content">
             <a href="#origin">立春起源</a>
@@ -237,5 +351,91 @@
         </div>
     </footer>
 
+    <script>
+        const cloudbaseUrl = "https://solarterm-6gp3bbidfd59bc8c-1384502086.ap-shanghai.app.tcloudbase.com/coze-proxy";
+
+        // 基础询问函数（用于按钮）
+        async function askAI(question) {
+            document.getElementById('ai-drawer').classList.add('active');
+            appendMessage('user', question);
+            fetchAIResponse(question);
+        }
+
+        // 连续对话发送函数（用于输入框）
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            appendMessage('user', text);
+            input.value = '';
+            fetchAIResponse(text);
+        }
+
+        // 渲染消息到对话框
+        function appendMessage(role, text) {
+            const content = document.getElementById('ai-content');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `msg ${role}`;
+            msgDiv.innerHTML = role === 'ai' ? marked.parse(text) : text;
+            content.appendChild(msgDiv);
+            content.scrollTop = content.scrollHeight; // 自动滚动到底部
+        }
+
+        // 请求云函数
+        async function fetchAIResponse(query) {
+            const content = document.getElementById('ai-content');
+            
+            // 1. 创建一个唯一的 Loading 消息 ID
+            const loadingId = "loading-" + Date.now();
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'msg ai';
+            loadingDiv.id = loadingId;
+            loadingDiv.innerText = '正在为您查阅典籍...';
+            content.appendChild(loadingDiv);
+            content.scrollTop = content.scrollHeight;
+
+            try {
+                const res = await fetch(cloudbaseUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query })
+                });
+
+                // 检查服务器响应状态
+                if (!res.ok) {
+                    throw new Error(`服务器返回状态: ${res.status}`);
+                }
+
+                const result = await res.json();
+                
+                // 2. 安全地移除 Loading 提示
+                const loadingNode = document.getElementById(loadingId);
+                if (loadingNode) content.removeChild(loadingNode);
+                
+                // 3. 解析并显示结果
+                let aiText = "抱歉，暂时无法理解。";
+                if (result.data && result.data.length > 0) {
+                    aiText = result.data[0].content;
+                } else if (result.msg) {
+                    aiText = "AI 提示: " + result.msg;
+                }
+                
+                appendMessage('ai', aiText);
+
+            } catch (e) {
+                // 发生错误时也要移除 Loading
+                const loadingNode = document.getElementById(loadingId);
+                if (loadingNode) content.removeChild(loadingNode);
+                
+                console.error("AI Fetch Error:", e);
+                appendMessage('ai', "❌ 连接失败：" + e.message);
+            }
+        }
+
+        function closeDrawer() {
+            document.getElementById('ai-drawer').classList.remove('active');
+        }
+    </script>
 </body>
 </html>
