@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>春分：昼夜平分，万物向荣</title>
+    <style>
+        :root {
+            --primary-green: #7eb67d;
+            --accent-pink: #f4a7b9;
+            --text-color: #333;
+            --bg-light: #f9fbf9;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            line-height: 1.8;
+            color: var(--text-color);
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 顶部导航/标题 */
+        header {
+            background: linear-gradient(135deg, var(--primary-green), #a8e063);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3rem;
+            letter-spacing: 5px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: -40px auto 40px;
+            padding: 20px;
+        }
+
+        section {
+            background: var(--white);
+            padding: 40px;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: var(--primary-green);
+            border-left: 5px solid var(--primary-green);
+            padding-left: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 平衡概念卡片 */
+        .balance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #fdfdfd;
+            border: 1px solid #eee;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #555;
+            margin-top: 0;
+        }
+
+        /* 立蛋动画示意 */
+        .egg-animation {
+            width: 80px;
+            height: 100px;
+            background: #f4f4f4;
+            border: 2px solid #ddd;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            margin: 20px auto;
+            position: relative;
+            animation: balance 3s ease-in-out infinite;
+        }
+
+        @keyframes balance {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* 互动讲解区域 */
+        .tips-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tips-list li {
+            background: #f0f7f0;
+            margin-bottom: 15px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .tips-list li::before {
+            content: "💡";
+            margin-right: 10px;
+        }
+
+        /* 诗词美文 */
+        .poetry {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            font-size: 1.1rem;
+            background: #fffafa;
+            border: 1px dashed var(--accent-pink);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            header h1 { font-size: 2rem; }
+            section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>春分 · Equinox</h1>
+    <p>春分者，阴阳相半也，故昼夜均而寒暑平</p>
+</header>
+
+<div class="container">
+    
+    <section>
+        <h2>核心三要素：平衡之美</h2>
+        <div class="balance-grid">
+            <div class="card">
+                <h3>昼夜平衡</h3>
+                <p>全球昼夜等长。太阳直射赤道，黑夜与白昼在这一天握手言和，各占12小时。</p>
+            </div>
+            <div class="card">
+                <h3>季节平衡</h3>
+                <p>平分了春季。春分是春天的中点，前面是微寒的复苏，后面是烂漫的盛放。</p>
+            </div>
+            <div class="card">
+                <div class="egg-animation"></div>
+                <h3>立蛋平衡</h3>
+                <p>“春分到，蛋儿俏”。在这一天尝试让鸡蛋竖立，是延续千年的趣味仪式。</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>大自然的“视听盛宴”</h2>
+        <p>春分时节，生命不再是悄悄潜行，而是大张旗鼓地宣告存在：</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+            <span style="background: #e8f5e9; padding: 5px 15px; border-radius: 20px; color: #2e7d32;">🐦 玄鸟至：燕子飞回北方</span>
+            <span style="background: #fff3e0; padding: 5px 15px; border-radius: 20px; color: #ef6c00;">⚡ 雷乃发声：唤醒沉睡的大地</span>
+            <span style="background: #fce4ec; padding: 5px 15px; border-radius: 20px; color: #c2185b;">🌸 桃红李白：视觉饱和度最高点</span>
+        </div>
+    </section>
+
+    <section class="poetry">
+        <p>“日月阳阴两均天，玄鸟不辞桃花寒。”</p>
+    </section>
+
+    <section>
+        <h2>如何给别人讲懂春分？</h2>
+        <ul class="tips-list">
+            <li><strong>用“天平”做比喻：</strong> 告诉他们春分是地球最“平等”的一天，昼夜各半，寒暑平衡。</li>
+            <li><strong>观察柳树的变化：</strong> 以前是“草色遥看近却无”，现在是“万条垂下绿丝绦”，颜色变深了。</li>
+            <li><strong>从餐桌切入：</strong> 聊聊“吃春菜”。采摘鲜嫩的荠菜或野苋菜，把春天的鲜活一口吃进肚子里。</li>
+            <li><strong>做一个动作：</strong> 现场示范立蛋。即使立不起来，也能引出关于地轴和重心的有趣话题。</li>
+        </ul>
+    </section>
+
+</div>
+
+<footer>
+    <p>© 2024 二十四节气文化传承 · 春分篇</p>
+</footer>
+
+</body>
+</html>

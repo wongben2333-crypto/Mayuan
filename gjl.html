@@ -376,7 +376,7 @@
                 
                 const handleJump = (e) => {
                     e.stopPropagation();
-                    window.location.href = `detail.html?name=${encodeURIComponent(term.name)}`;
+                    window.location.href = `${term.name}.html`;
                 };
 
                 path.onclick = handleJump;
