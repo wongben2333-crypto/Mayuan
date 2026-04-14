@@ -37,23 +37,37 @@
                 2px 2px 10px rgba(0, 0, 0, 0.8);
         }
 
+        /* 3. 新增：侧边透明衔接层 */
+        .main-wrapper {
+            background: rgba(255, 255, 255, 0.5); /* 与封面底部衔接的透明度 */
+        }
+
         .container { 
             width: 1200px; 
             margin: 0 auto; 
             background: rgba(255, 255, 255, 0.95); 
             padding: 20px 40px;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-sizing: border-box; /* 确保padding不撑大宽度 */
         }
         
         nav { 
             background: #fff; 
             border-bottom: 1px solid #eee; 
-            padding: 15px 0; 
-            text-align: center; 
             position: sticky; 
             top: 0; 
             z-index: 1000; 
         }
+
+        /* 导航栏内容宽度限制 */
+        .nav-content {
+            width: 1200px;
+            margin: 0 auto;
+            padding: 15px 40px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
         nav a { margin: 0 15px; text-decoration: none; color: #666; font-size: 14px; font-weight: bold; }
 
         section { padding: 60px 0; border-bottom: 1px solid #eee; }
@@ -75,6 +89,20 @@
         .diet-placeholder { width: 90px; height: 90px; border-radius: 50%; background-size: cover; background-position: center; margin: 0 auto 5px; }
 
         .btn { display: inline-block; padding: 8px 25px; background: #7b99ff; color: white; text-decoration: none; border-radius: 20px; font-size: 13px; margin-top: 15px; }
+
+        /* 页脚宽度设置 */
+        footer { 
+            background: #333; 
+        }
+        .footer-content {
+            width: 1200px;
+            margin: 0 auto;
+            padding: 40px 40px;
+            box-sizing: border-box;
+            text-align: center;
+            color: rgba(255,255,255,0.6); 
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
@@ -86,121 +114,127 @@
     </header>
 
     <nav>
-        <a href="#origin">立春起源</a>
-        <a href="#weather">气候变化</a>
-        <a href="#three">立春三候</a>
-        <a href="#custom">习俗文化</a>
-        <a href="#diet">饮食推荐</a>
+        <div class="nav-content">
+            <a href="#origin">立春起源</a>
+            <a href="#weather">气候变化</a>
+            <a href="#three">立春三候</a>
+            <a href="#custom">习俗文化</a>
+            <a href="#diet">饮食推荐</a>
+        </div>
     </nav>
 
-    <div class="container">
-        
-        <section id="origin">
-            <h2 class="section-title">天文现象</h2>
-            <div class="flex-box">
-                <div class="text">
-                    <h3>立春的由来</h3>
-                    <p>立春，为二十四节气之首。立，是“开始”之意；春，代表着温暖、生长。当太阳到达黄经315°时为立春，此时大地开始解冻，万物闭藏状态解除。</p>
-                    <a href="#" class="btn">查看天文历法</a>
+    <div class="main-wrapper">
+        <div class="container">
+            
+            <section id="origin">
+                <h2 class="section-title">天文现象</h2>
+                <div class="flex-box">
+                    <div class="text">
+                        <h3>立春的由来</h3>
+                        <p>立春，为二十四节气之首。立，是“开始”之意；春，代表着温暖、生长。当太阳到达黄经315°时为立春，此时大地开始解冻，万物闭藏状态解除。</p>
+                        <a href="#" class="btn">查看天文历法</a>
+                    </div>
+                    <div class="image">
+                        <div style="background-image: url('images/astronomy.jpg'); background-color: #eee; height: 300px; background-size: cover; border-radius: 8px;"></div>
+                    </div>
                 </div>
-                <div class="image">
-                    <div style="background-image: url('images/astronomy.jpg'); background-color: #eee; height: 300px; background-size: cover; border-radius: 8px;"></div>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="weather">
-            <h2 class="section-title">气候变化</h2>
-            <div class="grid-4">
-                <div class="card">
-                    <div class="card-img-placeholder" style="background-image: url('images/weather1.jpg'); background-color: #ddd;"></div>
-                    <h4>气温回升</h4>
-                    <p><small>气温开始趋于上升。</small></p>
+            <section id="weather">
+                <h2 class="section-title">气候变化</h2>
+                <div class="grid-4">
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background-image: url('images/weather1.jpg'); background-color: #ddd;"></div>
+                        <h4>气温回升</h4>
+                        <p><small>气温开始趋于上升。</small></p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background-image: url('images/weather2.jpg'); background-color: #ddd;"></div>
+                        <h4>大地解冻</h4>
+                        <p><small>冰雪融化，土壤苏醒。</small></p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background-image: url('images/weather3.jpg'); background-color: #ddd;"></div>
+                        <h4>万物萌发</h4>
+                        <p><small>草木萌动，春意初现。</small></p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background-image: url('images/weather4.jpg'); background-color: #ddd;"></div>
+                        <h4>日照延长</h4>
+                        <p><small>白昼增长，阳光和煦。</small></p>
+                    </div>
                 </div>
-                <div class="card">
-                    <div class="card-img-placeholder" style="background-image: url('images/weather2.jpg'); background-color: #ddd;"></div>
-                    <h4>大地解冻</h4>
-                    <p><small>冰雪融化，土壤苏醒。</small></p>
-                </div>
-                <div class="card">
-                    <div class="card-img-placeholder" style="background-image: url('images/weather3.jpg'); background-color: #ddd;"></div>
-                    <h4>万物萌发</h4>
-                    <p><small>草木萌动，春意初现。</small></p>
-                </div>
-                <div class="card">
-                    <div class="card-img-placeholder" style="background-image: url('images/weather4.jpg'); background-color: #ddd;"></div>
-                    <h4>日照延长</h4>
-                    <p><small>白昼增长，阳光和煦。</small></p>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="three">
-            <h2 class="section-title">立春三候</h2>
-            <div class="grid-3">
-                <div class="circle-item">
-                    <div class="circle-placeholder" style="background-image: url('images/hou1.jpg'); background-color: #eee;"></div>
-                    <h4>一候东风解冻</h4>
+            <section id="three">
+                <h2 class="section-title">立春三候</h2>
+                <div class="grid-3">
+                    <div class="circle-item">
+                        <div class="circle-placeholder" style="background-image: url('images/hou1.jpg'); background-color: #eee;"></div>
+                        <h4>一候东风解冻</h4>
+                    </div>
+                    <div class="circle-item">
+                        <div class="circle-placeholder" style="background-image: url('images/hou2.jpg'); background-color: #eee;"></div>
+                        <h4>二候蛰虫始振</h4>
+                    </div>
+                    <div class="circle-item">
+                        <div class="circle-placeholder" style="background-image: url('images/hou3.jpg'); background-color: #eee;"></div>
+                        <h4>三候鱼陟负冰</h4>
+                    </div>
                 </div>
-                <div class="circle-item">
-                    <div class="circle-placeholder" style="background-image: url('images/hou2.jpg'); background-color: #eee;"></div>
-                    <h4>二候蛰虫始振</h4>
-                </div>
-                <div class="circle-item">
-                    <div class="circle-placeholder" style="background-image: url('images/hou3.jpg'); background-color: #eee;"></div>
-                    <h4>三候鱼陟负冰</h4>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="custom">
-            <h2 class="section-title">习俗文化</h2>
-            <div class="grid-4">
-                <div class="card">
-                    <div class="card-img-placeholder" style="background-image: url('images/custom1.jpg'); background-color: #eee; height: 100px;"></div>
-                    <p>咬春</p>
+            <section id="custom">
+                <h2 class="section-title">习俗文化</h2>
+                <div class="grid-4">
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background-image: url('images/custom1.jpg'); background-color: #eee; height: 100px;"></div>
+                        <p>咬春</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background-image: url('images/custom2.jpg'); background-color: #eee; height: 100px;"></div>
+                        <p>打春牛</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background-image: url('images/custom3.jpg'); background-color: #eee; height: 100px;"></div>
+                        <p>戴春鸡</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img-placeholder" style="background-image: url('images/custom4.jpg'); background-color: #eee; height: 100px;"></div>
+                        <p>祭祖祈福</p>
+                    </div>
                 </div>
-                <div class="card">
-                    <div class="card-img-placeholder" style="background-image: url('images/custom2.jpg'); background-color: #eee; height: 100px;"></div>
-                    <p>打春牛</p>
-                </div>
-                <div class="card">
-                    <div class="card-img-placeholder" style="background-image: url('images/custom3.jpg'); background-color: #eee; height: 100px;"></div>
-                    <p>戴春鸡</p>
-                </div>
-                <div class="card">
-                    <div class="card-img-placeholder" style="background-image: url('images/custom4.jpg'); background-color: #eee; height: 100px;"></div>
-                    <p>祭祖祈福</p>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="diet" style="border-bottom: none;">
-            <h2 class="section-title">饮食文化</h2>
-            <div class="diet-grid">
-                <div class="diet-item">
-                    <div class="diet-placeholder" style="background-image: url('images/food1.jpg'); background-color: #eee;"></div>
-                    <p>春饼</p>
+            <section id="diet" style="border-bottom: none;">
+                <h2 class="section-title">饮食文化</h2>
+                <div class="diet-grid">
+                    <div class="diet-item">
+                        <div class="diet-placeholder" style="background-image: url('images/food1.jpg'); background-color: #eee;"></div>
+                        <p>春饼</p>
+                    </div>
+                    <div class="diet-item">
+                        <div class="diet-placeholder" style="background-image: url('images/food2.jpg'); background-color: #eee;"></div>
+                        <p>白萝卜</p>
+                    </div>
+                    <div class="diet-item">
+                        <div class="diet-placeholder" style="background-image: url('images/food3.jpg'); background-color: #eee;"></div>
+                        <p>荠菜</p>
+                    </div>
+                    <div class="diet-item">
+                        <div class="diet-placeholder" style="background-image: url('images/food4.jpg'); background-color: #eee;"></div>
+                        <p>春卷</p>
+                    </div>
                 </div>
-                <div class="diet-item">
-                    <div class="diet-placeholder" style="background-image: url('images/food2.jpg'); background-color: #eee;"></div>
-                    <p>白萝卜</p>
-                </div>
-                <div class="diet-item">
-                    <div class="diet-placeholder" style="background-image: url('images/food3.jpg'); background-color: #eee;"></div>
-                    <p>荠菜</p>
-                </div>
-                <div class="diet-item">
-                    <div class="diet-placeholder" style="background-image: url('images/food4.jpg'); background-color: #eee;"></div>
-                    <p>春卷</p>
-                </div>
-            </div>
-        </section>
+            </section>
 
+        </div>
     </div>
 
-    <footer style="text-align: center; padding: 40px; background: #333; color: rgba(255,255,255,0.6); font-size: 13px;">
-        © 2026 立春专题展示 | 传统文化与二十四节气
+    <footer>
+        <div class="footer-content">
+            © 2026 立春专题展示 | 传统文化与二十四节气
+        </div>
     </footer>
 
 </body>
