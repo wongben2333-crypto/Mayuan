@@ -385,10 +385,15 @@
         // 请求云函数
         async function fetchAIResponse(query) {
             const content = document.getElementById('ai-content');
+            
+            // 1. 创建一个唯一的 Loading 消息 ID
+            const loadingId = "loading-" + Date.now();
             const loadingDiv = document.createElement('div');
             loadingDiv.className = 'msg ai';
-            loadingDiv.innerText = '正在思考中...';
+            loadingDiv.id = loadingId;
+            loadingDiv.innerText = '正在为您查阅典籍...';
             content.appendChild(loadingDiv);
+            content.scrollTop = content.scrollHeight;
 
             try {
                 const res = await fetch(cloudbaseUrl, {
@@ -396,14 +401,35 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: query })
                 });
+
+                // 检查服务器响应状态
+                if (!res.ok) {
+                    throw new Error(`服务器返回状态: ${res.status}`);
+                }
+
                 const result = await res.json();
-                content.removeChild(loadingDiv); // 移除加载提示
                 
-                let aiText = result.data[0]?.content || "我暂时没能理解这个问题，换个问法试试？";
+                // 2. 安全地移除 Loading 提示
+                const loadingNode = document.getElementById(loadingId);
+                if (loadingNode) content.removeChild(loadingNode);
+                
+                // 3. 解析并显示结果
+                let aiText = "抱歉，暂时无法理解。";
+                if (result.data && result.data.length > 0) {
+                    aiText = result.data[0].content;
+                } else if (result.msg) {
+                    aiText = "AI 提示: " + result.msg;
+                }
+                
                 appendMessage('ai', aiText);
+
             } catch (e) {
-                content.removeChild(loadingDiv);
-                appendMessage('ai', "抱歉，连接专家失败，请稍后再试。");
+                // 发生错误时也要移除 Loading
+                const loadingNode = document.getElementById(loadingId);
+                if (loadingNode) content.removeChild(loadingNode);
+                
+                console.error("AI Fetch Error:", e);
+                appendMessage('ai', "❌ 连接失败：" + e.message);
             }
         }
 
