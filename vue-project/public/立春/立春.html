@@ -429,6 +429,7 @@
                 const decoder = new TextDecoder();
                 let fullText = "";
                 msgDiv.innerHTML = ""; // 清除加载提示
+                let currentEvent = ""; // 新增：记录当前行所属的 event 类型
 
                 while (true) {
                     const { done, value } = await reader.read();
@@ -438,39 +439,44 @@
                     const lines = chunk.split('\n');
 
                     for (const line of lines) {
-                        if (!line.startsWith('data:')) continue;
-                        
-                        const rawData = line.slice(5).trim();
-                        if (!rawData || rawData === '[DONE]') continue;
+                        // 我们通过 event 类型来精准控制
+                        // 只在看到 delta（增量）事件时才去解析数据
+                        const eventMatch = line.match(/^event:(.*)$/m);
+                        if (eventMatch) {
+                            currentEvent = eventMatch[1].trim();
+                            continue;
+                        }
 
-                        try {
-                            const data = JSON.parse(rawData);
+                        if (line.startsWith('data:')) {
+                            const rawData = line.slice(5).trim();
+                            if (!rawData || rawData === '[DONE]') continue;
 
-                            // --- 针对 Coze v3 流式的精准捕获 ---
-                            
-                            // v3 接口在流式中，增量内容的事件类型通常是 'conversation.message.delta'
-                            // 或者简化的 type 是 'answer'。
-                            // 我们要找的是 data.content，且要确保它不是插件调用的 JSON
-                            
-                            if (data.content && !data.content.startsWith('{')) {
+                            try {
+                                const data = JSON.parse(rawData);
+
+                                // --- 核心修改逻辑 ---
                                 
-                                // 如果是 v3 接口，内容通常是增量式的（每一个 chunk 只有一两个新字）
-                                // 我们直接累加即可
-                                fullText += data.content;
-                                msgDiv.innerHTML = marked.parse(fullText);
-                                
-                            } 
-                            // 兼容模式：如果 data.type 是 answer 且有内容（针对某些同步转流式的配置）
-                            else if (data.type === 'answer' && data.content) {
-                                if (!fullText.includes(data.content)) {
+                                // 1. 只处理 delta 事件中的内容，这是最纯粹的“打字机”来源
+                                // 这样就不会被后面的 message.completed（完整总结包）干扰导致复读
+                                if (currentEvent === 'conversation.message.delta' && data.content) {
+                                    
+                                    // 过滤掉插件调用的 JSON 字符串
+                                    if (data.content.startsWith('{')) continue;
+
                                     fullText += data.content;
                                     msgDiv.innerHTML = marked.parse(fullText);
                                 }
-                            }
 
-                            content.scrollTop = content.scrollHeight;
-                        } catch (e) {
-                            // 忽略解析失败的消息
+                                // 2. 如果你想显示“猜你想问”（follow_up），可以加在这里
+                                if (currentEvent === 'conversation.message.completed' && data.type === 'follow_up') {
+                                    console.log("建议问题:", data.content);
+                                    // 这里可以额外写逻辑把建议问题显示在下方
+                                }
+
+                                content.scrollTop = content.scrollHeight;
+                            } catch (e) {
+                                // 这里的异常通常是由于一行还没传完就被 split 掉了，无视即可
+                            }
                         }
                     }
                 }
