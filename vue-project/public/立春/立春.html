@@ -405,71 +405,57 @@
 
         async function fetchAIResponse(query) {
             const content = document.getElementById('ai-content');
-            
-            // 创建 Loading 提示
             const loadingId = "loading-" + Date.now();
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'msg ai';
-            loadingDiv.id = loadingId;
-            loadingDiv.innerHTML = '<span class="loading-dots">正在为您翻阅典籍...</span>';
-            content.appendChild(loadingDiv);
+            
+            // 1. 先显示一个空的消息气泡准备放字
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'msg ai';
+            msgDiv.innerHTML = '正在思考...';
+            content.appendChild(msgDiv);
             content.scrollTop = content.scrollHeight;
 
             try {
-                const res = await fetch(cloudbaseUrl, {
+                const response = await fetch(cloudbaseUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: query })
                 });
 
-                const result = await res.json();
-                
-                // 移除 Loading
-                const loadingNode = document.getElementById(loadingId);
-                if (loadingNode) content.removeChild(loadingNode);
-                
-                let aiText = "";
-                // 解析 v1 接口格式
-                if (result.messages && Array.isArray(result.messages)) {
-                    const answer = result.messages.find(m => m.type === 'answer');
-                    if (answer) aiText = answer.content;
-                }
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let fullText = "";
+                msgDiv.innerHTML = ""; // 清空“正在思考”
 
-                if (aiText) {
-                    typeWriter(aiText); // 调用打字机效果
-                } else {
-                    appendMessage('ai', "抱歉，节气专家暂时出了一点小差。");
-                }
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
 
+                    const chunk = decoder.decode(value, { stream: true });
+                    
+                    // 解析扣子返回的 SSE 格式：data: {"content":"..."}
+                    const lines = chunk.split('\n');
+                    for (const line of lines) {
+                        if (line.startsWith('data:')) {
+                            try {
+                                const data = JSON.parse(line.slice(5));
+                                // 扣子 v3 流式中，内容在 content 字段
+                                if (data.content) {
+                                    fullText += data.content;
+                                    // 实时渲染 Markdown
+                                    msgDiv.innerHTML = marked.parse(fullText);
+                                    content.scrollTop = content.scrollHeight;
+                                }
+                            } catch (e) {
+                                // 忽略非 JSON 行
+                            }
+                        }
+                    }
+                }
             } catch (e) {
-                const loadingNode = document.getElementById(loadingId);
-                if (loadingNode) content.removeChild(loadingNode);
-                appendMessage('ai', "❌ 连接失败：" + e.message);
+                msgDiv.innerHTML = "❌ 连接失败：" + e.message;
             }
         }
 
-        // 3. 新增打字机渲染函数
-        function typeWriter(text) {
-            const content = document.getElementById('ai-content');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'msg ai';
-            content.appendChild(msgDiv);
-            
-            let i = 0;
-            const speed = 30; // 这里的30是速度，单位毫秒，数字越小越快
-
-            function type() {
-                if (i < text.length) {
-                    const current = text.substring(0, i + 1);
-                    // 实时解析 Markdown 确保加粗等样式正确显示
-                    msgDiv.innerHTML = marked.parse(current);
-                    i++;
-                    content.scrollTop = content.scrollHeight;
-                    setTimeout(type, speed);
-                }
-            }
-            type();
-        }
 
         function closeDrawer() {
             document.getElementById('ai-drawer').classList.remove('active');
