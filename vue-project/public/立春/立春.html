@@ -446,30 +446,31 @@
                         try {
                             const data = JSON.parse(rawData);
 
-                            // --- 核心去重与解析逻辑 ---
+                            // --- 针对 Coze v3 流式的精准捕获 ---
                             
-                            // 1. 检查消息 ID（如果 Coze 传了 ID），防止同一条消息重复渲染
-                            if (data.id && seenIds.has(data.id)) continue;
+                            // v3 接口在流式中，增量内容的事件类型通常是 'conversation.message.delta'
+                            // 或者简化的 type 是 'answer'。
+                            // 我们要找的是 data.content，且要确保它不是插件调用的 JSON
                             
-                            // 2. 核心过滤：只处理类型为 'answer' 的消息，或者符合条件的 content
-                            if ((data.type === 'answer' || !data.type) && data.content) {
+                            if (data.content && !data.content.startsWith('{')) {
                                 
-                                // 过滤掉那些带 { 的插件调用日志字符串
-                                if (data.content.startsWith('{')) continue;
-
-                                // 3. 最终防线：检查新内容是否紧接着旧内容的末尾，防止段落级复读
-                                if (!fullText.endsWith(data.content)) {
+                                // 如果是 v3 接口，内容通常是增量式的（每一个 chunk 只有一两个新字）
+                                // 我们直接累加即可
+                                fullText += data.content;
+                                msgDiv.innerHTML = marked.parse(fullText);
+                                
+                            } 
+                            // 兼容模式：如果 data.type 是 answer 且有内容（针对某些同步转流式的配置）
+                            else if (data.type === 'answer' && data.content) {
+                                if (!fullText.includes(data.content)) {
                                     fullText += data.content;
                                     msgDiv.innerHTML = marked.parse(fullText);
-                                    
-                                    // 记录 ID
-                                    if (data.id) seenIds.add(data.id);
                                 }
                             }
 
                             content.scrollTop = content.scrollHeight;
                         } catch (e) {
-                            console.warn("解析行失败:", rawData);
+                            // 忽略解析失败的消息
                         }
                     }
                 }
