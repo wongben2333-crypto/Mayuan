@@ -376,7 +376,7 @@
     </footer>
 
     <script>
-        const cloudbaseUrl = "https://solarterm-6gp3bbidfd59bc8c-1384502086.ap-shanghai.app.tcloudbase.com/coze-proxy";
+        const cloudbaseUrl = "https://coze-proxy.wongben2333.workers.dev";
 
         async function askAI(question) {
             document.getElementById('ai-drawer').classList.add('active');
@@ -405,11 +405,13 @@
 
         async function fetchAIResponse(query) {
             const content = document.getElementById('ai-content');
+            
+            // 创建 Loading 提示
             const loadingId = "loading-" + Date.now();
             const loadingDiv = document.createElement('div');
             loadingDiv.className = 'msg ai';
             loadingDiv.id = loadingId;
-            loadingDiv.innerText = '正在为您查阅典籍...';
+            loadingDiv.innerHTML = '<span class="loading-dots">正在为您翻阅典籍...</span>';
             content.appendChild(loadingDiv);
             content.scrollTop = content.scrollHeight;
 
@@ -420,50 +422,53 @@
                     body: JSON.stringify({ query: query })
                 });
 
-                if (!res.ok) {
-                    throw new Error(`服务器返回状态: ${res.status}`);
-                }
-
                 const result = await res.json();
-                console.log("扣子返回原始数据:", result); // 调试用，可在控制台查看
-
+                
+                // 移除 Loading
                 const loadingNode = document.getElementById(loadingId);
                 if (loadingNode) content.removeChild(loadingNode);
                 
                 let aiText = "";
-
-                // --- 核心解析逻辑开始 ---
-                
-                // 1. 尝试解析 Coze v1 接口格式 (messages 数组)
+                // 解析 v1 接口格式
                 if (result.messages && Array.isArray(result.messages)) {
                     const answer = result.messages.find(m => m.type === 'answer');
                     if (answer) aiText = answer.content;
                 }
-                
-                // 2. 如果 1 没拿到，尝试解析 v3 接口常见的 data.content 格式
-                if (!aiText && result.data) {
-                    if (Array.isArray(result.data) && result.data.length > 0) {
-                        aiText = result.data[0].content;
-                    } else if (typeof result.data === 'object') {
-                        aiText = result.data.content || "";
-                    }
-                }
 
-                // 3. 如果依然没拿到，回退到提示信息
-                if (!aiText) {
-                    aiText = result.msg ? "AI 提示: " + result.msg : "抱歉，暂时无法理解扣子的返回格式。";
+                if (aiText) {
+                    typeWriter(aiText); // 调用打字机效果
+                } else {
+                    appendMessage('ai', "抱歉，节气专家暂时出了一点小差。");
                 }
-                
-                // --- 核心解析逻辑结束 ---
-
-                appendMessage('ai', aiText);
 
             } catch (e) {
                 const loadingNode = document.getElementById(loadingId);
                 if (loadingNode) content.removeChild(loadingNode);
-                console.error("AI Fetch Error:", e);
                 appendMessage('ai', "❌ 连接失败：" + e.message);
             }
+        }
+
+        // 3. 新增打字机渲染函数
+        function typeWriter(text) {
+            const content = document.getElementById('ai-content');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'msg ai';
+            content.appendChild(msgDiv);
+            
+            let i = 0;
+            const speed = 30; // 这里的30是速度，单位毫秒，数字越小越快
+
+            function type() {
+                if (i < text.length) {
+                    const current = text.substring(0, i + 1);
+                    // 实时解析 Markdown 确保加粗等样式正确显示
+                    msgDiv.innerHTML = marked.parse(current);
+                    i++;
+                    content.scrollTop = content.scrollHeight;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
         }
 
         function closeDrawer() {
