@@ -425,15 +425,37 @@
                 }
 
                 const result = await res.json();
+                console.log("扣子返回原始数据:", result); // 调试用，可在控制台查看
+
                 const loadingNode = document.getElementById(loadingId);
                 if (loadingNode) content.removeChild(loadingNode);
                 
-                let aiText = "抱歉，暂时无法理解。";
-                if (result.data && result.data.length > 0) {
-                    aiText = result.data[0].content;
-                } else if (result.msg) {
-                    aiText = "AI 提示: " + result.msg;
+                let aiText = "";
+
+                // --- 核心解析逻辑开始 ---
+                
+                // 1. 尝试解析 Coze v1 接口格式 (messages 数组)
+                if (result.messages && Array.isArray(result.messages)) {
+                    const answer = result.messages.find(m => m.type === 'answer');
+                    if (answer) aiText = answer.content;
                 }
+                
+                // 2. 如果 1 没拿到，尝试解析 v3 接口常见的 data.content 格式
+                if (!aiText && result.data) {
+                    if (Array.isArray(result.data) && result.data.length > 0) {
+                        aiText = result.data[0].content;
+                    } else if (typeof result.data === 'object') {
+                        aiText = result.data.content || "";
+                    }
+                }
+
+                // 3. 如果依然没拿到，回退到提示信息
+                if (!aiText) {
+                    aiText = result.msg ? "AI 提示: " + result.msg : "抱歉，暂时无法理解扣子的返回格式。";
+                }
+                
+                // --- 核心解析逻辑结束 ---
+
                 appendMessage('ai', aiText);
 
             } catch (e) {
