@@ -431,22 +431,38 @@
                     if (done) break;
 
                     const chunk = decoder.decode(value, { stream: true });
-                    
-                    // 解析扣子返回的 SSE 格式：data: {"content":"..."}
                     const lines = chunk.split('\n');
+
                     for (const line of lines) {
                         if (line.startsWith('data:')) {
+                            const rawData = line.slice(5).trim();
+                            if (!rawData) continue;
+
                             try {
-                                const data = JSON.parse(line.slice(5));
-                                // 扣子 v3 流式中，内容在 content 字段
-                                if (data.content) {
+                                const data = JSON.parse(rawData);
+
+                                // --- 过滤逻辑开始 ---
+                                
+                                // 1. 只有当消息类型是 'answer' 时才显示（过滤掉插件调用和冗余状态）
+                                // 扣子 v3 流式中，对话内容通常标记为 type: "answer"
+                                if (data.type === 'answer' && data.content) {
                                     fullText += data.content;
-                                    // 实时渲染 Markdown
                                     msgDiv.innerHTML = marked.parse(fullText);
-                                    content.scrollTop = content.scrollHeight;
                                 }
+                                
+                                // 2. 兼容模式：如果 data 直接有 content 且没有 type 字段（某些工作流配置）
+                                // 且要确保 content 不是一段 JSON 字符串
+                                else if (!data.type && data.content && !data.content.startsWith('{')) {
+                                    fullText += data.content;
+                                    msgDiv.innerHTML = marked.parse(fullText);
+                                }
+
+                                // --- 过滤逻辑结束 ---
+
+                                content.scrollTop = content.scrollHeight;
                             } catch (e) {
-                                // 忽略非 JSON 行
+                                // 如果 JSON 解析失败，说明可能是非标准格式或者是内容碎片，跳过即可
+                                console.warn("跳过非标准数据行:", rawData);
                             }
                         }
                     }
