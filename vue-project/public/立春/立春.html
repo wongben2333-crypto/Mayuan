@@ -403,16 +403,20 @@
             content.scrollTop = content.scrollHeight;
         }
 
+        let seenIds = new Set(); // 放在函数外面，用于全局去重
+
         async function fetchAIResponse(query) {
             const content = document.getElementById('ai-content');
-            const loadingId = "loading-" + Date.now();
             
-            // 1. 先显示一个空的消息气泡准备放字
+            // 1. 创建 AI 消息气泡
             const msgDiv = document.createElement('div');
             msgDiv.className = 'msg ai';
-            msgDiv.innerHTML = '正在思考...';
+            msgDiv.innerHTML = '<span class="loading-dots">正在思考...</span>';
             content.appendChild(msgDiv);
             content.scrollTop = content.scrollHeight;
+
+            // 每次开始新对话前，清空去重集合（如果你希望每轮对话独立去重）
+            seenIds.clear(); 
 
             try {
                 const response = await fetch(cloudbaseUrl, {
@@ -424,7 +428,7 @@
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let fullText = "";
-                msgDiv.innerHTML = ""; // 清空“正在思考”
+                msgDiv.innerHTML = ""; // 清除加载提示
 
                 while (true) {
                     const { done, value } = await reader.read();
@@ -434,41 +438,44 @@
                     const lines = chunk.split('\n');
 
                     for (const line of lines) {
-                        if (line.startsWith('data:')) {
-                            const rawData = line.slice(5).trim();
-                            if (!rawData) continue;
+                        if (!line.startsWith('data:')) continue;
+                        
+                        const rawData = line.slice(5).trim();
+                        if (!rawData || rawData === '[DONE]') continue;
 
-                            try {
-                                const data = JSON.parse(rawData);
+                        try {
+                            const data = JSON.parse(rawData);
 
-                                // --- 过滤逻辑开始 ---
+                            // --- 核心去重与解析逻辑 ---
+                            
+                            // 1. 检查消息 ID（如果 Coze 传了 ID），防止同一条消息重复渲染
+                            if (data.id && seenIds.has(data.id)) continue;
+                            
+                            // 2. 核心过滤：只处理类型为 'answer' 的消息，或者符合条件的 content
+                            if ((data.type === 'answer' || !data.type) && data.content) {
                                 
-                                // 1. 只有当消息类型是 'answer' 时才显示（过滤掉插件调用和冗余状态）
-                                // 扣子 v3 流式中，对话内容通常标记为 type: "answer"
-                                if (data.type === 'answer' && data.content) {
+                                // 过滤掉那些带 { 的插件调用日志字符串
+                                if (data.content.startsWith('{')) continue;
+
+                                // 3. 最终防线：检查新内容是否紧接着旧内容的末尾，防止段落级复读
+                                if (!fullText.endsWith(data.content)) {
                                     fullText += data.content;
                                     msgDiv.innerHTML = marked.parse(fullText);
+                                    
+                                    // 记录 ID
+                                    if (data.id) seenIds.add(data.id);
                                 }
-                                
-                                // 2. 兼容模式：如果 data 直接有 content 且没有 type 字段（某些工作流配置）
-                                // 且要确保 content 不是一段 JSON 字符串
-                                else if (!data.type && data.content && !data.content.startsWith('{')) {
-                                    fullText += data.content;
-                                    msgDiv.innerHTML = marked.parse(fullText);
-                                }
-
-                                // --- 过滤逻辑结束 ---
-
-                                content.scrollTop = content.scrollHeight;
-                            } catch (e) {
-                                // 如果 JSON 解析失败，说明可能是非标准格式或者是内容碎片，跳过即可
-                                console.warn("跳过非标准数据行:", rawData);
                             }
+
+                            content.scrollTop = content.scrollHeight;
+                        } catch (e) {
+                            console.warn("解析行失败:", rawData);
                         }
                     }
                 }
             } catch (e) {
                 msgDiv.innerHTML = "❌ 连接失败：" + e.message;
+                console.error(e);
             }
         }
 
