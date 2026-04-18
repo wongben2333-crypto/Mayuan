@@ -376,7 +376,7 @@
     </footer>
 
     <script>
-        const cloudbaseUrl = "https://coze-proxy.wongben2333.workers.dev";
+        const cloudbaseUrl = "https://coze-proxy-zuromvhmkb.cn-hangzhou.fcapp.run/";
 
         async function askAI(question) {
             document.getElementById('ai-drawer').classList.add('active');
@@ -411,25 +411,29 @@
             // 1. 创建 AI 消息气泡
             const msgDiv = document.createElement('div');
             msgDiv.className = 'msg ai';
-            msgDiv.innerHTML = '<span class="loading-dots">正在思考...</span>';
+            msgDiv.innerHTML = '<span class="loading-dots">正在为您采撷春光...</span>';
             content.appendChild(msgDiv);
             content.scrollTop = content.scrollHeight;
 
-            // 每次开始新对话前，清空去重集合（如果你希望每轮对话独立去重）
-            seenIds.clear(); 
+            let fullText = "";
+            let currentEvent = ""; 
 
             try {
                 const response = await fetch(cloudbaseUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        // 明确告知服务器我们需要流式输出
+                        'Accept': 'text/event-stream' 
+                    },
                     body: JSON.stringify({ query: query })
                 });
 
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
-                let fullText = "";
-                msgDiv.innerHTML = ""; // 清除加载提示
-                let currentEvent = ""; // 新增：记录当前行所属的 event 类型
+                msgDiv.innerHTML = ""; 
 
                 while (true) {
                     const { done, value } = await reader.read();
@@ -439,9 +443,8 @@
                     const lines = chunk.split('\n');
 
                     for (const line of lines) {
-                        // 我们通过 event 类型来精准控制
-                        // 只在看到 delta（增量）事件时才去解析数据
-                        const eventMatch = line.match(/^event:(.*)$/m);
+                        // 阿里云透传的 SSE 格式依然是 event:xxx 和 data:xxx
+                        const eventMatch = line.match(/^event:(.*)$/);
                         if (eventMatch) {
                             currentEvent = eventMatch[1].trim();
                             continue;
@@ -454,35 +457,24 @@
                             try {
                                 const data = JSON.parse(rawData);
 
-                                // --- 核心修改逻辑 ---
-                                
-                                // 1. 只处理 delta 事件中的内容，这是最纯粹的“打字机”来源
-                                // 这样就不会被后面的 message.completed（完整总结包）干扰导致复读
+                                // 只处理增量内容事件
                                 if (currentEvent === 'conversation.message.delta' && data.content) {
-                                    
-                                    // 过滤掉插件调用的 JSON 字符串
                                     if (data.content.startsWith('{')) continue;
 
                                     fullText += data.content;
+                                    // 使用 marked 解析并实时滚动
                                     msgDiv.innerHTML = marked.parse(fullText);
+                                    content.scrollTop = content.scrollHeight;
                                 }
-
-                                // 2. 如果你想显示“猜你想问”（follow_up），可以加在这里
-                                if (currentEvent === 'conversation.message.completed' && data.type === 'follow_up') {
-                                    console.log("建议问题:", data.content);
-                                    // 这里可以额外写逻辑把建议问题显示在下方
-                                }
-
-                                content.scrollTop = content.scrollHeight;
                             } catch (e) {
-                                // 这里的异常通常是由于一行还没传完就被 split 掉了，无视即可
+                                // 解析失败通常是由于 chunk 被截断，属于正常现象
                             }
                         }
                     }
                 }
             } catch (e) {
-                msgDiv.innerHTML = "❌ 连接失败：" + e.message;
-                console.error(e);
+                msgDiv.innerHTML = "❌ 节气专家连线失败：" + e.message;
+                console.error("阿里云调用报错:", e);
             }
         }
 
