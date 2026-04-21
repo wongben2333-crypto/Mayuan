@@ -114,7 +114,7 @@
         .grid-3 { display: flex; justify-content: space-around; text-align: center; }
         .circle-placeholder { width: 160px; height: 160px; border-radius: 50%; background-size: cover; background-position: center; margin: 0 auto 10px; border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        .btn { display: inline-block; padding: 8px 25px; background: #7b99ff; color: white; text-decoration: none; border-radius: 20px; font-size: 13px; margin-top: 15px; }
+        .btn { display: inline-block; padding: 8px 25px; background: #E2BB63; color: white; text-decoration: none; border-radius: 20px; font-size: 13px; margin-top: 15px; }
 
         footer { background: #333; }
         .footer-content {
@@ -164,7 +164,7 @@
 
         .assistant-footer button {
             padding: 0 25px;
-            background: #3d7a35;
+            background: #E2BB63;
             color: white;
             border: none;
             border-radius: 6px;
@@ -172,7 +172,7 @@
             transition: background 0.3s;
         }
         
-        .assistant-footer button:hover { background: #73a76c; }
+        .assistant-footer button:hover { background: #ebc979; }
 
         /* 修改：聊天气泡样式 */
         .msg { 
@@ -201,6 +201,59 @@
         }
 
         .loading-dots { color: #999; font-style: italic; }
+
+        /* --- 新增：悬浮图标与气泡样式 --- */
+        .floating-widget {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            align-items: center;
+            flex-direction: row-reverse;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .floating-widget.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .floating-icon {
+            width: 60px;
+            height: 60px;
+            background: #3d7a35;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+            font-size: 24px;
+        }
+
+        .floating-icon:hover { transform: scale(1.1); }
+
+        .ask-bubble {
+            margin-right: 15px;
+            background: #fff;
+            border: 1px solid #3d7a35;
+            padding: 10px 18px;
+            border-radius: 20px 20px 0 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-size: 14px;
+            color: #3d7a35;
+            white-space: nowrap;
+            transition: opacity 0.4s ease; /* 渐变过渡效果 */
+            cursor: pointer;
+        }
+
+        .ask-bubble.fade-out {
+            opacity: 0;
+        }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -239,9 +292,9 @@
                     </div>
                 </div>
                 <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
-                    <button class="btn" style="background: #3d7a35; cursor: pointer; border: none;" onclick="quickAsk('立春吃什么最好？')">🍱 立春食补</button>
-                    <button class="btn" style="background: #3d7a35; cursor: pointer; border: none;" onclick="quickAsk('立春有什么文化内涵？')">📜 文化内涵</button>
-                    <button class="btn" style="background: #3d7a35; cursor: pointer; border: none;" onclick="quickAsk('立春的气候特点是什么？')">🌤️ 气候特点</button>
+                    <button class="btn" style="background: #E2BB63; cursor: pointer; border: none;" onclick="quickAsk('立春吃什么最好？')">🍱 立春食补</button>
+                    <button class="btn" style="background: #E2BB63; cursor: pointer; border: none;" onclick="quickAsk('立春有什么文化内涵？')">📜 文化内涵</button>
+                    <button class="btn" style="background: #E2BB63; cursor: pointer; border: none;" onclick="quickAsk('立春的气候特点是什么？')">🌤️ 气候特点</button>
                 </div>
             </section>
 
@@ -326,7 +379,7 @@
             </section>
 
             <section id="diet" style="border-bottom: none;">
-                <h2 class="section-title">饮食文化</h2>
+                <h2 class="section-title">饮食推荐</h2>
                 <div class="diet-container">
                     <a href="https://baike.baidu.com/item/春笋" target="_blank" class="custom-link">
                         <div class="custom-item">
@@ -350,6 +403,11 @@
             </section>
 
         </div>
+    </div>
+
+    <div id="floating-widget" class="floating-widget">
+        <div class="floating-icon" onclick="scrollToAssistant()" title="回到节气助手">💬</div>
+        <div id="bubble-text" class="ask-bubble" onclick="askCurrentQuestion()">猜你想问：立春还有哪些习俗饮食？</div>
     </div>
 
     <footer>
@@ -448,6 +506,85 @@
             } catch (e) {
                 msgDiv.innerHTML = "❌ 节气专家连线失败：" + e.message;
             }
+        }
+
+        /* --- 新增：浮动助手逻辑 --- */
+
+        const floatingWidget = document.getElementById('floating-widget');
+        const bubble = document.getElementById('bubble-text');
+        const assistantSection = document.getElementById('assistant');
+        const headerSection = document.querySelector('header');
+
+        // 不同板块对应的“猜你想问”内容
+        const questionMap = {
+            'origin': '猜你想问：立春这个说法是从什么时候开始的？',
+            'weather': '猜你想问：立春后还会冷吗？什么是倒春寒？',
+            'three': '猜你想问：三候中的“鱼陟负冰”是什么意思？',
+            'custom': '猜你想问：立春还有哪些习俗？',
+            'diet': '猜你想问：立春除了吃春笋还要吃什么？'
+        };
+
+        // 用于追踪页面状态
+        let isHeaderVisible = true;
+
+        // 1. 监测“封面页”是否在屏幕内
+        const headerObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                isHeaderVisible = entry.isIntersecting;
+                if (isHeaderVisible) {
+                    floatingWidget.classList.remove('visible'); // 封面页隐藏
+                }
+            });
+        }, { threshold: 0.1 });
+        headerObserver.observe(headerSection);
+
+        // 2. 监测“节气助手”是否在屏幕内
+        const assistantObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting && !isHeaderVisible) {
+                    floatingWidget.classList.add('visible'); // 不在封面且不在助手页时显示
+                } else {
+                    floatingWidget.classList.remove('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        assistantObserver.observe(assistantSection);
+
+        // 3. 监测当前滚动到哪个内容板块
+        const contentObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && questionMap[entry.target.id]) {
+                    updateBubble(questionMap[entry.target.id]);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('section').forEach(section => {
+            contentObserver.observe(section);
+        });
+
+        // 4. 渐变更新气泡文字
+        function updateBubble(newText) {
+            if (bubble.innerText === newText) return;
+            
+            bubble.classList.add('fade-out');
+            setTimeout(() => {
+                bubble.innerText = newText;
+                bubble.classList.remove('fade-out');
+            }, 400); // 等待淡出动画完成后修改文字并淡入
+        }
+
+        // 5. 点击气泡/图标跳转
+        function scrollToAssistant() {
+            assistantSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function askCurrentQuestion() {
+            const q = bubble.innerText.replace('猜你想问：', '');
+            scrollToAssistant();
+            setTimeout(() => {
+                quickAsk(q);
+            }, 600); // 稍微等待滚动完成后再发送
         }
     </script>
 </body>
