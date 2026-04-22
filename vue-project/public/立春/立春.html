@@ -41,7 +41,6 @@
             background: rgba(255, 255, 255, 0.5); 
         }
 
-        /* 优化：将固定宽度改为 max-width 适配移动端 */
         .container { 
             max-width: 1200px; 
             width: 100%;
@@ -60,7 +59,6 @@
             z-index: 1000; 
         }
 
-        /* 导航栏内容宽度限制 */
         .nav-content {
             max-width: 1200px;
             width: 100%;
@@ -90,7 +88,6 @@
         .flex-box .image { width: 50%; }
         .flex-box img { width: 100%; border-radius: 8px; }
 
-        /* 气候变化部分 - 行布局 */
         .weather-row { 
             display: flex; 
             align-items: center; 
@@ -113,7 +110,6 @@
         .weather-text h4 { font-size: 24px; color: #2d5a27; margin-top: 0; margin-bottom: 15px; }
         .weather-text p { font-size: 16px; color: #555; line-height: 1.8; }
 
-        /* 习俗/饮食图文通用样式 */
         .custom-link { text-decoration: none; color: inherit; display: block; }
         .custom-item { 
             display: flex; 
@@ -160,15 +156,17 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 500px;
+            height: 550px; /* 增加一点高度容纳建议 */
         }
 
+        /* 修改1：背景改为白色偏黄 */
         .assistant-body {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column; 
+            background: #f6f6f3; 
         }
 
         .assistant-footer {
@@ -185,7 +183,7 @@
             border: 1px solid #ddd;
             border-radius: 6px;
             outline: none;
-            min-width: 0; /* 修复 flex 下 input 溢出 */
+            min-width: 0;
         }
 
         .assistant-footer button {
@@ -201,7 +199,6 @@
         
         .assistant-footer button:hover { background: #ebc979; }
 
-        /* 聊天气泡样式 */
         .msg { 
             margin-bottom: 15px; 
             padding: 12px 16px; 
@@ -214,8 +211,8 @@
         }
 
         .msg.user { 
-            background: #e8f5e9; 
-            color: #2d5a27; 
+            background: #ede8cf; 
+            color: #595a27; 
             margin-left: auto;       
             text-align: left;        
         }
@@ -227,9 +224,41 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.02); 
         }
 
+        /* 修改2：猜你想问样式 */
+        .suggestion-box {
+            margin-bottom: 20px;
+            padding-left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .suggestion-title {
+            font-size: 13px;
+            color: #998a6a;
+            font-weight: bold;
+        }
+        .suggestion-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .suggestion-item {
+            font-size: 13px;
+            color: #E2BB63;
+            background: #fff;
+            border: 1px solid #E2BB63;
+            padding: 4px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .suggestion-item:hover {
+            background: #E2BB63;
+            color: #fff;
+        }
+
         .loading-dots { color: #999; font-style: italic; }
 
-        /* 悬浮图标与气泡样式 */
         .floating-widget {
             position: fixed;
             bottom: 40px;
@@ -284,14 +313,9 @@
 
         /* === 移动端适配媒体查询 === */
         @media (max-width: 768px) {
-            /* 封面字体在电脑端保持不变，移动端适当缩小以防溢出 */
             header h1 { font-size: 2.5rem !important; }
             header p { font-size: 1.1rem !important; }
-
-            /* 容器间距缩小 */
             .container { padding: 15px 20px; }
-            
-            /* 导航栏改为可左右滑动 */
             nav { overflow-x: auto; -webkit-overflow-scrolling: touch; }
             .nav-content { 
                 width: max-content; 
@@ -300,8 +324,6 @@
                 gap: 5px;
             }
             nav a { margin: 0 10px; font-size: 16px; white-space: nowrap; }
-
-            /* 通用：Flex 布局转为垂直排列 */
             .flex-box, .weather-row, .custom-item { 
                 flex-direction: column; 
                 gap: 20px; 
@@ -312,18 +334,10 @@
             }
             .weather-image { height: 220px; }
             .custom-img { height: 180px; }
-
-            /* 气候变化部分取消悬停平移效果 */
             .weather-row:hover { transform: none; }
-
-            /* 助手部分气泡宽度放宽 */
             .msg { max-width: 85%; }
-            .assistant-container { height: 400px; }
-
-            /* 立春三候改为竖向排列 */
+            .assistant-container { height: 450px; }
             .grid-3 { flex-direction: column; gap: 30px; }
-
-            /* 悬浮助手气泡在手机上隐藏，仅保留图标 */
             .ask-bubble { display: none; }
             .floating-widget { right: 20px; bottom: 20px; }
         }
@@ -358,16 +372,11 @@
                 <div class="assistant-container">
                     <div id="ai-content" class="assistant-body">
                         <div class="msg ai">你好，我是立春专题的节气知识专家。你可以问我关于立春的食补方案、文化内涵或气候特点，我会为你详细解答。</div>
-                    </div>
+                        </div>
                     <div class="assistant-footer">
                         <input type="text" id="user-input" placeholder="输入您想了解的立春知识..." onkeypress="if(event.keyCode==13) sendMessage()">
                         <button onclick="sendMessage()">咨询专家</button>
                     </div>
-                </div>
-                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                    <button class="btn" style="background: #E2BB63; cursor: pointer; border: none;" onclick="quickAsk('立春吃什么最好？')">🍱 立春食补</button>
-                    <button class="btn" style="background: #E2BB63; cursor: pointer; border: none;" onclick="quickAsk('立春有什么文化内涵？')">📜 文化内涵</button>
-                    <button class="btn" style="background: #E2BB63; cursor: pointer; border: none;" onclick="quickAsk('立春的气候特点是什么？')">🌤️ 气候特点</button>
                 </div>
             </section>
 
@@ -501,10 +510,52 @@
 
     <script>
         const cloudbaseUrl = "https://coze-proxy-zuromvhmkb.cn-hangzhou.fcapp.run/";
+        
+        // 预设问题库
+        const presetLibrary = [
+            "立春有哪些传统习俗？",
+            "立春为什么要吃春饼？",
+            "立春后气温会立刻变暖吗？",
+            "“咬春”指的是什么？",
+            "立春三候分别是什么意思？",
+            "什么是“打春牛”？",
+            "立春为什么要“躲春”？",
+            "立春时节适合做什么运动？",
+            "立春吃萝卜有什么好处？",
+            "推荐一些关于立春的诗词",
+            "立春后的农事活动有哪些？",
+            "立春养生要注意什么？"
+        ];
 
         function quickAsk(question) {
             document.getElementById('user-input').value = question;
             sendMessage();
+        }
+
+        // 修改3：随机显示猜你想问的逻辑
+        function appendSuggestions() {
+            const content = document.getElementById('ai-content');
+            
+            // 移除旧的建议框
+            const oldBox = content.querySelector('.suggestion-box');
+            if (oldBox) oldBox.remove();
+
+            // 随机抽取3个不重复的问题
+            const shuffled = [...presetLibrary].sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, 3);
+
+            const boxDiv = document.createElement('div');
+            boxDiv.className = 'suggestion-box';
+            
+            let html = `<div class="suggestion-title">💡 猜你想问</div><div class="suggestion-list">`;
+            selected.forEach(q => {
+                html += `<div class="suggestion-item" onclick="quickAsk('${q}')">${q}</div>`;
+            });
+            html += `</div>`;
+            
+            boxDiv.innerHTML = html;
+            content.appendChild(boxDiv);
+            content.scrollTop = content.scrollHeight;
         }
 
         function sendMessage() {
@@ -556,7 +607,11 @@
 
                 while (true) {
                     const { done, value } = await reader.read();
-                    if (done) break;
+                    if (done) {
+                        // AI 回复完毕，添加建议
+                        appendSuggestions();
+                        break;
+                    }
 
                     const chunk = decoder.decode(value, { stream: true });
                     const lines = chunk.split('\n');
@@ -580,9 +635,7 @@
                                     msgDiv.innerHTML = marked.parse(fullText);
                                     content.scrollTop = content.scrollHeight;
                                 }
-                            } catch (e) {
-                                // 忽略解析错误
-                            }
+                            } catch (e) {}
                         }
                     }
                 }
@@ -590,6 +643,11 @@
                 msgDiv.innerHTML = "❌ 节气专家连线失败：" + e.message;
             }
         }
+
+        /* --- 页面加载初始化 --- */
+        window.onload = () => {
+            appendSuggestions();
+        };
 
         /* --- 浮动助手逻辑 --- */
         const floatingWidget = document.getElementById('floating-widget');
@@ -642,7 +700,6 @@
 
         function updateBubble(newText) {
             if (bubble.innerText === newText) return;
-            
             bubble.classList.add('fade-out');
             setTimeout(() => {
                 bubble.innerText = newText;
