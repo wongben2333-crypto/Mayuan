@@ -84,6 +84,29 @@
         .flex-box .image { width: 50%; }
         .flex-box img { width: 100%; border-radius: 8px; }
 
+        /* 气候变化部分 - 修改为行布局 */
+        .weather-row { 
+            display: flex; 
+            align-items: center; 
+            gap: 50px; 
+            margin-bottom: 60px; 
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+        .weather-row:hover { transform: translateX(10px); }
+        .weather-image { 
+            width: 550px; 
+            height: 350px; 
+            background-size: cover; 
+            background-position: center; 
+            border-radius: 12px; 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+        .weather-text { flex: 1; }
+        .weather-text h4 { font-size: 24px; color: #2d5a27; margin-top: 0; margin-bottom: 15px; }
+        .weather-text p { font-size: 16px; color: #555; line-height: 1.8; }
+
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         .card { background: #fdfdfd; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #eee; }
         .card-img-placeholder { width: 100%; height: 150px; background-size: cover; background-position: center; border-radius: 4px; margin-bottom: 10px; }
@@ -224,7 +247,7 @@
         .floating-icon {
             width: 60px;
             height: 60px;
-            background: #3d7a35;
+            background: #E2BB63; /* 已修改为按钮色 */
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -240,12 +263,12 @@
         .ask-bubble {
             margin-right: 15px;
             background: #fff;
-            border: 1px solid #3d7a35;
+            border: 1px solid #E2BB63; /* 已修改为按钮色 */
             padding: 10px 18px;
             border-radius: 20px 20px 0 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             font-size: 14px;
-            color: #3d7a35;
+            color: #E2BB63; /* 已修改为按钮色 */
             white-space: nowrap;
             transition: opacity 0.4s ease; /* 渐变过渡效果 */
             cursor: pointer;
@@ -314,26 +337,36 @@
 
             <section id="weather">
                 <h2 class="section-title">气候变化</h2>
-                <div class="grid-4">
-                    <div class="card">
-                        <div class="card-img-placeholder" style="background-image: url('./images/weather1.jpg'); background-color: #ddd;"></div>
-                        <h4>气温回升</h4>
-                        <p><small>气温开始趋于上升。</small></p>
+                
+                <div class="weather-row">
+                    <div class="weather-image" style="background-image: url('./images/weather1.jpg'); background-color: #ddd;"></div>
+                    <div class="weather-text">
+                        <h4>气温回升，告别极寒</h4>
+                        <p>立春不仅是农历上的转折，更是大自然温度计的跃动。随着太阳直射点的北移，虽然北方依然寒气未消，但南方已能明显感觉到空气中寒意的褪去。微风不再凛冽刺骨，暖意开始在阳光下悄然滋生，为万物的复苏预留了温暖的底色。</p>
                     </div>
-                    <div class="card">
-                        <div class="card-img-placeholder" style="background-image: url('./images/weather2.jpg'); background-color: #ddd;"></div>
-                        <h4>大地解冻</h4>
-                        <p><small>冰雪融化，土壤苏醒。</small></p>
+                </div>
+
+                <div class="weather-row">
+                    <div class="weather-image" style="background-image: url('./images/weather2.jpg'); background-color: #ddd;"></div>
+                    <div class="weather-text">
+                        <h4>霜枝待暖，冰散春归</h4>
+                        <p>冬寒渐退，地气初升。沉睡一冬的冻土顺着暖意，由表及里缓缓舒活。河湖冰封尽数消融，往日凝寒如镜的厚冰，化作涓涓细流，漫过广袤沃土。晴空枝静，寒尽新生。这是大地苏醒的呼吸，是原野重焕生机的序章，岁岁耕耘，自此启程。</p>
                     </div>
-                    <div class="card">
-                        <div class="card-img-placeholder" style="background-image: url('./images/weather3.jpg'); background-color: #ddd;"></div>
-                        <h4>万物萌发</h4>
-                        <p><small>草木萌动，春意初现。</small></p>
+                </div>
+
+                <div class="weather-row">
+                    <div class="weather-image" style="background-image: url('./images/weather3.jpg'); background-color: #ddd;"></div>
+                    <div class="weather-text">
+                        <h4>万物萌发，绿意之始</h4>
+                        <p>这种变化最初是细微的，可能是杨柳枝头那一抹似有若无的鹅黄，也可能是石缝间钻出的第一根嫩芽。春意如同在宣纸上晕开的水墨，从南方蔓延向北，草木感知到了季风的问候，整装待发，准备迎接一场名为“盛放”的盛宴。</p>
                     </div>
-                    <div class="card">
-                        <div class="card-img-placeholder" style="background-image: url('./images/weather4.jpg'); background-color: #ddd;"></div>
-                        <h4>日照延长</h4>
-                        <p><small>白昼增长，阳光和煦。</small></p>
+                </div>
+
+                <div class="weather-row" style="margin-bottom: 0;">
+                    <div class="weather-image" style="background-image: url('./images/weather4.jpg'); background-color: #ddd;"></div>
+                    <div class="weather-text">
+                        <h4>日照延长，追逐光明</h4>
+                        <p>自此日起，白昼的长度开始从冬至后的平稳中加速增长。光合作用的时间变长，阳光的角度也变得柔和而明亮。延长的日照不仅为作物提供了能量储备，也极大地改善了生物的生理节奏。此时的人们，总爱在夕阳余晖下多停留片刻，感受光阴的馈赠。</p>
                     </div>
                 </div>
             </section>
@@ -519,7 +552,7 @@
         const questionMap = {
             'origin': '猜你想问：立春这个说法是从什么时候开始的？',
             'weather': '猜你想问：立春后还会冷吗？什么是倒春寒？',
-            'three': '猜你想问：三候中的“鱼陟负冰”是什么意思？',
+            'three': '猜你想问：立春三候中的“鱼陟负冰”是什么意思？',
             'custom': '猜你想问：立春还有哪些习俗？',
             'diet': '猜你想问：立春除了吃春笋还要吃什么？'
         };
