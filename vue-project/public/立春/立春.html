@@ -23,8 +23,6 @@
 
     html {
       font-size: 16px;
-      /* ★ 关键：proximity 模式，仅在接近吸附点时触发，不强制锁定滚动 */
-      scroll-snap-type: y proximity;
       scroll-behavior: smooth;
     }
 
@@ -47,8 +45,6 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
       will-change: transform;
     }
 
@@ -201,11 +197,9 @@
       pointer-events: none;
     }
 
-    /* ─── ② 内容区包装容器（吸附锚点 2） ───────────── */
+    /* ─── ② 内容区包装容器 ───────────── */
     .content-wrapper {
       position: relative;
-      scroll-snap-align: start;
-      scroll-snap-stop: normal;
       will-change: transform;
     }
 
@@ -573,7 +567,6 @@
 </head>
 <body>
 
-  <!-- ① 全屏封面 -->
   <header id="cover">
     <div class="corner tl"></div>
     <div class="corner tr"></div>
@@ -605,10 +598,8 @@
     </div>
   </header>
 
-  <!-- ② 内容区（吸附锚点 2） -->
   <div class="content-wrapper" id="content-wrapper">
 
-    <!-- 导航栏 sticky -->
     <nav class="navbar" id="navbar">
       <div class="nav-logo">立<em>春</em></div>
       <ul class="nav-links">
@@ -622,12 +613,10 @@
 
     <main class="main-content">
 
-      <!-- ── 节气简介 ───────────────────────────────── -->
       <section id="intro" style="padding-top: 24px;">
         <p class="section-label reveal">节气释义</p>
         <h2 class="section-title reveal">春回大地，万象更新</h2>
 
-        <!-- 图文：立春由来 -->
         <div class="feature-item reveal" style="margin-top: 32px; margin-bottom: 40px;">
           <div class="feature-text">
             <h4>立春的由来</h4>
@@ -638,7 +627,6 @@
 
         <div class="ornament-divider reveal"><span>气 候 变 化</span></div>
 
-        <!-- 图文：四段气候 -->
         <div class="feature-grid">
           <div class="feature-item reveal">
             <div class="feature-img" style="background-image: url('./images/weather1.jpg');"></div>
@@ -674,7 +662,6 @@
         </div>
       </section>
 
-      <!-- ── 三候 ──────────────────────────────────── -->
       <section id="phenology">
         <div class="ornament-divider reveal"><span>三 候</span></div>
         <p class="section-label reveal">节气物候</p>
@@ -702,7 +689,6 @@
         </div>
       </section>
 
-      <!-- ── 诗词 ──────────────────────────────────── -->
       <section id="verse">
         <div class="ornament-divider reveal"><span>诗 词</span></div>
         <p class="section-label reveal">古人之咏</p>
@@ -719,7 +705,6 @@
         </div>
       </section>
 
-      <!-- ── 时令 ──────────────────────────────────── -->
       <section id="diet">
         <div class="ornament-divider reveal"><span>时 令</span></div>
         <p class="section-label reveal">应时而食</p>
@@ -759,7 +744,6 @@
         </div>
       </section>
 
-      <!-- ── 习俗 ──────────────────────────────────── -->
       <section id="customs">
         <div class="ornament-divider reveal"><span>习 俗</span></div>
         <p class="section-label reveal">传统风俗</p>
@@ -789,15 +773,12 @@
     <footer>
       立春 &ensp;·&ensp; 二十四节气 &ensp;·&ensp; 东风解冻，蛰虫始振，鱼陟负冰
     </footer>
-  </div><!-- /.content-wrapper -->
-
-<script>
+  </div><script>
 /**
- * ─── Scroll Snap 无抖动核心逻辑 ─────────────────────────
+ * ─── 滚动优化 ──────────────────────────────────────────
  *
- * 1. CSS scroll-snap-type: y proximity  ── 原生吸附，合成器线程
- * 2. IntersectionObserver 替代 scroll 事件  ── 零强制布局
- * 3. Navbar position:sticky + translateZ(0)  ── 合成层，不触发重排
+ * 1. IntersectionObserver 替代 scroll 事件
+ * 2. Navbar position:sticky + translateZ(0) ── 合成层，不触发重排
  * ──────────────────────────────────────────────────────────
  */
 
