@@ -32,15 +32,19 @@
                 2px 2px 4px rgba(0, 0, 0, 0.5), 
                 0px 0px 20px rgba(0, 0, 0, 0.3),
                 2px 2px 10px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            padding: 0 20px;
         }
 
-        /* 3. 新增：侧边透明衔接层 */
+        /* 3. 侧边透明衔接层 */
         .main-wrapper {
             background: rgba(255, 255, 255, 0.5); 
         }
 
+        /* 优化：将固定宽度改为 max-width 适配移动端 */
         .container { 
-            width: 1200px; 
+            max-width: 1200px; 
+            width: 100%;
             margin: 0 auto; 
             background: rgba(255, 255, 255, 0.95); 
             padding: 20px 40px;
@@ -56,9 +60,10 @@
             z-index: 1000; 
         }
 
-        /* 导航栏内容宽度限制 - 优化字号与间距 */
+        /* 导航栏内容宽度限制 */
         .nav-content {
-            width: 1200px;
+            max-width: 1200px;
+            width: 100%;
             margin: 0 auto;
             padding: 20px 40px;
             box-sizing: border-box;
@@ -66,12 +71,13 @@
         }
 
         nav a { 
-            margin: 0 30px; /* 增大间距 */
+            margin: 0 30px; 
             text-decoration: none; 
             color: #666; 
-            font-size: 18px; /* 调大字号 */
+            font-size: 18px; 
             font-weight: bold; 
             transition: color 0.3s ease;
+            display: inline-block;
         }
         
         nav a:hover { color: #2d5a27; }
@@ -84,7 +90,7 @@
         .flex-box .image { width: 50%; }
         .flex-box img { width: 100%; border-radius: 8px; }
 
-        /* 气候变化部分 - 修改为行布局 */
+        /* 气候变化部分 - 行布局 */
         .weather-row { 
             display: flex; 
             align-items: center; 
@@ -107,10 +113,6 @@
         .weather-text h4 { font-size: 24px; color: #2d5a27; margin-top: 0; margin-bottom: 15px; }
         .weather-text p { font-size: 16px; color: #555; line-height: 1.8; }
 
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        .card { background: #fdfdfd; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #eee; }
-        .card-img-placeholder { width: 100%; height: 150px; background-size: cover; background-position: center; border-radius: 4px; margin-bottom: 10px; }
-
         /* 习俗/饮食图文通用样式 */
         .custom-link { text-decoration: none; color: inherit; display: block; }
         .custom-item { 
@@ -123,7 +125,6 @@
             border-radius: 8px; 
             transition: all 0.3s ease;
         }
-        /* 悬停效果：提示可点击 */
         .custom-link:hover .custom-item {
             background: #f0f5ee;
             transform: translateY(-2px);
@@ -141,9 +142,10 @@
 
         footer { background: #333; }
         .footer-content {
-            width: 1200px;
+            max-width: 1200px;
+            width: 100%;
             margin: 0 auto;
-            padding: 40px 40px;
+            padding: 40px;
             box-sizing: border-box;
             text-align: center;
             color: rgba(255,255,255,0.6); 
@@ -166,7 +168,7 @@
             padding: 20px;
             overflow-y: auto;
             display: flex;
-            flex-direction: column; /* 确保气泡垂直排列 */
+            flex-direction: column; 
         }
 
         .assistant-footer {
@@ -183,6 +185,7 @@
             border: 1px solid #ddd;
             border-radius: 6px;
             outline: none;
+            min-width: 0; /* 修复 flex 下 input 溢出 */
         }
 
         .assistant-footer button {
@@ -193,39 +196,40 @@
             border-radius: 6px;
             cursor: pointer;
             transition: background 0.3s;
+            white-space: nowrap;
         }
         
         .assistant-footer button:hover { background: #ebc979; }
 
-        /* 修改：聊天气泡样式 */
+        /* 聊天气泡样式 */
         .msg { 
             margin-bottom: 15px; 
             padding: 12px 16px; 
             border-radius: 8px; 
             font-size: 15px; 
             line-height: 1.6; 
-            width: fit-content;      /* 1. 自适应字数长度 */
-            max-width: 60%;          /* 2. 气泡长度最长不超过界面的3/5 */
-            word-wrap: break-word;   /* 防止长英文字符溢出 */
+            width: fit-content;      
+            max-width: 60%;          
+            word-wrap: break-word;   
         }
 
         .msg.user { 
             background: #e8f5e9; 
             color: #2d5a27; 
-            margin-left: auto;       /* 将气泡推向右侧 */
-            text-align: left;        /* 内部文字左对齐 */
+            margin-left: auto;       
+            text-align: left;        
         }
 
         .msg.ai { 
             background: #fff; 
             border: 1px solid #eee; 
-            margin-right: auto;      /* 确保靠左排列 */
+            margin-right: auto;      
             box-shadow: 0 2px 5px rgba(0,0,0,0.02); 
         }
 
         .loading-dots { color: #999; font-style: italic; }
 
-        /* --- 新增：悬浮图标与气泡样式 --- */
+        /* 悬浮图标与气泡样式 */
         .floating-widget {
             position: fixed;
             bottom: 40px;
@@ -247,7 +251,7 @@
         .floating-icon {
             width: 60px;
             height: 60px;
-            background: #E2BB63; /* 已修改为按钮色 */
+            background: #E2BB63; 
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -263,19 +267,65 @@
         .ask-bubble {
             margin-right: 15px;
             background: #fff;
-            border: 1px solid #E2BB63; /* 已修改为按钮色 */
+            border: 1px solid #E2BB63; 
             padding: 10px 18px;
             border-radius: 20px 20px 0 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             font-size: 14px;
-            color: #E2BB63; /* 已修改为按钮色 */
+            color: #E2BB63; 
             white-space: nowrap;
-            transition: opacity 0.4s ease; /* 渐变过渡效果 */
+            transition: opacity 0.4s ease; 
             cursor: pointer;
         }
 
         .ask-bubble.fade-out {
             opacity: 0;
+        }
+
+        /* === 移动端适配媒体查询 === */
+        @media (max-width: 768px) {
+            /* 封面字体在电脑端保持不变，移动端适当缩小以防溢出 */
+            header h1 { font-size: 2.5rem !important; }
+            header p { font-size: 1.1rem !important; }
+
+            /* 容器间距缩小 */
+            .container { padding: 15px 20px; }
+            
+            /* 导航栏改为可左右滑动 */
+            nav { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .nav-content { 
+                width: max-content; 
+                padding: 15px 20px; 
+                display: flex;
+                gap: 5px;
+            }
+            nav a { margin: 0 10px; font-size: 16px; white-space: nowrap; }
+
+            /* 通用：Flex 布局转为垂直排列 */
+            .flex-box, .weather-row, .custom-item { 
+                flex-direction: column; 
+                gap: 20px; 
+                text-align: center; 
+            }
+            .flex-box .text, .flex-box .image, .weather-image, .custom-img { 
+                width: 100% !important; 
+            }
+            .weather-image { height: 220px; }
+            .custom-img { height: 180px; }
+
+            /* 气候变化部分取消悬停平移效果 */
+            .weather-row:hover { transform: none; }
+
+            /* 助手部分气泡宽度放宽 */
+            .msg { max-width: 85%; }
+            .assistant-container { height: 400px; }
+
+            /* 立春三候改为竖向排列 */
+            .grid-3 { flex-direction: column; gap: 30px; }
+
+            /* 悬浮助手气泡在手机上隐藏，仅保留图标 */
+            .ask-bubble { display: none; }
+            .floating-widget { right: 20px; bottom: 20px; }
         }
     </style>
 
@@ -314,7 +364,7 @@
                         <button onclick="sendMessage()">咨询专家</button>
                     </div>
                 </div>
-                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                     <button class="btn" style="background: #E2BB63; cursor: pointer; border: none;" onclick="quickAsk('立春吃什么最好？')">🍱 立春食补</button>
                     <button class="btn" style="background: #E2BB63; cursor: pointer; border: none;" onclick="quickAsk('立春有什么文化内涵？')">📜 文化内涵</button>
                     <button class="btn" style="background: #E2BB63; cursor: pointer; border: none;" onclick="quickAsk('立春的气候特点是什么？')">🌤️ 气候特点</button>
@@ -541,14 +591,12 @@
             }
         }
 
-        /* --- 新增：浮动助手逻辑 --- */
-
+        /* --- 浮动助手逻辑 --- */
         const floatingWidget = document.getElementById('floating-widget');
         const bubble = document.getElementById('bubble-text');
         const assistantSection = document.getElementById('assistant');
         const headerSection = document.querySelector('header');
 
-        // 不同板块对应的“猜你想问”内容
         const questionMap = {
             'origin': '猜你想问：立春这个说法是从什么时候开始的？',
             'weather': '猜你想问：立春后还会冷吗？什么是倒春寒？',
@@ -557,25 +605,22 @@
             'diet': '猜你想问：立春除了吃春笋还要吃什么？'
         };
 
-        // 用于追踪页面状态
         let isHeaderVisible = true;
 
-        // 1. 监测“封面页”是否在屏幕内
         const headerObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 isHeaderVisible = entry.isIntersecting;
                 if (isHeaderVisible) {
-                    floatingWidget.classList.remove('visible'); // 封面页隐藏
+                    floatingWidget.classList.remove('visible');
                 }
             });
         }, { threshold: 0.1 });
         headerObserver.observe(headerSection);
 
-        // 2. 监测“节气助手”是否在屏幕内
         const assistantObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting && !isHeaderVisible) {
-                    floatingWidget.classList.add('visible'); // 不在封面且不在助手页时显示
+                    floatingWidget.classList.add('visible');
                 } else {
                     floatingWidget.classList.remove('visible');
                 }
@@ -583,7 +628,6 @@
         }, { threshold: 0.1 });
         assistantObserver.observe(assistantSection);
 
-        // 3. 监测当前滚动到哪个内容板块
         const contentObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && questionMap[entry.target.id]) {
@@ -596,7 +640,6 @@
             contentObserver.observe(section);
         });
 
-        // 4. 渐变更新气泡文字
         function updateBubble(newText) {
             if (bubble.innerText === newText) return;
             
@@ -604,10 +647,9 @@
             setTimeout(() => {
                 bubble.innerText = newText;
                 bubble.classList.remove('fade-out');
-            }, 400); // 等待淡出动画完成后修改文字并淡入
+            }, 400); 
         }
 
-        // 5. 点击气泡/图标跳转
         function scrollToAssistant() {
             assistantSection.scrollIntoView({ behavior: 'smooth' });
         }
@@ -617,7 +659,7 @@
             scrollToAssistant();
             setTimeout(() => {
                 quickAsk(q);
-            }, 600); // 稍微等待滚动完成后再发送
+            }, 600); 
         }
     </script>
 </body>
