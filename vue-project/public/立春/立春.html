@@ -1,723 +1,842 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>节气·立春 - 专题页面</title>
-    <style>
-        /* 1. 背景大图设置 */
-        body { 
-            font-family: "Microsoft YaHei", sans-serif; 
-            margin: 0; 
-            padding: 0; 
-            color: #333; 
-            line-height: 1.6; 
-            background-image: url('./images/background_large.jpg'); 
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed; 
-            background-repeat: no-repeat;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>立春</title>
+  <style>
+    /* ─── Reset & Variables ─────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* 2. 首屏高度与渐变滤镜设置 */
-        header { 
-            height: 100vh; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.5) 100%);
-            color: white; 
-            text-shadow: 
-                2px 2px 4px rgba(0, 0, 0, 0.5), 
-                0px 0px 20px rgba(0, 0, 0, 0.3),
-                2px 2px 10px rgba(0, 0, 0, 0.8);
-            text-align: center;
-            padding: 0 20px;
-        }
+    :root {
+      --ink:        #1a1208;
+      --paper:      #faf6ee;
+      --gold:       #c8922a;
+      --gold-light: #e8c97a;
+      --green:      #4a7c59;
+      --green-light:#7ab893;
+      --red:        #b83232;
+      --mist:       rgba(250,246,238,0.85);
+      --nav-h:      56px;
+      --snap-ease:  cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-        /* 3. 侧边透明衔接层 */
-        .main-wrapper {
-            background: rgba(255, 255, 255, 0.5); 
-        }
+    html {
+      font-size: 16px;
+      /* ★ 关键：proximity 模式，仅在接近吸附点时触发，不强制锁定滚动 */
+      scroll-snap-type: y proximity;
+      scroll-behavior: smooth;
+    }
 
-        .container { 
-            max-width: 1200px; 
-            width: 100%;
-            margin: 0 auto; 
-            background: rgba(255, 255, 255, 0.95); 
-            padding: 20px 40px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            box-sizing: border-box; 
-        }
-        
-        nav { 
-            background: #fff; 
-            border-bottom: 1px solid #eee; 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-        }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Noto Serif SC', 'Songti SC', 'SimSun', Georgia, serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
 
-        .nav-content {
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 20px 40px;
-            box-sizing: border-box;
-            text-align: center;
-        }
+    /* ─── ① 全屏封面 Header ─────────────────────────── */
+    header {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      will-change: transform;
+    }
 
-        nav a { 
-            margin: 0 30px; 
-            text-decoration: none; 
-            color: #666; 
-            font-size: 18px; 
-            font-weight: bold; 
-            transition: color 0.3s ease;
-            display: inline-block;
-        }
-        
-        nav a:hover { color: #2d5a27; }
+    /* 背景：先叠渐变遮罩，再铺底图，过渡自然不刺眼 */
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%,
+          rgba(200,146,42,0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 80% at 20% 80%,
+          rgba(74,124,89,0.15) 0%, transparent 60%),
+        linear-gradient(165deg,
+          rgba(245,239,227,0.85) 0%,
+          rgba(250,246,238,0.92) 50%,
+          rgba(240,236,224,0.95) 100%),
+        url('./images/background_large.jpg') center / cover no-repeat;
+      z-index: 0;
+    }
 
-        section { padding: 60px 0; border-bottom: 1px solid #eee; }
-        .section-title { text-align: center; font-size: 28px; margin-bottom: 40px; color: #d4a017; }
+    /* 装饰圆环 */
+    .cover-circle {
+      position: absolute;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    .cover-circle.c1 {
+      width: 520px; height: 520px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(200,146,42,0.2);
+    }
+    .cover-circle.c2 {
+      width: 380px; height: 380px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(200,146,42,0.35);
+    }
+    .cover-circle.c3 {
+      width: 240px; height: 240px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(200,146,42,0.06);
+      border: 1px solid rgba(200,146,42,0.5);
+    }
 
-        .flex-box { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
-        .flex-box .text { width: 45%; }
-        .flex-box .image { width: 50%; }
-        .flex-box img { width: 100%; border-radius: 8px; }
+    /* 角落装饰线 */
+    .corner {
+      position: absolute;
+      width: 60px; height: 60px;
+      z-index: 2;
+    }
+    .corner::before, .corner::after {
+      content: '';
+      position: absolute;
+      background: var(--gold);
+      opacity: 0.6;
+    }
+    .corner::before { width: 100%; height: 1px; top: 0; left: 0; }
+    .corner::after  { width: 1px; height: 100%; top: 0; left: 0; }
+    .corner.tl { top: 32px; left: 32px; }
+    .corner.tr { top: 32px; right: 32px; transform: scaleX(-1); }
+    .corner.bl { bottom: 32px; left: 32px; transform: scaleY(-1); }
+    .corner.br { bottom: 32px; right: 32px; transform: scale(-1); }
 
-        .weather-row { 
-            display: flex; 
-            align-items: center; 
-            gap: 50px; 
-            margin-bottom: 60px; 
-            padding: 20px;
-            transition: transform 0.3s ease;
-        }
-        .weather-row:hover { transform: translateX(10px); }
-        .weather-image { 
-            width: 550px; 
-            height: 350px; 
-            background-size: cover; 
-            background-position: center; 
-            border-radius: 12px; 
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-        }
-        .weather-text { flex: 1; }
-        .weather-text h4 { font-size: 24px; color: #2d5a27; margin-top: 0; margin-bottom: 15px; }
-        .weather-text p { font-size: 16px; color: #555; line-height: 1.8; }
+    /* 封面主体文字 */
+    .cover-content {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      text-align: center;
+    }
 
-        .custom-link { text-decoration: none; color: inherit; display: block; }
-        .custom-item { 
-            display: flex; 
-            align-items: center; 
-            gap: 30px; 
-            margin-bottom: 30px; 
-            background: #fafafa; 
-            padding: 20px; 
-            border-radius: 8px; 
-            transition: all 0.3s ease;
-        }
-        .custom-link:hover .custom-item {
-            background: #f0f5ee;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
+    .cover-sub {
+      font-size: 0.78rem;
+      letter-spacing: 0.5em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      opacity: 0.8;
+    }
 
-        .custom-img { width: 300px; height: 180px; background-size: cover; background-position: center; border-radius: 6px; flex-shrink: 0; }
-        .custom-text { flex: 1; }
-        .custom-text h4 { margin-top: 0; color: #2d5a27; font-size: 20px; }
+    .cover-title {
+      font-size: clamp(5rem, 14vw, 9rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0.15em;
+      color: var(--ink);
+      text-shadow: 2px 4px 24px rgba(200,146,42,0.15);
+      animation: fadeUp 1s var(--snap-ease) both;
+    }
+    .cover-title span {
+      display: inline-block;
+      animation: fadeUp 1s var(--snap-ease) both;
+    }
+    .cover-title span:nth-child(2) { animation-delay: 0.1s; }
 
-        .grid-3 { display: flex; justify-content: space-around; text-align: center; }
-        .circle-placeholder { width: 160px; height: 160px; border-radius: 50%; background-size: cover; background-position: center; margin: 0 auto 10px; border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .cover-divider {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+      margin: 20px auto;
+    }
 
-        .btn { display: inline-block; padding: 8px 25px; background: #E2BB63; color: white; text-decoration: none; border-radius: 20px; font-size: 13px; margin-top: 15px; }
+    .cover-date {
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      color: var(--green);
+      animation: fadeUp 1s 0.3s var(--snap-ease) both;
+    }
 
-        footer { background: #333; }
-        .footer-content {
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 40px;
-            box-sizing: border-box;
-            text-align: center;
-            color: rgba(255,255,255,0.6); 
-            font-size: 13px;
-        }
+    /* 向下滚动提示 */
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      animation: fadeIn 1s 1.2s forwards;
+    }
+    .scroll-hint span {
+      font-size: 0.68rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+    }
+    .scroll-hint-arrow {
+      width: 20px; height: 20px;
+      border-right: 1px solid var(--gold);
+      border-bottom: 1px solid var(--gold);
+      transform: rotate(45deg);
+      animation: bounce 2s 1.2s ease-in-out infinite;
+    }
 
-        /* 节气助手部分样式 */
-        .assistant-container {
-            background: #fcfaf2;
-            border: 1px solid #e0d5b1;
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 550px; /* 增加一点高度容纳建议 */
-        }
+    /* 浮动花瓣 */
+    .petal {
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0.15;
+      z-index: 1;
+      animation: drift linear infinite;
+      pointer-events: none;
+    }
 
-        /* 修改1：背景改为白色偏黄 */
-        .assistant-body {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column; 
-            background: #f6f6f3; 
-        }
+    /* ─── ② 内容区包装容器（吸附锚点 2） ───────────── */
+    .content-wrapper {
+      position: relative;
+      scroll-snap-align: start;
+      scroll-snap-stop: normal;
+      will-change: transform;
+    }
 
-        .assistant-footer {
-            padding: 15px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 10px;
-            background: #fff;
-        }
+    /* ─── 导航栏：sticky + GPU 合成层，零重排 ────────── */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: var(--mist);
+      backdrop-filter: blur(12px) saturate(1.4);
+      -webkit-backdrop-filter: blur(12px) saturate(1.4);
+      border-bottom: 1px solid rgba(200,146,42,0.2);
+      transform: translateZ(0);          /* ★ 合成层，避免重排 */
+      transition: box-shadow 0.3s ease, background 0.3s ease;
+    }
+    .navbar.scrolled {
+      box-shadow: 0 2px 20px rgba(26,18,8,0.08);
+      background: rgba(250,246,238,0.95);
+    }
 
-        .assistant-footer input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            outline: none;
-            min-width: 0;
-        }
+    .nav-logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: var(--ink);
+    }
+    .nav-logo em {
+      font-style: normal;
+      color: var(--gold);
+    }
 
-        .assistant-footer button {
-            padding: 0 25px;
-            background: #E2BB63;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.3s;
-            white-space: nowrap;
-        }
-        
-        .assistant-footer button:hover { background: #ebc979; }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.82rem;
+      letter-spacing: 0.2em;
+      color: var(--ink);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0; right: 0;
+      height: 1px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s var(--snap-ease);
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { transform: scaleX(1); }
 
-        .msg { 
-            margin-bottom: 15px; 
-            padding: 12px 16px; 
-            border-radius: 8px; 
-            font-size: 15px; 
-            line-height: 1.6; 
-            width: fit-content;      
-            max-width: 60%;          
-            word-wrap: break-word;   
-        }
+    /* ─── 正文排版基础 ──────────────────────────────── */
+    .main-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 80px 40px 120px;
+    }
 
-        .msg.user { 
-            background: #ede8cf; 
-            color: #595a27; 
-            margin-left: auto;       
-            text-align: left;        
-        }
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.5em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
 
-        .msg.ai { 
-            background: #fff; 
-            border: 1px solid #eee; 
-            margin-right: auto;      
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02); 
-        }
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
 
-        /* 修改2：猜你想问样式 */
-        .suggestion-box {
-            margin-bottom: 20px;
-            padding-left: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .suggestion-title {
-            font-size: 13px;
-            color: #998a6a;
-            font-weight: bold;
-        }
-        .suggestion-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .suggestion-item {
-            font-size: 13px;
-            color: #E2BB63;
-            background: #fff;
-            border: 1px solid #E2BB63;
-            padding: 4px 12px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .suggestion-item:hover {
-            background: #E2BB63;
-            color: #fff;
-        }
+    .prose {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: #3a3020;
+      margin-bottom: 20px;
+    }
 
-        .loading-dots { color: #999; font-style: italic; }
+    /* 装饰分割线 */
+    .ornament-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 56px 0;
+    }
+    .ornament-divider::before, .ornament-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(200,146,42,0.4));
+    }
+    .ornament-divider::after {
+      background: linear-gradient(to left, transparent, rgba(200,146,42,0.4));
+    }
+    .ornament-divider span {
+      font-size: 1rem;
+      color: var(--gold);
+      opacity: 0.7;
+    }
 
-        .floating-widget {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            display: flex;
-            align-items: center;
-            flex-direction: row-reverse;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.5s ease;
-        }
+    /* ─── 图文组合模块 ──────────────────────────────── */
+    .feature-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      margin: 40px 0;
+    }
 
-        .floating-widget.visible {
-            opacity: 1;
-            visibility: visible;
-        }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
 
-        .floating-icon {
-            width: 60px;
-            height: 60px;
-            background: #E2BB63; 
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
-            font-size: 24px;
-        }
+    .feature-item.reverse {
+      flex-direction: row-reverse;
+    }
 
-        .floating-icon:hover { transform: scale(1.1); }
+    .feature-img {
+      flex: 1;
+      height: 280px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 8px;
+      box-shadow: 0 12px 32px rgba(26,18,8,0.08);
+      border: 1px solid rgba(200,146,42,0.2);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s var(--snap-ease), box-shadow 0.4s;
+    }
+    .feature-img:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 48px rgba(26,18,8,0.12);
+    }
+    .feature-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      background: linear-gradient(to bottom, transparent 60%, rgba(200,146,42,0.08));
+      pointer-events: none;
+    }
 
-        .ask-bubble {
-            margin-right: 15px;
-            background: #fff;
-            border: 1px solid #E2BB63; 
-            padding: 10px 18px;
-            border-radius: 20px 20px 0 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            font-size: 14px;
-            color: #E2BB63; 
-            white-space: nowrap;
-            transition: opacity 0.4s ease; 
-            cursor: pointer;
-        }
+    .feature-text {
+      flex: 1;
+    }
+    .feature-text h4 {
+      font-size: 1.35rem;
+      color: var(--ink);
+      margin-bottom: 16px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+    .feature-text p {
+      font-size: 0.98rem;
+      line-height: 1.9;
+      color: #4a4030;
+    }
 
-        .ask-bubble.fade-out {
-            opacity: 0;
-        }
+    /* ─── 物候三候卡片 ──────────────────────────────── */
+    .phenology-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin: 40px 0;
+    }
 
-        /* === 移动端适配媒体查询 === */
-        @media (max-width: 768px) {
-            header h1 { font-size: 2.5rem !important; }
-            header p { font-size: 1.1rem !important; }
-            .container { padding: 15px 20px; }
-            nav { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-            .nav-content { 
-                width: max-content; 
-                padding: 15px 20px; 
-                display: flex;
-                gap: 5px;
-            }
-            nav a { margin: 0 10px; font-size: 16px; white-space: nowrap; }
-            .flex-box, .weather-row, .custom-item { 
-                flex-direction: column; 
-                gap: 20px; 
-                text-align: center; 
-            }
-            .flex-box .text, .flex-box .image, .weather-image, .custom-img { 
-                width: 100% !important; 
-            }
-            .weather-image { height: 220px; }
-            .custom-img { height: 180px; }
-            .weather-row:hover { transform: none; }
-            .msg { max-width: 85%; }
-            .assistant-container { height: 450px; }
-            .grid-3 { flex-direction: column; gap: 30px; }
-            .ask-bubble { display: none; }
-            .floating-widget { right: 20px; bottom: 20px; }
-        }
-    </style>
+    .phenology-card {
+      padding: 0 0 24px;
+      border: 1px solid rgba(200,146,42,0.2);
+      background: rgba(255,255,255,0.5);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform 0.3s var(--snap-ease), box-shadow 0.3s;
+    }
+    .phenology-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(200,146,42,0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .phenology-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(200,146,42,0.12);
+    }
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    /* 卡片内配图 */
+    .card-photo {
+      width: 100%;
+      height: 150px;
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(200,146,42,0.15);
+      position: relative;
+      z-index: 1;
+      transition: transform 0.4s var(--snap-ease);
+    }
+    .phenology-card:hover .card-photo {
+      transform: scale(1.04);
+    }
+
+    .card-num {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: rgba(200,146,42,0.15);
+      line-height: 1;
+      margin: 0 20px 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--ink);
+      margin: 0 20px 8px;
+      position: relative;
+      z-index: 1;
+    }
+    .card-desc {
+      font-size: 0.82rem;
+      color: #6a5a40;
+      line-height: 1.7;
+      margin: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── 诗词引用块 ─────────────────────────────────── */
+    .verse-block {
+      margin: 48px 0;
+      padding: 36px 40px;
+      border-left: 3px solid var(--gold);
+      background: linear-gradient(to right, rgba(200,146,42,0.06), transparent);
+      position: relative;
+    }
+    .verse-block::before {
+      content: '❝';
+      position: absolute;
+      top: 12px; left: 14px;
+      font-size: 2rem;
+      color: var(--gold);
+      opacity: 0.3;
+      line-height: 1;
+    }
+    .verse-text {
+      font-size: 1.15rem;
+      line-height: 2.2;
+      letter-spacing: 0.12em;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+    .verse-source {
+      font-size: 0.78rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+    }
+
+    /* ─── 时令食单 ───────────────────────────────────── */
+    .food-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 24px 0;
+    }
+    .food-tag {
+      padding: 7px 18px;
+      border: 1px solid rgba(74,124,89,0.35);
+      background: rgba(74,124,89,0.06);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      color: var(--green);
+      transition: all 0.2s;
+      cursor: default;
+    }
+    .food-tag:hover {
+      background: rgba(74,124,89,0.14);
+      border-color: var(--green);
+    }
+
+    /* ─── Footer ─────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 48px 20px;
+      border-top: 1px solid rgba(200,146,42,0.15);
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: rgba(100,80,40,0.5);
+    }
+
+    /* ─── Keyframe 动画 ──────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50%       { transform: rotate(45deg) translateY(6px); }
+    }
+    @keyframes drift {
+      0%   { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.15; }
+      90%  { opacity: 0.10; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* IntersectionObserver 触发的滚动淡入 */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s var(--snap-ease), transform 0.7s var(--snap-ease);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── 响应式 ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .feature-item,
+      .feature-item.reverse {
+        flex-direction: column;
+        gap: 24px;
+      }
+      .feature-img {
+        width: 100%;
+        height: 220px;
+        flex: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .phenology-grid { grid-template-columns: 1fr; }
+      .navbar { padding: 0 20px; }
+      .nav-links { gap: 18px; }
+      .main-content { padding: 48px 24px 80px; }
+      .cover-circle.c1 { width: 320px; height: 320px; }
+      .cover-circle.c2 { width: 220px; height: 220px; }
+      .cover-circle.c3 { width: 130px; height: 130px; }
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1 style="font-size: 4rem; margin-bottom: 10px;">节气 · 立春</h1>
-        <p style="font-size: 1.5rem;">万物苏萌山水醒，农家岁首又谋耕</p>
-        <p style="margin-top: 50px; font-size: 15px; opacity: 0.9;">向下滚动探索 ↓</p>
-    </header>
+  <!-- ① 全屏封面 -->
+  <header id="cover">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
 
-    <nav>
-        <div class="nav-content">
-            <a href="#assistant">节气助手</a>
-            <a href="#origin">立春起源</a>
-            <a href="#weather">气候变化</a>
-            <a href="#three">立春三候</a>
-            <a href="#custom">习俗文化</a>
-            <a href="#diet">饮食推荐</a>
-        </div>
+    <div class="cover-circle c1"></div>
+    <div class="cover-circle c2"></div>
+    <div class="cover-circle c3"></div>
+
+    <span class="petal" style="left:10%; animation-duration:14s; animation-delay:-3s;  top:-20px">❀</span>
+    <span class="petal" style="left:25%; animation-duration:18s; animation-delay:-8s;  top:-20px">✿</span>
+    <span class="petal" style="left:60%; animation-duration:12s; animation-delay:-1s;  top:-20px">❁</span>
+    <span class="petal" style="left:78%; animation-duration:20s; animation-delay:-11s; top:-20px">❀</span>
+    <span class="petal" style="left:45%; animation-duration:16s; animation-delay:-6s;  top:-20px">✾</span>
+
+    <div class="cover-content">
+      <p class="cover-sub">二十四节气 · 第一节气</p>
+      <h1 class="cover-title">
+        <span>立</span><span>春</span>
+      </h1>
+      <div class="cover-divider"></div>
+      <p class="cover-date">正月初七前后 &ensp;·&ensp; 太阳到达黄经315°</p>
+    </div>
+
+    <div class="scroll-hint">
+      <span>向 下 探 索</span>
+      <div class="scroll-hint-arrow"></div>
+    </div>
+  </header>
+
+  <!-- ② 内容区（吸附锚点 2） -->
+  <div class="content-wrapper" id="content-wrapper">
+
+    <!-- 导航栏 sticky -->
+    <nav class="navbar" id="navbar">
+      <div class="nav-logo">立<em>春</em></div>
+      <ul class="nav-links">
+        <li><a href="#intro">节气</a></li>
+        <li><a href="#phenology">三候</a></li>
+        <li><a href="#verse">诗词</a></li>
+        <li><a href="#diet">时令</a></li>
+        <li><a href="#customs">习俗</a></li>
+      </ul>
     </nav>
 
-    <div class="main-wrapper">
-        <div class="container">
-            
-            <section id="assistant">
-                <h2 class="section-title">节气助手</h2>
-                <div class="assistant-container">
-                    <div id="ai-content" class="assistant-body">
-                        <div class="msg ai">你好，我是立春专题的节气知识专家。你可以问我关于立春的食补方案、文化内涵或气候特点，我会为你详细解答。</div>
-                        </div>
-                    <div class="assistant-footer">
-                        <input type="text" id="user-input" placeholder="输入您想了解的立春知识..." onkeypress="if(event.keyCode==13) sendMessage()">
-                        <button onclick="sendMessage()">咨询专家</button>
-                    </div>
-                </div>
-            </section>
+    <main class="main-content">
 
-            <section id="origin">
-                <h2 class="section-title">立春起源</h2>
-                <div class="flex-box">
-                    <div class="text">
-                        <h3>立春的由来</h3>
-                        <p>立春，为二十四节气之首。立，是“开始”之意；春，代表着温暖、生长。当太阳到达黄经315°时为立春，此时大地开始解冻，万物闭藏状态解除。</p>
-                        <a href="https://baike.baidu.com/video?secondId=73555746" class="btn" target="_blank" rel="noopener noreferrer">查看详情</a>
-                    </div>
-                    <div class="image">
-                        <div style="background-image: url('./images/astronomy.jpg'); background-color: #eee; height: 300px; background-size: cover; border-radius: 8px;"></div>
-                    </div>
-                </div>
-            </section>
+      <!-- ── 节气简介 ───────────────────────────────── -->
+      <section id="intro" style="padding-top: 24px;">
+        <p class="section-label reveal">节气释义</p>
+        <h2 class="section-title reveal">春回大地，万象更新</h2>
 
-            <section id="weather">
-                <h2 class="section-title">气候变化</h2>
-                
-                <div class="weather-row">
-                    <div class="weather-image" style="background-image: url('./images/weather1.jpg'); background-color: #ddd;"></div>
-                    <div class="weather-text">
-                        <h4>气温回升，告别极寒</h4>
-                        <p>立春不仅是农历上的转折，更是大自然温度计的跃动。随着太阳直射点的北移，虽然北方依然寒气未消，但南方已能明显感觉到空气中寒意的褪去。微风不再凛冽刺骨，暖意开始在阳光下悄然滋生，为万物的复苏预留了温暖的底色。</p>
-                    </div>
-                </div>
-
-                <div class="weather-row">
-                    <div class="weather-image" style="background-image: url('./images/weather2.jpg'); background-color: #ddd;"></div>
-                    <div class="weather-text">
-                        <h4>霜枝待暖，冰散春归</h4>
-                        <p>冬寒渐退，地气初升。沉睡一冬的冻土顺着暖意，由表及里缓缓舒活。河湖冰封尽数消融，往日凝寒如镜的厚冰，化作涓涓细流，漫过广袤沃土。晴空枝静，寒尽新生。这是大地苏醒的呼吸，是原野重焕生机的序章，岁岁耕耘，自此启程。</p>
-                    </div>
-                </div>
-
-                <div class="weather-row">
-                    <div class="weather-image" style="background-image: url('./images/weather3.jpg'); background-color: #ddd;"></div>
-                    <div class="weather-text">
-                        <h4>万物萌发，绿意之始</h4>
-                        <p>这种变化最初是细微的，可能是杨柳枝头那一抹似有若无的鹅黄，也可能是石缝间钻出的第一根嫩芽。春意如同在宣纸上晕开的水墨，从南方蔓延向北，草木感知到了季风的问候，整装待发，准备迎接一场名为“盛放”的盛宴。</p>
-                    </div>
-                </div>
-
-                <div class="weather-row" style="margin-bottom: 0;">
-                    <div class="weather-image" style="background-image: url('./images/weather4.jpg'); background-color: #ddd;"></div>
-                    <div class="weather-text">
-                        <h4>日照延长，追逐光明</h4>
-                        <p>自此日起，白昼的长度开始从冬至后的平稳中加速增长。光合作用的时间变长，阳光的角度也变得柔和而明亮。延长的日照不仅为作物提供了能量储备，也极大地改善了生物的生理节奏。此时的人们，总爱在夕阳余晖下多停留片刻，感受光阴的馈赠。</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="three">
-                <h2 class="section-title">立春三候</h2>
-                <div class="grid-3">
-                    <div class="circle-item">
-                        <div class="circle-placeholder" style="background-image: url('./images/hou1.jpg'); background-color: #eee;"></div>
-                        <h4>一候东风解冻</h4>
-                    </div>
-                    <div class="circle-item">
-                        <div class="circle-placeholder" style="background-image: url('./images/hou2.jpg'); background-color: #eee;"></div>
-                        <h4>二候蛰虫始振</h4>
-                    </div>
-                    <div class="circle-item">
-                        <div class="circle-placeholder" style="background-image: url('./images/hou3.jpg'); background-color: #eee;"></div>
-                        <h4>三候鱼陟负冰</h4>
-                    </div>
-                </div>
-            </section>
-
-            <section id="custom">
-                <h2 class="section-title">习俗文化</h2>
-                <div class="custom-container">
-                    <a href="https://baike.baidu.com/item/咬春" target="_blank" class="custom-link">
-                        <div class="custom-item">
-                            <div class="custom-img" style="background-image: url('./images/custom1.jpg'); background-color: #eee;"></div>
-                            <div class="custom-text">
-                                <h4>咬春</h4>
-                                <p>立春日食用春饼、生萝卜、五辛盘等食物，称为“咬春”。这不仅是为了防病，更寓意着通过“咬”这个动作来迎接春天，祈求身体健康、消除春困，并在新的一年里充满朝气。</p>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="custom-item">
-                        <div class="custom-img" style="background-image: url('./images/custom2.jpg'); background-color: #eee;"></div>
-                        <div class="custom-text">
-                            <h4>祭祖祈福</h4>
-                            <p>立春作为“岁始”，是人们祭祀祖先、祈求丰收的重要时刻。在这一天人们会举行盛大的祭祀仪式，感恩天地的馈赠，并祈求在新的一年里风调雨顺、五谷丰登、阖家平安。</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="diet" style="border-bottom: none;">
-                <h2 class="section-title">饮食推荐</h2>
-                <div class="diet-container">
-                    <a href="https://baike.baidu.com/item/春笋" target="_blank" class="custom-link">
-                        <div class="custom-item">
-                            <div class="custom-img" style="background-image: url('./images/food1.jpg'); background-color: #eee;"></div>
-                            <div class="custom-text">
-                                <h4>春笋</h4>
-                                <p>江南地区常有“立春食笋”的习惯。做法多以“腌笃鲜”或“油焖春笋”最为出名。春笋被誉为“素食第一品”，食用春笋象征着事业如竹子般节节高升，同时也代表着春意的生发与万物的更新。</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="https://baike.baidu.com/item/田艾米籺" target="_blank" class="custom-link">
-                        <div class="custom-item">
-                            <div class="custom-img" style="background-image: url('./images/food2.jpg'); background-color: #eee;"></div>
-                            <div class="custom-text">
-                                <h4>米籺</h4>
-                                <p>在广东吴川等岭南地区，立春吃“米籺”是传统习俗。米籺由大米磨粉制成，质地软糯，常配以各种馅料。它不仅是美味的节日食品，更承载着岭南人希望一年生活甜甜蜜蜜、团团圆圆的美好愿望。</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </section>
-
+        <!-- 图文：立春由来 -->
+        <div class="feature-item reveal" style="margin-top: 32px; margin-bottom: 40px;">
+          <div class="feature-text">
+            <h4>立春的由来</h4>
+            <p>立春，是二十四节气之首，亦是春季开始的节气。"立"者，开始也；"春"者，温暖、生长也。古人云"一年之计在于春"，当太阳到达黄经315°时为立春，此时大地开始解冻，万物闭藏状态解除。立春不仅标志着新一年农耕生产的开始，更承载着中国人对物候、时令最深切的感知。</p>
+          </div>
+          <div class="feature-img" style="background-image: url('./images/astronomy.jpg');"></div>
         </div>
-    </div>
 
-    <div id="floating-widget" class="floating-widget">
-        <div class="floating-icon" onclick="scrollToAssistant()" title="回到节气助手">💬</div>
-        <div id="bubble-text" class="ask-bubble" onclick="askCurrentQuestion()">猜你想问：立春还有哪些习俗饮食？</div>
-    </div>
+        <div class="ornament-divider reveal"><span>气 候 变 化</span></div>
+
+        <!-- 图文：四段气候 -->
+        <div class="feature-grid">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/weather1.jpg');"></div>
+            <div class="feature-text">
+              <h4>气温回升，告别极寒</h4>
+              <p>立春不仅是农历上的转折，更是大自然温度计的跃动。随着太阳直射点的北移，虽然北方依然寒气未消，但南方已能明显感觉到空气中寒意的褪去。微风不再凛冽刺骨，暖意开始在阳光下悄然滋生。</p>
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/weather2.jpg');"></div>
+            <div class="feature-text">
+              <h4>霜枝待暖，冰散春归</h4>
+              <p>冬寒渐退，地气初升。沉睡一冬的冻土顺着暖意，由表及里缓缓舒活。河湖冰封尽数消融，往日凝寒如镜的厚冰，化作涓涓细流，漫过广袤沃土。晴空枝静，寒尽新生。</p>
+            </div>
+          </div>
+
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/weather3.jpg');"></div>
+            <div class="feature-text">
+              <h4>万物萌发，绿意之始</h4>
+              <p>这种变化最初是细微的，可能是杨柳枝头那一抹似有若无的鹅黄，也可能是石缝间钻出的第一根嫩芽。草木感知到了季风的问候，整装待发，准备迎接一场名为"盛放"的盛宴。</p>
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/weather4.jpg');"></div>
+            <div class="feature-text">
+              <h4>日照延长，追逐光明</h4>
+              <p>自此日起，白昼的长度开始从冬至后的平稳中加速增长。光合作用的时间变长，阳光的角度也变得柔和而明亮。延长的日照不仅为作物提供了能量储备，也极大地改善了生物的生理节奏。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 三候 ──────────────────────────────────── -->
+      <section id="phenology">
+        <div class="ornament-divider reveal"><span>三 候</span></div>
+        <p class="section-label reveal">节气物候</p>
+        <h2 class="section-title reveal">立春三候</h2>
+
+        <div class="phenology-grid">
+          <div class="phenology-card reveal">
+            <div class="card-photo" style="background-image: url('./images/hou1.jpg');"></div>
+            <div class="card-num">一</div>
+            <div class="card-title">东风解冻</div>
+            <div class="card-desc">东风送暖，大地开始解冻，冰雪消融，柔和的春风轻抚万物。</div>
+          </div>
+          <div class="phenology-card reveal">
+            <div class="card-photo" style="background-image: url('./images/hou2.jpg');"></div>
+            <div class="card-num">二</div>
+            <div class="card-title">蛰虫始振</div>
+            <div class="card-desc">蛰伏于地下越冬的虫类，感受到春意，开始缓缓苏醒蠕动。</div>
+          </div>
+          <div class="phenology-card reveal">
+            <div class="card-photo" style="background-image: url('./images/hou3.jpg');"></div>
+            <div class="card-num">三</div>
+            <div class="card-title">鱼陟负冰</div>
+            <div class="card-desc">河湖中的鱼儿开始向上游动，河冰尚未完全消融，鱼儿似乎顶着碎冰前行。</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 诗词 ──────────────────────────────────── -->
+      <section id="verse">
+        <div class="ornament-divider reveal"><span>诗 词</span></div>
+        <p class="section-label reveal">古人之咏</p>
+        <h2 class="section-title reveal">句摘春意</h2>
+
+        <div class="verse-block reveal">
+          <p class="verse-text">律回岁晚冰霜少，春到人间草木知。<br>便觉眼前生意满，东风吹水绿参差。</p>
+          <p class="verse-source">—— 宋 · 张栻《立春偶成》</p>
+        </div>
+
+        <div class="verse-block reveal">
+          <p class="verse-text">春已归来，看美人头上，袅袅春幡。<br>无端风雨，未肯收尽余寒。</p>
+          <p class="verse-source">—— 宋 · 辛弃疾《汉宫春·立春日》</p>
+        </div>
+      </section>
+
+      <!-- ── 时令 ──────────────────────────────────── -->
+      <section id="diet">
+        <div class="ornament-divider reveal"><span>时 令</span></div>
+        <p class="section-label reveal">应时而食</p>
+        <h2 class="section-title reveal">咬春食单</h2>
+        <p class="prose reveal">
+          立春有"咬春"之俗，意在迎接新春、祈盼丰收。古人讲究食物与时节相合，不仅是为了防病，更寓意着祈求身体健康、消除春困。
+        </p>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/food1.jpg');"></div>
+            <div class="feature-text">
+              <h4>春笋</h4>
+              <p>江南地区常有"立春食笋"的习惯。做法多以"腌笃鲜"或"油焖春笋"最为出名。春笋被誉为"素食第一品"，食用春笋象征着事业如竹子般节节高升，同时也代表着春意的生发与万物的更新。</p>
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/food2.jpg');"></div>
+            <div class="feature-text">
+              <h4>米籺</h4>
+              <p>在广东吴川等岭南地区，立春吃"米籺"是传统习俗。米籺由大米磨粉制成，质地软糯，常配以各种馅料。它不仅是美味的节日食品，更承载着岭南人希望一年生活甜甜蜜蜜、团团圆圆的美好愿望。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-list">
+          <span class="food-tag reveal">春饼</span>
+          <span class="food-tag reveal">萝卜</span>
+          <span class="food-tag reveal">韭黄</span>
+          <span class="food-tag reveal">香椿芽</span>
+          <span class="food-tag reveal">荠菜</span>
+          <span class="food-tag reveal">豆苗</span>
+          <span class="food-tag reveal">春笋</span>
+          <span class="food-tag reveal">枸杞叶</span>
+          <span class="food-tag reveal">马兰头</span>
+        </div>
+      </section>
+
+      <!-- ── 习俗 ──────────────────────────────────── -->
+      <section id="customs">
+        <div class="ornament-divider reveal"><span>习 俗</span></div>
+        <p class="section-label reveal">传统风俗</p>
+        <h2 class="section-title reveal">迎春纳福</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/custom1.jpg');"></div>
+            <div class="feature-text">
+              <h4>咬春与打春</h4>
+              <p>立春日食用春饼、生萝卜、五辛盘等食物称为"咬春"。民间另有"打春"习俗，以鞭打泥塑春牛，象征劝农耕作、催促耕牛出动。妇女儿童还会剪制"春燕""春蝶"等彩纸，谓之"春幡"，处处透出对春天的热望。</p>
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/custom2.jpg');"></div>
+            <div class="feature-text">
+              <h4>祭祖祈福</h4>
+              <p>立春作为"岁始"，是人们祭祀祖先、祈求丰收的重要时刻。古时天子率三公九卿、诸侯大夫去东郊迎春；民间也会举行盛大的祭祀仪式，感恩天地的馈赠，并祈求在新的一年里风调雨顺、五谷丰登、阖家平安。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
 
     <footer>
-        <div class="footer-content">
-            © 2026 立春专题展示 | 传统文化与二十四节气
-        </div>
+      立春 &ensp;·&ensp; 二十四节气 &ensp;·&ensp; 东风解冻，蛰虫始振，鱼陟负冰
     </footer>
+  </div><!-- /.content-wrapper -->
 
-    <script>
-        const cloudbaseUrl = "https://coze-proxy-zuromvhmkb.cn-hangzhou.fcapp.run/";
-        
-        // 预设问题库
-        const presetLibrary = [
-            "立春有哪些传统习俗？",
-            "立春为什么要吃春饼？",
-            "立春后气温会立刻变暖吗？",
-            "“咬春”指的是什么？",
-            "立春三候分别是什么意思？",
-            "什么是“打春牛”？",
-            "立春为什么要“躲春”？",
-            "立春时节适合做什么运动？",
-            "立春吃萝卜有什么好处？",
-            "推荐一些关于立春的诗词",
-            "立春后的农事活动有哪些？",
-            "立春养生要注意什么？"
-        ];
+<script>
+/**
+ * ─── Scroll Snap 无抖动核心逻辑 ─────────────────────────
+ *
+ * 1. CSS scroll-snap-type: y proximity  ── 原生吸附，合成器线程
+ * 2. IntersectionObserver 替代 scroll 事件  ── 零强制布局
+ * 3. Navbar position:sticky + translateZ(0)  ── 合成层，不触发重排
+ * ──────────────────────────────────────────────────────────
+ */
 
-        function quickAsk(question) {
-            document.getElementById('user-input').value = question;
-            sendMessage();
-        }
+const cover  = document.getElementById('cover');
+const navbar = document.getElementById('navbar');
 
-        // 修改3：随机显示猜你想问的逻辑
-        function appendSuggestions() {
-            const content = document.getElementById('ai-content');
-            
-            // 移除旧的建议框
-            const oldBox = content.querySelector('.suggestion-box');
-            if (oldBox) oldBox.remove();
+/* ── 1. Navbar 滚动深度阴影（IntersectionObserver，零 scroll 事件） ── */
+const navObserver = new IntersectionObserver(
+  ([entry]) => {
+    navbar.classList.toggle('scrolled', !entry.isIntersecting);
+  },
+  { threshold: 0, rootMargin: `-${getComputedStyle(document.documentElement)
+      .getPropertyValue('--nav-h')} 0px 0px 0px` }
+);
+navObserver.observe(cover);
 
-            // 随机抽取3个不重复的问题
-            const shuffled = [...presetLibrary].sort(() => 0.5 - Math.random());
-            const selected = shuffled.slice(0, 3);
+/* ── 2. 滚动淡入动画 ─────────────────────────────────────── */
+const revealObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target); // 仅触发一次
+      }
+    });
+  },
+  { threshold: 0.12 }
+);
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-            const boxDiv = document.createElement('div');
-            boxDiv.className = 'suggestion-box';
-            
-            let html = `<div class="suggestion-title">💡 猜你想问</div><div class="suggestion-list">`;
-            selected.forEach(q => {
-                html += `<div class="suggestion-item" onclick="quickAsk('${q}')">${q}</div>`;
-            });
-            html += `</div>`;
-            
-            boxDiv.innerHTML = html;
-            content.appendChild(boxDiv);
-            content.scrollTop = content.scrollHeight;
-        }
+/* ── 3. 锚点平滑跳转（原生合成器，不触发重排） ────────────── */
+document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
 
-        function sendMessage() {
-            const input = document.getElementById('user-input');
-            const text = input.value.trim();
-            if (!text) return;
-            
-            appendMessage('user', text);
-            input.value = '';
-            fetchAIResponse(text);
-        }
-
-        function appendMessage(role, text) {
-            const content = document.getElementById('ai-content');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `msg ${role}`;
-            msgDiv.innerHTML = role === 'ai' ? marked.parse(text) : text;
-            content.appendChild(msgDiv);
-            content.scrollTop = content.scrollHeight;
-        }
-
-        async function fetchAIResponse(query) {
-            const content = document.getElementById('ai-content');
-            
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'msg ai';
-            msgDiv.innerHTML = '<span class="loading-dots">正在为您采撷春光...</span>';
-            content.appendChild(msgDiv);
-            content.scrollTop = content.scrollHeight;
-
-            let fullText = "";
-            let currentEvent = ""; 
-
-            try {
-                const response = await fetch(cloudbaseUrl, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Accept': 'text/event-stream' 
-                    },
-                    body: JSON.stringify({ query: query })
-                });
-
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                msgDiv.innerHTML = ""; 
-
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) {
-                        // AI 回复完毕，添加建议
-                        appendSuggestions();
-                        break;
-                    }
-
-                    const chunk = decoder.decode(value, { stream: true });
-                    const lines = chunk.split('\n');
-
-                    for (const line of lines) {
-                        const eventMatch = line.match(/^event:(.*)$/);
-                        if (eventMatch) {
-                            currentEvent = eventMatch[1].trim();
-                            continue;
-                        }
-
-                        if (line.startsWith('data:')) {
-                            const rawData = line.slice(5).trim();
-                            if (!rawData || rawData === '[DONE]') continue;
-
-                            try {
-                                const data = JSON.parse(rawData);
-                                if (currentEvent === 'conversation.message.delta' && data.content) {
-                                    if (data.content.startsWith('{')) continue;
-                                    fullText += data.content;
-                                    msgDiv.innerHTML = marked.parse(fullText);
-                                    content.scrollTop = content.scrollHeight;
-                                }
-                            } catch (e) {}
-                        }
-                    }
-                }
-            } catch (e) {
-                msgDiv.innerHTML = "❌ 节气专家连线失败：" + e.message;
-            }
-        }
-
-        /* --- 页面加载初始化 --- */
-        window.onload = () => {
-            appendSuggestions();
-        };
-
-        /* --- 浮动助手逻辑 --- */
-        const floatingWidget = document.getElementById('floating-widget');
-        const bubble = document.getElementById('bubble-text');
-        const assistantSection = document.getElementById('assistant');
-        const headerSection = document.querySelector('header');
-
-        const questionMap = {
-            'origin': '猜你想问：立春这个说法是从什么时候开始的？',
-            'weather': '猜你想问：立春后还会冷吗？什么是倒春寒？',
-            'three': '猜你想问：立春三候中的“鱼陟负冰”是什么意思？',
-            'custom': '猜你想问：立春还有哪些习俗？',
-            'diet': '猜你想问：立春除了吃春笋还要吃什么？'
-        };
-
-        let isHeaderVisible = true;
-
-        const headerObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                isHeaderVisible = entry.isIntersecting;
-                if (isHeaderVisible) {
-                    floatingWidget.classList.remove('visible');
-                }
-            });
-        }, { threshold: 0.1 });
-        headerObserver.observe(headerSection);
-
-        const assistantObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting && !isHeaderVisible) {
-                    floatingWidget.classList.add('visible');
-                } else {
-                    floatingWidget.classList.remove('visible');
-                }
-            });
-        }, { threshold: 0.1 });
-        assistantObserver.observe(assistantSection);
-
-        const contentObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && questionMap[entry.target.id]) {
-                    updateBubble(questionMap[entry.target.id]);
-                }
-            });
-        }, { threshold: 0.5 });
-
-        document.querySelectorAll('section').forEach(section => {
-            contentObserver.observe(section);
-        });
-
-        function updateBubble(newText) {
-            if (bubble.innerText === newText) return;
-            bubble.classList.add('fade-out');
-            setTimeout(() => {
-                bubble.innerText = newText;
-                bubble.classList.remove('fade-out');
-            }, 400); 
-        }
-
-        function scrollToAssistant() {
-            assistantSection.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function askCurrentQuestion() {
-            const q = bubble.innerText.replace('猜你想问：', '');
-            scrollToAssistant();
-            setTimeout(() => {
-                quickAsk(q);
-            }, 600); 
-        }
-    </script>
 </body>
 </html>
