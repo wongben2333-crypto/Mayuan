@@ -563,6 +563,137 @@
       .cover-circle.c2 { width: 220px; height: 220px; }
       .cover-circle.c3 { width: 130px; height: 130px; }
     }
+
+    /* AI 助手容器基础 */
+    .ai-section {
+        position: sticky;
+        top: var(--nav-h);
+        z-index: 99;
+        width: 100%;
+        background: transparent;
+        pointer-events: none;
+    }
+
+    .ai-container {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 16px 20px;
+        pointer-events: auto;
+    }
+
+    /* 提问栏基础样式 */
+    .ai-input-group {
+        display: flex;
+        align-items: center;
+        background: #FFFFFF;
+        padding: 10px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(26, 18, 8, 0.05), 0 10px 20px -5px rgba(200, 146, 42, 0.12);
+        border: 1px solid rgba(200, 146, 42, 0.15);
+        transition: all 0.4s var(--snap-ease);
+    }
+
+    /* 重点：当处于悬浮(is-sticky)且未展开时，禁用输入框点击，让点击由父级捕获 */
+    .ai-section.is-sticky:not(.is-expanded) #user-input {
+        pointer-events: none;
+    }
+    .ai-section.is-sticky:not(.is-expanded) .ai-input-group {
+        cursor: pointer;
+    }
+
+    /* 回答内容区基础状态 */
+    #ai-content {
+        max-height: 0;
+        overflow: hidden; /* 改为 hidden 确保完全收起 */
+        opacity: 0;
+        background: var(--mist);
+        border-radius: 12px;
+        transition: all 0.5s var(--snap-ease);
+        margin-top: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em; /* 提问与回答间隔半行 */
+    }
+
+    /* 状态 A: 在页面顶部时，只要有 active 类就显示 */
+    .ai-section:not(.is-sticky) #ai-content.active {
+        max-height: 400px;
+        opacity: 1;
+        margin-top: 10px;
+        padding: 15px;
+        overflow-y: auto;
+    }
+
+    /* 状态 B: 悬浮时，必须拥有 is-expanded 类才显示 */
+    .ai-section.is-sticky.is-expanded #ai-content {
+        max-height: 400px;
+        opacity: 1;
+        margin-top: 10px;
+        padding: 15px;
+        overflow-y: auto;
+    }
+
+    /* 输入框和按钮样式保持不变... */
+    .ai-input-group input { flex: 1; border: none; background: transparent; outline: none; }
+    .ai-send-btn { background: transparent; border: none; color: var(--gold); cursor: pointer; border-left: 1px solid rgba(200, 146, 42, 0.2); padding-left: 15px; margin-left: 10px; }
+
+    .msg {
+        line-height: 2.2;         /* 进一步加宽行距，提升阅读舒适度 */
+        font-size: 1.05rem;
+        color: #3a3020;
+        margin-bottom: 12px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+    /* 提问文字样式：使用深色主题色区分 */
+    .msg.user {
+        color: var(--ink);      /* 使用深色墨色[cite: 2] */
+        font-weight: 700;
+        padding: 5px 10px;
+        background: rgba(200, 146, 42, 0.08); /* 略微加深提问背景 */
+        border-radius: 4px;
+    }
+
+    /* 回答文字样式 */
+    .msg.ai {
+        padding: 5px 10px 5px 20px; /* 左侧留出空间给小方块 */
+        text-indent: 2em;
+    }
+
+    .msg.ai::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.7em;             /* 随行高调整位置 */
+        width: 7px;
+        height: 7px;
+        background-color: var(--gold);
+        transform: rotate(45deg);
+    }
+
+    .ai-section.is-sticky.is-expanded #ai-content {
+        background: rgba(250, 246, 238, 0.98); /* 接近不透明的纸张色，确保文字清晰 */
+        box-shadow: 0 12px 30px rgba(26, 18, 8, 0.15); /* 增加投影增强层级感 */
+        max-height: 450px;
+        padding: 20px;
+        opacity: 1;
+        margin-top: 12px;
+    }
+
+    /* 修正 Markdown 内部段落的缩进 */
+    .msg.ai p {
+        text-indent: 2em;
+        margin-bottom: 1.2em;
+    }
+
+    /* 正在加载的特殊处理（不缩进） */
+    .msg.ai:has(.loading-dots) {
+        text-indent: 0;
+    }
+    .msg.ai:has(.loading-dots)::before {
+        display: none;
+    }
+      
   </style>
 </head>
 <body>
@@ -610,6 +741,17 @@
         <li><a href="#customs">习俗</a></li>
       </ul>
     </nav>
+
+    <section class="ai-section" id="ai-section">
+      <div class="ai-container" id="ai-container">
+        <div class="ai-input-group" id="ai-click-area">
+          <input type="text" id="user-input" placeholder="向立春助手提问..." 
+                onkeypress="if(event.keyCode==13) sendMessage()">
+          <button class="ai-send-btn" onclick="sendMessage(); event.stopPropagation();">发送</button>
+        </div>
+        <div id="ai-content"></div>
+      </div>
+    </section>
 
     <main class="main-content">
 
@@ -773,51 +915,230 @@
     <footer>
       立春 &ensp;·&ensp; 二十四节气 &ensp;·&ensp; 东风解冻，蛰虫始振，鱼陟负冰
     </footer>
-  </div><script>
-/**
- * ─── 滚动优化 ──────────────────────────────────────────
- *
- * 1. IntersectionObserver 替代 scroll 事件
- * 2. Navbar position:sticky + translateZ(0) ── 合成层，不触发重排
- * ──────────────────────────────────────────────────────────
- */
+  </div>
+  <script>
+    /**
+     * ─── 滚动优化 ──────────────────────────────────────────
+     *
+     * 1. IntersectionObserver 替代 scroll 事件
+     * 2. Navbar position:sticky + translateZ(0) ── 合成层，不触发重排
+     * ──────────────────────────────────────────────────────────
+     */
 
-const cover  = document.getElementById('cover');
-const navbar = document.getElementById('navbar');
+    const cover  = document.getElementById('cover');
+    const navbar = document.getElementById('navbar');
 
-/* ── 1. Navbar 滚动深度阴影（IntersectionObserver，零 scroll 事件） ── */
-const navObserver = new IntersectionObserver(
-  ([entry]) => {
-    navbar.classList.toggle('scrolled', !entry.isIntersecting);
-  },
-  { threshold: 0, rootMargin: `-${getComputedStyle(document.documentElement)
-      .getPropertyValue('--nav-h')} 0px 0px 0px` }
-);
-navObserver.observe(cover);
+    /* ── 1. Navbar 滚动深度阴影（IntersectionObserver，零 scroll 事件） ── */
+    const navObserver = new IntersectionObserver(
+      ([entry]) => {
+        navbar.classList.toggle('scrolled', !entry.isIntersecting);
+      },
+      { threshold: 0, rootMargin: `-${getComputedStyle(document.documentElement)
+          .getPropertyValue('--nav-h')} 0px 0px 0px` }
+    );
+    navObserver.observe(cover);
 
-/* ── 2. 滚动淡入动画 ─────────────────────────────────────── */
-const revealObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        revealObserver.unobserve(entry.target); // 仅触发一次
-      }
+    /* ── 2. 滚动淡入动画 ─────────────────────────────────────── */
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target); // 仅触发一次
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    /* ── 3. 锚点平滑跳转（原生合成器，不触发重排） ────────────── */
+    document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
     });
-  },
-  { threshold: 0.12 }
-);
-document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-/* ── 3. 锚点平滑跳转（原生合成器，不触发重排） ────────────── */
-document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const target = document.querySelector(link.getAttribute('href'));
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-});
+    const cloudbaseUrl = "https://coze-proxy-zuromvhmkb.cn-hangzhou.fcapp.run/";
+
+    async function sendMessage() {
+        const input = document.getElementById('user-input');
+        const content = document.getElementById('ai-content');
+        const text = input.value.trim();
+        
+        if (!text) return;
+
+        // 展开对话框
+        content.classList.add('active');
+        
+        // 添加用户消息
+        appendMessage('user', text);
+        input.value = '';
+        
+        // 调用 AI
+        fetchAIResponse(text);
+    }
+
+    function appendMessage(role, text) {
+        const content = document.getElementById('ai-content');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `msg ${role}`;
+        
+        if (role === 'ai') {
+            // 使用 marked 解析，渲染出带有 <p> 标签的结构以应用段落样式[cite: 2]
+            msgDiv.innerHTML = marked.parse(text);
+        } else {
+            msgDiv.textContent = text;
+        }
+        
+        content.appendChild(msgDiv);
+        // 滚动到底部时预留一点间距，不显得局促
+        content.scrollTo({ 
+            top: content.scrollHeight + 20, 
+            behavior: 'smooth' 
+        });
+    }
+
+    async function fetchAIResponse(query) {
+        const content = document.getElementById('ai-content');
+        
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'msg ai';
+        msgDiv.innerHTML = '<span class="loading-dots">正在为您采撷春光...</span>';
+        content.appendChild(msgDiv);
+        content.scrollTop = content.scrollHeight;
+
+        let fullText = "";
+        let currentEvent = ""; 
+
+        try {
+            const response = await fetch(cloudbaseUrl, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'text/event-stream' 
+                },
+                body: JSON.stringify({ query: query })
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            msgDiv.innerHTML = ""; 
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    const eventMatch = line.match(/^event:(.*)$/);
+                    if (eventMatch) {
+                        currentEvent = eventMatch[1].trim();
+                        continue;
+                    }
+
+                    if (line.startsWith('data:')) {
+                        const rawData = line.slice(5).trim();
+                        if (!rawData || rawData === '[DONE]') continue;
+
+                        try {
+                            const data = JSON.parse(rawData);
+                            if (currentEvent === 'conversation.message.delta' && data.content) {
+                                if (data.content.startsWith('{')) continue;
+                                fullText += data.content;
+                                // 实时解析 Markdown 并滚动
+                                msgDiv.innerHTML = marked.parse(fullText);
+                                content.scrollTop = content.scrollHeight;
+                            }
+                        } catch (e) {}
+                    }
+                }
+            }
+        } catch (e) {
+            msgDiv.innerHTML = "❌ 连线失败：" + e.message;
+        }
+    }
+
+    /* --- AI 助手状态与交互逻辑 --- */
+    const aiSection = document.getElementById('ai-section');
+    const aiContent = document.getElementById('ai-content');
+    const userInput = document.getElementById('user-input');
+
+    // 1. 哨兵监测：检测是否进入 sticky 状态
+    const stickySentinel = document.createElement('div');
+    aiSection.parentNode.insertBefore(stickySentinel, aiSection);
+
+    const stickyObserver = new IntersectionObserver(([entry]) => {
+        const isSticky = !entry.isIntersecting;
+        aiSection.classList.toggle('is-sticky', isSticky);
+        // 回到顶部时，如果已经有内容，确保它是可见的
+        if (!isSticky) {
+            aiSection.classList.remove('is-expanded');
+        }
+    }, { threshold: [0] });
+    stickyObserver.observe(stickySentinel);
+
+    // 2. 全局点击监听：处理展开与外部点击折叠
+    document.addEventListener('click', (e) => {
+        const isInsideAI = aiSection.contains(e.target);
+        const isSticky = aiSection.classList.contains('is-sticky');
+
+        if (isSticky) {
+            if (isInsideAI) {
+                // 在悬浮状态下，点击任意位置（且未展开时）触发展开
+                if (!aiSection.classList.contains('is-expanded')) {
+                    expandAI();
+                }
+            } else {
+                // 点击外部，且处于展开状态时，折叠
+                if (aiSection.classList.contains('is-expanded')) {
+                    collapseAI();
+                }
+            }
+        }
+    });
+
+    function expandAI() {
+        aiSection.classList.add('is-expanded');
+        setTimeout(() => userInput.focus(), 200);
+    }
+
+    function collapseAI() {
+        aiSection.classList.remove('is-expanded');
+        userInput.blur();
+    }
+
+    // 3. 重构后的发送函数（替换你原有的两个 sendMessage）
+    async function sendMessage() {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        // 无论什么状态，提问后都要显示内容
+        aiContent.classList.add('active'); 
+        if (aiSection.classList.contains('is-sticky')) {
+            aiSection.classList.add('is-expanded');
+        }
+
+        appendMessage('user', text);
+        userInput.value = '';
+        
+        // 调用原有的 AI 请求逻辑
+        fetchAIResponse(text);
+        
+        // 如果在移动端，滚动到视口顶部
+        if (window.innerWidth < 768) {
+            aiSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 </body>
 </html>
