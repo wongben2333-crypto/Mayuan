@@ -248,8 +248,8 @@
 
         /* --- 诗词显示区域 --- */
         .poetry-container {
-            margin-top: -10px; /* 2. 诗词位置上移 */
-            height: 60px; 
+            margin-top: 10px; /* 从 -10px 改为正 10px，向下推开距离 */
+            height: 80px;     /* 稍微增加高度，防止容器太挤 */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -257,28 +257,30 @@
         }
 
         #poetry-display {
-            font-size: 1.4rem;
-            color: #444; /* 稍微加深文字颜色，确保在毛玻璃背景上清晰 */
+            /* 1. 缩小字号：桌面端从 1.4rem 降至 1.1rem */
+            font-size: 1.1rem;
+            color: #444;
             font-family: 'STSong', 'SimSun', serif;
-            letter-spacing: 3px;
-            opacity: 1; /* 将初始不透明度改为 1，或者由 JS 控制 */
+            /* 适当减小间距，让文本更紧凑 */
+            letter-spacing: 2px;
+            opacity: 1; 
             transition: opacity 0.4s ease-in-out, border-color 0.4s ease;
             text-align: center;
             
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             
-            /* --- 核心修改：毛玻璃效果 --- */
-            background: rgba(255, 255, 255, 0.3); /* 半透明白色背景 */
-            backdrop-filter: blur(12px);          /* 模糊背后的图像 */
-            -webkit-backdrop-filter: blur(12px);  /* 兼容 Safari */
+            /* 2. 缩小外框：减小内边距 */
+            padding: 8px 20px;
+            border-radius: 20px; /* 随之减小圆角半径 */
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             
-            /* 装饰性样式 */
-            padding: 12px 25px;
-            border-radius: 30px;                 /* 胶囊状圆角 */
-            border: 1px solid rgba(255, 255, 255, 0.5); /* 亮边勾勒质感 */
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); /* 柔和阴影 */
-            
-            min-width: 300px;
+            /* 3. 缩小最小宽度：从 300px 降至 220px */
+            min-width: 220px;
             box-sizing: border-box;
+            display: inline-block; /* 改为 inline-block 让外框随文字长度自适应 */
         }
 
         @media (min-width: 901px) {
@@ -319,11 +321,17 @@
             .term-label-cal { font-size: 0.5rem; }
             .center-title { font-size: clamp(24px, 10vw, 40px); }
             .term-label-wheel { width: 44px; }
-            .poetry-container { height: auto; padding: 6px 8px; }
+            .poetry-container {
+                margin-top: 25px;    /* 移动端由于圆环占地大，增加更多间距 */
+                height: auto;        /* 允许根据内容自适应高度 */
+                padding: 15px 0 30px; /* 增加底部填充，防止贴边 */
+            }
+
             #poetry-display {
-                min-width: 85vw;
-                font-size: 1.1rem;
-                padding: 10px 15px;
+                font-size: 0.95rem;
+                min-width: 80vw;
+                /* 确保毛玻璃背景在移动端不显得太厚重 */
+                padding: 8px 16px;
             }
             .center-title {
                 flex-direction: column; /* 强制垂直排列实现换行 */
