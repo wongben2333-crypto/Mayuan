@@ -694,6 +694,44 @@
         display: none;
     }
       
+    /* 引导标签容器 */
+    .ai-prompts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.5s var(--snap-ease);
+        pointer-events: none;
+    }
+
+    .ai-prompts.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    /* 修改单个标签样式，提高不透明度 */
+    .prompt-tag {
+        font-size: 0.85rem;
+        color: var(--ink); /* 使用深色墨色提升对比度 */
+        background: rgba(250, 246, 238, 0.6); /* 增加背景不透明度，类似于宣纸感 */
+        border: 1px solid rgba(200, 146, 42, 0.3);
+        padding: 6px 14px;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(26, 18, 8, 0.05); /* 增加微弱投影增强浮现感 */
+    }
+
+    .prompt-tag:hover {
+        background: rgba(250, 246, 238, 0.9);
+        border-color: var(--gold);
+        color: var(--gold);
+        transform: translateY(-1px);
+    }
   </style>
 </head>
 <body>
@@ -749,6 +787,8 @@
                 onkeypress="if(event.keyCode==13) sendMessage()">
           <button class="ai-send-btn" onclick="sendMessage(); event.stopPropagation();">发送</button>
         </div>
+        <!-- 动态引导标签容器 -->
+        <div class="ai-prompts" id="ai-prompts"></div>
         <div id="ai-content"></div>
       </div>
     </section>
@@ -1136,6 +1176,75 @@
             aiSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
+
+// 1. 扩展问题库，每个板块增加更多问题
+const sectionPrompts = {
+    'intro': ['立春在古代为什么叫“岁首”？', '现代气象学如何定义春天？', '为什么立春有时在春节前，有时在春节后？', '“立春”这个名字最早出现在哪部典籍？'],
+    'phenology': ['“蛰虫始振”里的虫子指的是什么？', '为什么古代三候要选鱼和冰？', '三候的观测在现代还有科学价值吗？', '“鱼陟负冰”是描述什么景象？'],
+    'verse': ['想听听这句诗背后的故事吗？', '立春诗词里最常用的意象有哪些？', '除了这几首，还有哪些经典的立春诗词？', '古人写立春时心情通常是怎样的？'],
+    'diet': ['“咬春”除了吃萝卜还要吃什么？', '春饼和春卷有什么区别？', '立春为什么要吃辛辣的五辛盘？', '北方和南方的咬春习俗有什么不同？'],
+    'customs': ['“打春牛”的牛是真牛吗？', '什么是“春幡”？', '立春为什么要“躲春”？', '古代迎春仪式为什么要在东郊举行？'],
+    'general': ['二十四节气是谁发明的？', '立春之后还会冷吗？', '今年立春是哪一天？', '立春有什么养生建议？']
+};
+
+// 2. 随机抽取函数
+function getRandomPrompts(array, count = 2) {
+    const shuffled = [...array].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+}
+
+// 3. 综合所有板块的问题池，用于顶部展示
+const allPrompts = Object.values(sectionPrompts).flat();
+
+const promptContainer = document.getElementById('ai-prompts');
+
+// 4. 更新标签的函数
+function updatePrompts(sectionId) {
+    let promptsToDisplay = [];
+    
+    if (sectionId === 'cover' || !sectionId) {
+        // 划到顶上时，从全量池中随机选两个
+        promptsToDisplay = getRandomPrompts(allPrompts, 2);
+    } else {
+        // 划到指定板块，从该板块随机选两个
+        const pool = sectionPrompts[sectionId] || sectionPrompts['general'];
+        promptsToDisplay = getRandomPrompts(pool, 2);
+    }
+
+    promptContainer.classList.remove('visible');
+    
+    setTimeout(() => {
+        promptContainer.innerHTML = '';
+        promptsToDisplay.forEach(text => {
+            const span = document.createElement('span');
+            span.className = 'prompt-tag';
+            span.textContent = text;
+            span.onclick = (e) => {
+                e.stopPropagation(); // 防止触发 AI 盒子的折叠逻辑
+                document.getElementById('user-input').value = text;
+                sendMessage();
+            };
+            promptContainer.appendChild(span);
+        });
+        promptContainer.classList.add('visible');
+    }, 300);
+}
+
+// 5. 监听逻辑：增加对 Cover (顶部) 的监听
+const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            // 如果回到 Cover 区域，则展示随机全量问题
+            updatePrompts(entry.target.id);
+        }
+    });
+}, { threshold: [0.5] });
+
+// 监听正文 section 以及封面 header
+document.querySelectorAll('section[id], header[id]').forEach(el => {
+    sectionObserver.observe(el);
+});
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
