@@ -431,15 +431,34 @@
                 label.className = 'term-label-wheel';
                 const now = new Date();
                 if (term.m === now.getMonth() && term.d === now.getDate()) label.classList.add('active-wheel');
-                
+
                 label.innerHTML = `<div class="term-name-wheel">${term.name}</div><div class="term-date-wheel">${term.m+1}/${term.d}</div>`;
 
-                // 严格居中计算
-                const labelX = (textRadius * Math.cos(midRad)) * scale;
-                const labelY = (textRadius * Math.sin(midRad)) * scale;
-                
+                // 先挂载以便测量尺寸（保持透明，不使用背景色）
+                label.style.visibility = 'hidden';
+                labelsContainer.appendChild(label);
+                const rect = label.getBoundingClientRect();
+
+                // 考虑中间圆圈实际尺寸：在不同断点 center-group 会改变大小，可能遮盖内圈
+                const centerEl = document.querySelector('.center-group');
+                let centerRadiusSvg = 0;
+                if (centerEl) {
+                    const cRect = centerEl.getBoundingClientRect();
+                    centerRadiusSvg = (cRect.width / scale) / 2; // 转换为 SVG 单位
+                }
+
+                // 计算最小半径，确保标签的内边不会越过实际可见的内圈（取 INNER_R 与 center-group 的最大值）
+                const effectiveInnerR = Math.max(INNER_R, centerRadiusSvg + 2);
+                const minRadiusSvg = effectiveInnerR + (rect.height / scale) / 2 + 2; // 保留 2px 间隔
+                const finalTextRadius = Math.max(textRadius, minRadiusSvg);
+
+                // 严格居中计算（使用修正后的半径）
+                const labelX = (finalTextRadius * Math.cos(midRad)) * scale;
+                const labelY = (finalTextRadius * Math.sin(midRad)) * scale;
+
                 label.style.left = `calc(50% + ${labelX}px)`;
                 label.style.top = `calc(50% + ${labelY}px)`;
+                label.style.visibility = 'visible';
                 
                 const handleJump = (e) => {
                     e.stopPropagation();
@@ -483,7 +502,6 @@
                 
                 label.style.transform = `translate(-50%, -50%)`;
                 sectorsContainer.appendChild(path);
-                labelsContainer.appendChild(label);
             });
         }
 
