@@ -395,7 +395,9 @@
             const poetryDisplay = document.getElementById('poetry-display');
             sectorsContainer.innerHTML = ''; labelsContainer.innerHTML = '';
             
-            const CX = 200, CY = 200, INNER_R = 98, OUTER_R = 155, MOVE_DIST = 8;
+            // --- 关键参数调整 ---
+            // INNER_R 缩小，OUTER_R 扩大，使色块变宽以包裹文字
+            const CX = 200, CY = 200, INNER_R = 85, OUTER_R = 170, MOVE_DIST = 8;
             const step = 360 / 24;
             const containerWidth = document.querySelector('.wheel-container').getBoundingClientRect().width;
             const scale = containerWidth / 400;
@@ -425,6 +427,7 @@
                 path.setAttribute("fill", termColor);
                 path.setAttribute("class", "term-sector");
 
+                // 文字渲染半径处于色块的正中间
                 const textRadius = (INNER_R + OUTER_R) / 2;
                 const label = document.createElement('div');
                 label.className = 'term-label-wheel';
@@ -432,13 +435,13 @@
                 if (term.m === now.getMonth() && term.d === now.getDate()) label.classList.add('active-wheel');
                 
                 label.innerHTML = `<div class="term-name-wheel">${term.name}</div><div class="term-date-wheel">${term.m+1}/${term.d}</div>`;
-                // Slightly push labels outward for better readability and touch targets
-                const extraOut = containerWidth < 420 ? 22 : 12; // px offset
-                const labelX = (textRadius * Math.cos(midRad)) * scale + extraOut * Math.cos(midRad);
-                const labelY = (textRadius * Math.sin(midRad)) * scale + extraOut * Math.sin(midRad);
+
+                // --- 移除移动端的 extraOut 偏移量，确保文字居中 ---
+                const labelX = (textRadius * Math.cos(midRad)) * scale;
+                const labelY = (textRadius * Math.sin(midRad)) * scale;
+                
                 label.style.left = `calc(50% + ${labelX}px)`;
                 label.style.top = `calc(50% + ${labelY}px)`;
-                // ensure clickable area
                 label.style.padding = '6px 6px';
                 label.style.minWidth = '44px';
                 label.style.borderRadius = '6px';
@@ -460,7 +463,6 @@
                     
                     if (currentActiveTerm === term.name) return;
                     currentActiveTerm = term.name;
-
                     poetryDisplay.style.opacity = 0;
                     
                     setTimeout(() => {
@@ -477,7 +479,6 @@
                 const onOut = () => {
                     path.style.transform = `translate(0, 0)`;
                     label.style.transform = `translate(-50%, -50%) scale(1)`;
-                    
                     currentActiveTerm = null;
                     poetryDisplay.style.opacity = 0;
                 };
