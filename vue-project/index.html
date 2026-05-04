@@ -118,8 +118,9 @@
 
         .wheel-container {
             position: relative;
-            width: 85vmin;
-            height: 85vmin;
+            /* 使用 min() 保持圆环宽度在视口与 vmin 之间平滑变化，避免断点跳变 */
+            width: min(85vmin, 95vw);
+            height: min(85vmin, 95vw);
             max-width: 750px;
             max-height: 750px;
             display: flex;
@@ -166,20 +167,22 @@
             background: rgba(255,255,255,0.0);
         }
 
-        .term-name-wheel { 
-            font-size: 1.8vmin; 
-            font-weight: bold; 
-            color: #4a4a4a; 
+        .term-name-wheel {
+            font-weight: bold;
+            color: #4a4a4a;
             margin-bottom: 2px;
+            /* 平滑响应：在像素和 vmin 之间限制，防止在某些断点文字不随容器缩放 */
+            font-size: clamp(12px, 1.8vmin, 18px);
         }
-        .term-date-wheel { 
-            font-size: 1.1vmin; 
-            color: #7a7a7a; 
+        .term-date-wheel {
+            color: #7a7a7a;
             font-family: 'Arial', sans-serif;
+            font-size: clamp(10px, 1.1vmin, 14px);
         }
 
         .active-wheel .term-name-wheel { color: #222; text-shadow: 0 0 1px rgba(0,0,0,0.2); }
 
+        /* --- 核心修改：全平滑圆圈方案 --- */
         .center-group {
             position: absolute;
             top: 50%;
@@ -187,8 +190,17 @@
             transform: translate(-50%, -50%);
             text-align: center;
             background: #fff;
-            width: 36vmin;
-            height: 36vmin;
+            
+            /* 
+            核心逻辑：
+            1. 桌面端：由 36vmin 锁定比例。因为圆环容器是 min(85vmin, 95vw)，
+                在桌面端容器是按高度算的，所以圆圈也必须按高度算，才能保证间距恒定。
+            2. 移动端：当宽度减小时，通过 45vw 保证它在手机竖屏下有足够的空间。
+            3. 400px 是绝对上限，防止在大屏幕上遮挡文字。
+            */
+            width: clamp(36vmin, 45vw, 400px);
+            height: clamp(36vmin, 45vw, 400px);
+            
             border-radius: 50%;
             display: flex;
             flex-direction: column;
@@ -198,6 +210,7 @@
             pointer-events: none;
             border: 1px solid #f0eee8;
             box-sizing: border-box;
+            /* 移除之前的 transition 以免 JS 计算位置时出现微小不同步 */
         }
 
         .center-title {
@@ -239,6 +252,14 @@
             box-sizing: border-box;
         }
 
+        @media (min-width: 901px) {
+            .center-group {
+                /* 在大屏下强制保持与 SVG 内部比例一致的 vmin 单位 */
+                width: 36vmin;
+                height: 36vmin;
+            }
+        }
+
         /* --- Responsive: stack panels vertically on small screens --- */
         @media (max-width: 900px) {
             body { flex-direction: column; }
@@ -254,12 +275,10 @@
             .weekday { font-size: 0.72rem; }
             .day { font-size: 1rem; border-radius: 8px; min-height: 32px; }
             .term-label-cal { font-size: 0.55rem; }
-            .wheel-container { width: 95vw; height: 95vw; }
-            .center-group { width: 42vw; height: 42vw; } /* 缩小中间圆圈，给色块留空间 */
-            .term-name-wheel { font-size: 14px !important; } /* 使用固定像素确保不溢出 */
-            .term-date-wheel { font-size: 9px !important; }
             .term-label-wheel { width: 40px; }
             #poetry-display { min-width: unset; font-size: 1rem; letter-spacing: 1px; }
+            body { flex-direction: column; }
+            .left-panel, .right-panel { width: 100%; }
         }
 
         @media (max-width: 480px) {
@@ -269,14 +288,11 @@
             .cal-grid { gap: 5px; }
             .day { font-size: 1.1rem; min-height: 36px; }
             .term-label-cal { font-size: 0.5rem; }
-            .wheel-container { width: 92vw; height: 92vw; }
-            .center-group { width: 62vw; height: 62vw; }
-            .center-title { font-size: 10vw; }
-            .term-name-wheel { font-size: 2.8vmin; }
-            .term-date-wheel { font-size: 1.6vmin; }
+            .center-title { font-size: clamp(24px, 10vw, 40px); }
             .term-label-wheel { width: 44px; }
             .poetry-container { height: auto; padding: 6px 8px; }
             #poetry-display { padding-bottom: 4px; }
+            .center-title { font-size: 10vw; }
         }
     </style>
 </head>
@@ -439,17 +455,8 @@
                 labelsContainer.appendChild(label);
                 const rect = label.getBoundingClientRect();
 
-                // 考虑中间圆圈实际尺寸：在不同断点 center-group 会改变大小，可能遮盖内圈
-                const centerEl = document.querySelector('.center-group');
-                let centerRadiusSvg = 0;
-                if (centerEl) {
-                    const cRect = centerEl.getBoundingClientRect();
-                    centerRadiusSvg = (cRect.width / scale) / 2; // 转换为 SVG 单位
-                }
-
-                // 计算最小半径，确保标签的内边不会越过实际可见的内圈（取 INNER_R 与 center-group 的最大值）
-                const effectiveInnerR = Math.max(INNER_R, centerRadiusSvg + 2);
-                const minRadiusSvg = effectiveInnerR + (rect.height / scale) / 2 + 2; // 保留 2px 间隔
+                // 计算最小半径，确保标签的内边不会越过 INNER_R
+                const minRadiusSvg = INNER_R + (rect.height / scale) / 2 + 2; // 保留 2px 间隔
                 const finalTextRadius = Math.max(textRadius, minRadiusSvg);
 
                 // 严格居中计算（使用修正后的半径）
