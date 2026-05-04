@@ -430,40 +430,18 @@
                 label.className = 'term-label-wheel';
                 const now = new Date();
                 if (term.m === now.getMonth() && term.d === now.getDate()) label.classList.add('active-wheel');
-
+                
                 label.innerHTML = `<div class="term-name-wheel">${term.name}</div><div class="term-date-wheel">${term.m+1}/${term.d}</div>`;
                 // Slightly push labels outward for better readability and touch targets
-                const extraOut = containerWidth < 420 ? 8 : 6; // smaller outward offset on mobile
-                // initial position (may be clamped after measuring)
-                let labelX = (textRadius * Math.cos(midRad)) * scale + extraOut * Math.cos(midRad);
-                let labelY = (textRadius * Math.sin(midRad)) * scale + extraOut * Math.sin(midRad);
+                const extraOut = containerWidth < 420 ? 22 : 12; // px offset
+                const labelX = (textRadius * Math.cos(midRad)) * scale + extraOut * Math.cos(midRad);
+                const labelY = (textRadius * Math.sin(midRad)) * scale + extraOut * Math.sin(midRad);
                 label.style.left = `calc(50% + ${labelX}px)`;
                 label.style.top = `calc(50% + ${labelY}px)`;
-                // preliminary touch area
+                // ensure clickable area
                 label.style.padding = '6px 6px';
                 label.style.minWidth = '44px';
                 label.style.borderRadius = '6px';
-                // append first so we can measure and clamp inside the wheel
-                labelsContainer.appendChild(label);
-                // clamp label so it doesn't exceed outer radius of wheel (keep inside colored sectors)
-                const rect = label.getBoundingClientRect();
-                // center of wheel in page coordinates
-                const wheelRect = document.querySelector('.wheel-container').getBoundingClientRect();
-                const cx = wheelRect.left + wheelRect.width / 2;
-                const cy = wheelRect.top + wheelRect.height / 2;
-                const lx = (cx + labelX) ;
-                const ly = (cy + labelY) ;
-                const dx = lx - cx;
-                const dy = ly - cy;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                const maxDist = (OUTER_R * scale) - Math.max(rect.width, rect.height) / 2 - 6;
-                if (dist > maxDist) {
-                    const factor = maxDist / dist;
-                    const newX = dx * factor;
-                    const newY = dy * factor;
-                    label.style.left = `calc(50% + ${newX}px)`;
-                    label.style.top = `calc(50% + ${newY}px)`;
-                }
                 
                 const handleJump = (e) => {
                     e.stopPropagation();
