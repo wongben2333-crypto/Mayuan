@@ -25,7 +25,7 @@
                 /* 第一层：原有的径向渐变，使用 rgba 增加透明度 (例如 0.85) */
                 radial-gradient(
                     circle at 75% 50%, 
-                    rgba(252, 249, 234, 0.85) 0%, 
+                    rgba(252, 249, 234, 0.7) 0%, 
                     rgba(242, 238, 218, 0.9) 100%
                 ),
                 /* 第二层：你的大图 URL */
@@ -205,7 +205,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.8);
             
             /* 
             核心逻辑：
@@ -258,14 +258,25 @@
 
         #poetry-display {
             font-size: 1.4rem;
-            color: #555;
+            color: #444; /* 稍微加深文字颜色，确保在毛玻璃背景上清晰 */
             font-family: 'STSong', 'SimSun', serif;
             letter-spacing: 3px;
-            opacity: 0; 
-            transition: opacity 0.4s ease-in-out;
+            opacity: 1; /* 将初始不透明度改为 1，或者由 JS 控制 */
+            transition: opacity 0.4s ease-in-out, border-color 0.4s ease;
             text-align: center;
-            border-bottom: 1px solid rgba(151, 168, 122, 0.2);
-            padding: 6px 12px 5px;
+            
+            
+            /* --- 核心修改：毛玻璃效果 --- */
+            background: rgba(255, 255, 255, 0.3); /* 半透明白色背景 */
+            backdrop-filter: blur(12px);          /* 模糊背后的图像 */
+            -webkit-backdrop-filter: blur(12px);  /* 兼容 Safari */
+            
+            /* 装饰性样式 */
+            padding: 12px 25px;
+            border-radius: 30px;                 /* 胶囊状圆角 */
+            border: 1px solid rgba(255, 255, 255, 0.5); /* 亮边勾勒质感 */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); /* 柔和阴影 */
+            
             min-width: 300px;
             box-sizing: border-box;
         }
@@ -309,7 +320,11 @@
             .center-title { font-size: clamp(24px, 10vw, 40px); }
             .term-label-wheel { width: 44px; }
             .poetry-container { height: auto; padding: 6px 8px; }
-            #poetry-display { padding-bottom: 4px; }
+            #poetry-display {
+                min-width: 85vw;
+                font-size: 1.1rem;
+                padding: 10px 15px;
+            }
             .center-title {
                 flex-direction: column; /* 强制垂直排列实现换行 */
                 font-size: 8vw;        /* 保持你之前满意的字号 */
@@ -444,18 +459,43 @@
             const sectorsContainer = document.getElementById('sectors-container');
             const labelsContainer = document.getElementById('labels-container');
             const poetryDisplay = document.getElementById('poetry-display');
-            sectorsContainer.innerHTML = ''; labelsContainer.innerHTML = '';
+            sectorsContainer.innerHTML = ''; 
+            labelsContainer.innerHTML = '';
             
-            // CX, CY 为 SVG 中心点；INNER_R 为内径；OUTER_R 为外径
             const CX = 200, CY = 200, INNER_R = 75, OUTER_R = 175, MOVE_DIST = 8;
             const step = 360 / 24;
             const containerRect = document.querySelector('.wheel-container').getBoundingClientRect();
             const containerWidth = containerRect.width;
             const scale = containerWidth / 400;
-
-            // 获取页面基础字号并计算偏移量（“一个字的距离”）
-            // 我们取一个相对值：在 SVG 坐标系下约 18-20 单位
             const oneCharOffset = 20; 
+
+            // --- 新增：寻找最近节气并显示诗词的内部函数 ---
+            function showDefaultPoetry() {
+                const now = new Date();
+                const currentMonth = now.getMonth();
+                const currentDate = now.getDate();
+                let nearestTerm = solarTerms[0];
+                let minDiff = Infinity;
+
+                solarTerms.forEach(term => {
+                    // 简单的日期距离计算[cite: 1]
+                    const diff = Math.abs((term.m * 31 + term.d) - (currentMonth * 31 + currentDate));
+                    if (diff < minDiff) {
+                        minDiff = diff;
+                        nearestTerm = term;
+                    }
+                });
+
+                const poems = poetryData[nearestTerm.name];
+                const randomPoem = poems[Math.floor(Math.random() * poems.length)];
+                poetryDisplay.textContent = randomPoem;
+                poetryDisplay.style.opacity = 1;
+                // 默认状态下使用辅助色作为边框
+                poetryDisplay.style.borderColor = "rgba(151, 168, 122, 0.3)";
+            }
+
+            // 初始化显示[cite: 1]
+            showDefaultPoetry();
 
             solarTerms.forEach((term, i) => {
                 const seasonIndex = Math.floor(i / 6);
@@ -482,7 +522,6 @@
                 path.setAttribute("fill", termColor);
                 path.setAttribute("class", "term-sector");
 
-                // 创建标签
                 const label = document.createElement('div');
                 label.className = 'term-label-wheel';
                 const now = new Date();
@@ -490,31 +529,22 @@
 
                 label.innerHTML = `<div class="term-name-wheel">${term.name}</div><div class="term-date-wheel">${term.m+1}/${term.d}</div>`;
 
-                // 先挂载以测量高度
                 label.style.visibility = 'hidden';
                 labelsContainer.appendChild(label);
                 const rect = label.getBoundingClientRect();
 
-                // --- 核心位置逻辑修改 ---
-                const centerRadius = (INNER_R + OUTER_R) / 2; // 原本的中心半径[cite: 1]
-                
-                // 1. 向外移动“一个字”的距离
+                const centerRadius = (INNER_R + OUTER_R) / 2; 
                 let targetRadius = centerRadius + oneCharOffset; 
-
-                // 2. 安全边界检查：确保文字底部不会贴到圆环外边缘
                 const labelHeightSvg = rect.height / scale;
-                const maxSafeRadius = OUTER_R - (labelHeightSvg / 2) - 5; // 预留 5 个单位间隙
-                
+                const maxSafeRadius = OUTER_R - (labelHeightSvg / 2) - 5; 
                 const finalTextRadius = Math.min(targetRadius, maxSafeRadius);
 
-                // 3. 计算最终像素坐标[cite: 1]
                 const labelX = (finalTextRadius * Math.cos(midRad)) * scale;
                 const labelY = (finalTextRadius * Math.sin(midRad)) * scale;
 
                 label.style.left = `calc(50% + ${labelX}px)`;
                 label.style.top = `calc(50% + ${labelY}px)`;
                 label.style.visibility = 'visible';
-                // -----------------------
 
                 const handleJump = (e) => {
                     e.stopPropagation();
@@ -532,13 +562,15 @@
                     label.style.transform = `translate(calc(-50% + ${mx * scale}px), calc(-50% + ${my * scale}px)) scale(1.1)`;
                     if (currentActiveTerm === term.name) return;
                     currentActiveTerm = term.name;
+                    
                     poetryDisplay.style.opacity = 0;
                     setTimeout(() => {
                         if (currentActiveTerm === term.name) {
                             const poems = poetryData[term.name];
                             const randomPoem = poems[Math.floor(Math.random() * poems.length)];
                             poetryDisplay.textContent = randomPoem;
-                            poetryDisplay.style.color = termColor;
+                            // 动态改变边框颜色[cite: 1]
+                            poetryDisplay.style.borderColor = termColor;
                             poetryDisplay.style.opacity = 1;
                         }
                     }, 200); 
@@ -548,7 +580,13 @@
                     path.style.transform = `translate(0, 0)`;
                     label.style.transform = `translate(-50%, -50%) scale(1)`;
                     currentActiveTerm = null;
-                    poetryDisplay.style.opacity = 0;
+                    
+                    // 鼠标移出后，延迟切回默认节气诗词[cite: 1]
+                    setTimeout(() => {
+                        if (!currentActiveTerm) {
+                            showDefaultPoetry();
+                        }
+                    }, 300);
                 };
 
                 path.onmouseenter = onOver;
