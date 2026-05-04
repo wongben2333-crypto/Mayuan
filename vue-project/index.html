@@ -254,11 +254,11 @@
             .weekday { font-size: 0.72rem; }
             .day { font-size: 1rem; border-radius: 8px; min-height: 32px; }
             .term-label-cal { font-size: 0.55rem; }
-            .wheel-container { width: 92vw; height: 92vw; max-width: none; max-height: none; top: 10px; }
-            .center-group { width: 56vw; height: 56vw; }
-            .center-title { font-size: 9vw; letter-spacing: 6px; margin-left: 0; }
-            .center-subtitle { font-size: 3.2vw; }
-            .term-label-wheel { width: 48px; }
+            .wheel-container { width: 95vw; height: 95vw; }
+            .center-group { width: 42vw; height: 42vw; } /* 缩小中间圆圈，给色块留空间 */
+            .term-name-wheel { font-size: 14px !important; } /* 使用固定像素确保不溢出 */
+            .term-date-wheel { font-size: 9px !important; }
+            .term-label-wheel { width: 40px; }
             #poetry-display { min-width: unset; font-size: 1rem; letter-spacing: 1px; }
         }
 
@@ -395,9 +395,8 @@
             const poetryDisplay = document.getElementById('poetry-display');
             sectorsContainer.innerHTML = ''; labelsContainer.innerHTML = '';
             
-            // --- 关键参数调整 ---
-            // INNER_R 缩小，OUTER_R 扩大，使色块变宽以包裹文字
-            const CX = 200, CY = 200, INNER_R = 85, OUTER_R = 170, MOVE_DIST = 8;
+            // 进一步加大宽度：INNER_R 减小，OUTER_R 增大
+            const CX = 200, CY = 200, INNER_R = 75, OUTER_R = 175, MOVE_DIST = 8;
             const step = 360 / 24;
             const containerWidth = document.querySelector('.wheel-container').getBoundingClientRect().width;
             const scale = containerWidth / 400;
@@ -427,7 +426,6 @@
                 path.setAttribute("fill", termColor);
                 path.setAttribute("class", "term-sector");
 
-                // 文字渲染半径处于色块的正中间
                 const textRadius = (INNER_R + OUTER_R) / 2;
                 const label = document.createElement('div');
                 label.className = 'term-label-wheel';
@@ -436,15 +434,12 @@
                 
                 label.innerHTML = `<div class="term-name-wheel">${term.name}</div><div class="term-date-wheel">${term.m+1}/${term.d}</div>`;
 
-                // --- 移除移动端的 extraOut 偏移量，确保文字居中 ---
+                // 严格居中计算
                 const labelX = (textRadius * Math.cos(midRad)) * scale;
                 const labelY = (textRadius * Math.sin(midRad)) * scale;
                 
                 label.style.left = `calc(50% + ${labelX}px)`;
                 label.style.top = `calc(50% + ${labelY}px)`;
-                label.style.padding = '6px 6px';
-                label.style.minWidth = '44px';
-                label.style.borderRadius = '6px';
                 
                 const handleJump = (e) => {
                     e.stopPropagation();
@@ -460,11 +455,9 @@
                 const onOver = () => {
                     path.style.transform = `translate(${mx}px, ${my}px)`;
                     label.style.transform = `translate(calc(-50% + ${mx * scale}px), calc(-50% + ${my * scale}px)) scale(1.1)`;
-                    
                     if (currentActiveTerm === term.name) return;
                     currentActiveTerm = term.name;
                     poetryDisplay.style.opacity = 0;
-                    
                     setTimeout(() => {
                         if (currentActiveTerm === term.name) {
                             const poems = poetryData[term.name];
