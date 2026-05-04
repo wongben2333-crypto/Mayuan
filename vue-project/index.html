@@ -172,12 +172,12 @@
             color: #4a4a4a;
             margin-bottom: 2px;
             /* 平滑响应：在像素和 vmin 之间限制，防止在某些断点文字不随容器缩放 */
-            font-size: clamp(12px, 1.8vmin, 18px);
+            font-size: clamp(9px, 2.1vmin, 18px);
         }
         .term-date-wheel {
             color: #7a7a7a;
             font-family: 'Arial', sans-serif;
-            font-size: clamp(10px, 1.1vmin, 14px);
+            font-size: clamp(8px, 1.8vmin, 14px);
         }
 
         .active-wheel .term-name-wheel { color: #222; text-shadow: 0 0 1px rgba(0,0,0,0.2); }
@@ -217,8 +217,10 @@
             font-size: 4.5vmin;
             color: #333;
             font-weight: bold;
-            letter-spacing: 10px;
-            margin-left: 10px;
+            letter-spacing: 10px; /* 桌面端保持水平间距 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .center-subtitle {
@@ -292,7 +294,22 @@
             .term-label-wheel { width: 44px; }
             .poetry-container { height: auto; padding: 6px 8px; }
             #poetry-display { padding-bottom: 4px; }
-            .center-title { font-size: 10vw; }
+            .center-title {
+                flex-direction: column; /* 强制垂直排列实现换行 */
+                font-size: 8vw;        /* 保持你之前满意的字号 */
+                letter-spacing: 4px;    /* 缩小字间距，防止换行后太散 */
+                line-height: 1.2;       /* 调整行高 */
+                margin-left: 0;         /* 移除之前的左外边距偏移 */
+            }
+
+            .center-title span {
+                display: block;         /* 确保每个词占一行 */
+            }
+
+            .center-subtitle {
+                font-size: 3vw;         /* 移动端副标题同步缩小 */
+                margin-top: 5px;
+            }
         }
     </style>
 </head>
@@ -323,7 +340,9 @@
             </svg>
             <div id="labels-container"></div>
             <div class="center-group">
-                <div class="center-title">廿四节气</div>
+                <div class="center-title">
+                    <span>廿四</span><span>节气</span>
+                </div>
                 <div class="center-subtitle">2026 · 岁月流转</div>
             </div>
         </div>
@@ -411,11 +430,16 @@
             const poetryDisplay = document.getElementById('poetry-display');
             sectorsContainer.innerHTML = ''; labelsContainer.innerHTML = '';
             
-            // 进一步加大宽度：INNER_R 减小，OUTER_R 增大
+            // CX, CY 为 SVG 中心点；INNER_R 为内径；OUTER_R 为外径
             const CX = 200, CY = 200, INNER_R = 75, OUTER_R = 175, MOVE_DIST = 8;
             const step = 360 / 24;
-            const containerWidth = document.querySelector('.wheel-container').getBoundingClientRect().width;
+            const containerRect = document.querySelector('.wheel-container').getBoundingClientRect();
+            const containerWidth = containerRect.width;
             const scale = containerWidth / 400;
+
+            // 获取页面基础字号并计算偏移量（“一个字的距离”）
+            // 我们取一个相对值：在 SVG 坐标系下约 18-20 单位
+            const oneCharOffset = 20; 
 
             solarTerms.forEach((term, i) => {
                 const seasonIndex = Math.floor(i / 6);
@@ -442,7 +466,7 @@
                 path.setAttribute("fill", termColor);
                 path.setAttribute("class", "term-sector");
 
-                const textRadius = (INNER_R + OUTER_R) / 2;
+                // 创建标签
                 const label = document.createElement('div');
                 label.className = 'term-label-wheel';
                 const now = new Date();
@@ -450,23 +474,32 @@
 
                 label.innerHTML = `<div class="term-name-wheel">${term.name}</div><div class="term-date-wheel">${term.m+1}/${term.d}</div>`;
 
-                // 先挂载以便测量尺寸（保持透明，不使用背景色）
+                // 先挂载以测量高度
                 label.style.visibility = 'hidden';
                 labelsContainer.appendChild(label);
                 const rect = label.getBoundingClientRect();
 
-                // 计算最小半径，确保标签的内边不会越过 INNER_R
-                const minRadiusSvg = INNER_R + (rect.height / scale) / 2 + 2; // 保留 2px 间隔
-                const finalTextRadius = Math.max(textRadius, minRadiusSvg);
+                // --- 核心位置逻辑修改 ---
+                const centerRadius = (INNER_R + OUTER_R) / 2; // 原本的中心半径[cite: 1]
+                
+                // 1. 向外移动“一个字”的距离
+                let targetRadius = centerRadius + oneCharOffset; 
 
-                // 严格居中计算（使用修正后的半径）
+                // 2. 安全边界检查：确保文字底部不会贴到圆环外边缘
+                const labelHeightSvg = rect.height / scale;
+                const maxSafeRadius = OUTER_R - (labelHeightSvg / 2) - 5; // 预留 5 个单位间隙
+                
+                const finalTextRadius = Math.min(targetRadius, maxSafeRadius);
+
+                // 3. 计算最终像素坐标[cite: 1]
                 const labelX = (finalTextRadius * Math.cos(midRad)) * scale;
                 const labelY = (finalTextRadius * Math.sin(midRad)) * scale;
 
                 label.style.left = `calc(50% + ${labelX}px)`;
                 label.style.top = `calc(50% + ${labelY}px)`;
                 label.style.visibility = 'visible';
-                
+                // -----------------------
+
                 const handleJump = (e) => {
                     e.stopPropagation();
                     const url = `./${term.name}/${term.name}.html`;
