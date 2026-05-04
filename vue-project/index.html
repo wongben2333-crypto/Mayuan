@@ -19,13 +19,29 @@
         body, html {
             margin: 0; padding: 0;
             width: 100%; min-height: 100%;
-            background: radial-gradient(circle at 75% 50%, var(--color-background) 0%, var(--color-bg-dark) 100%);
+            
+            /* --- 核心修改：多层背景 --- */
+            background: 
+                /* 第一层：原有的径向渐变，使用 rgba 增加透明度 (例如 0.85) */
+                radial-gradient(
+                    circle at 75% 50%, 
+                    rgba(252, 249, 234, 0.85) 0%, 
+                    rgba(242, 238, 218, 0.9) 100%
+                ),
+                /* 第二层：你的大图 URL */
+                url('./DSC02162_ACR.jpg'); 
+
+            /* 背景图设置：覆盖全屏、居中、不重复 */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* 滚动时背景固定，更有高级感 */
+            background-repeat: no-repeat;
+            
             font-family: "PingFang SC", "Hiragino Sans GB", "STHeiti", 'STSong', 'SimSun', serif;
             display: flex;
             color: var(--color-primary);
             overflow: auto;
-            -webkit-font-smoothing:antialiased;
-            -webkit-text-size-adjust:100%;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* --- 左侧面板 --- */
@@ -43,11 +59,11 @@
         .header .subtitle { font-size: 0.9rem; letter-spacing: 4px; color: var(--color-secondary); margin-bottom: 40px; }
 
         .calendar-box {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.6);
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(151, 168, 122, 0.1);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
@@ -189,7 +205,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            background: #fff;
+            background: rgba(255, 255, 255, 0.95);
             
             /* 
             核心逻辑：
