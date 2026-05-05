@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>惊蛰</title>
+  <style>
+    /* ─── Reset & Variables ─────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:        #1a1208;
+      --paper:      #faf6ee;
+      --gold:       #c8922a;
+      --gold-light: #e8c97a;
+      --green:      #4a7c59;
+      --green-light:#7ab893;
+      --red:        #b83232;
+      --mist:       rgba(250,246,238,0.85);
+      --nav-h:      56px;
+      --snap-ease:  cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Noto Serif SC', 'Songti SC', 'SimSun', Georgia, serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── ① 全屏封面 Header ─────────────────────────── */
+    header {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      will-change: transform;
+    }
+
+    /* 背景：先叠渐变遮罩，再铺底图，过渡自然不刺眼 */
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%,
+          rgba(200,146,42,0.1) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 80% at 20% 80%,
+          rgba(74,124,89,0.1) 0%, transparent 60%),
+        linear-gradient(165deg,
+          rgba(245,239,227,0.55) 0%,
+          rgba(250,246,238,0.65) 50%,
+          rgba(240,236,224,0.75) 100%),
+        url('./images/background_large.jpg') center / cover no-repeat;
+      z-index: 0;
+    }
+
+    /* 装饰圆环 */
+    .cover-circle {
+      position: absolute;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    .cover-circle.c1 {
+      width: 520px; height: 520px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(200,146,42,0.2);
+    }
+    .cover-circle.c2 {
+      width: 380px; height: 380px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(200,146,42,0.35);
+    }
+    .cover-circle.c3 {
+      width: 240px; height: 240px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(200,146,42,0.06);
+      border: 1px solid rgba(200,146,42,0.5);
+    }
+
+    /* 角落装饰线 */
+    .corner {
+      position: absolute;
+      width: 60px; height: 60px;
+      z-index: 2;
+    }
+    .corner::before, .corner::after {
+      content: '';
+      position: absolute;
+      background: var(--gold);
+      opacity: 0.6;
+    }
+    .corner::before { width: 100%; height: 1px; top: 0; left: 0; }
+    .corner::after  { width: 1px; height: 100%; top: 0; left: 0; }
+    .corner.tl { top: 32px; left: 32px; }
+    .corner.tr { top: 32px; right: 32px; transform: scaleX(-1); }
+    .corner.bl { bottom: 32px; left: 32px; transform: scaleY(-1); }
+    .corner.br { bottom: 32px; right: 32px; transform: scale(-1); }
+
+    /* 封面主体文字 */
+    .cover-content {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      text-align: center;
+    }
+
+    .cover-sub {
+      font-size: 0.78rem;
+      letter-spacing: 0.5em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      opacity: 0.8;
+    }
+
+    .cover-title {
+      font-size: clamp(5rem, 14vw, 9rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0.15em;
+      color: var(--ink);
+      text-shadow: 2px 4px 24px rgba(200,146,42,0.15);
+      animation: fadeUp 1s var(--snap-ease) both;
+    }
+    .cover-title span {
+      display: inline-block;
+      animation: fadeUp 1s var(--snap-ease) both;
+    }
+    .cover-title span:nth-child(2) { animation-delay: 0.1s; }
+
+    .cover-divider {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+      margin: 20px auto;
+    }
+
+    .cover-date {
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      color: var(--green);
+      animation: fadeUp 1s 0.3s var(--snap-ease) both;
+    }
+
+    /* 向下滚动提示 */
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      animation: fadeIn 1s 1.2s forwards;
+    }
+    .scroll-hint span {
+      font-size: 0.68rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+    }
+    .scroll-hint-arrow {
+      width: 20px; height: 20px;
+      border-right: 1px solid var(--gold);
+      border-bottom: 1px solid var(--gold);
+      transform: rotate(45deg);
+      animation: bounce 2s 1.2s ease-in-out infinite;
+    }
+
+    /* 浮动花瓣 */
+    .petal {
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0.15;
+      z-index: 1;
+      animation: drift linear infinite;
+      pointer-events: none;
+    }
+
+    /* ─── ② 内容区包装容器 ───────────── */
+    .content-wrapper {
+      position: relative;
+      will-change: transform;
+    }
+
+    /* ─── 导航栏：sticky + GPU 合成层，零重排 ────────── */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: var(--mist);
+      backdrop-filter: blur(12px) saturate(1.4);
+      -webkit-backdrop-filter: blur(12px) saturate(1.4);
+      border-bottom: 1px solid rgba(200,146,42,0.2);
+      transform: translateZ(0);          /* ★ 合成层，避免重排 */
+      transition: box-shadow 0.3s ease, background 0.3s ease;
+    }
+    .navbar.scrolled {
+      box-shadow: 0 2px 20px rgba(26,18,8,0.08);
+      background: rgba(250,246,238,0.95);
+    }
+
+    .nav-logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: var(--ink);
+    }
+    .nav-logo em {
+      font-style: normal;
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.82rem;
+      letter-spacing: 0.2em;
+      color: var(--ink);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0; right: 0;
+      height: 1px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s var(--snap-ease);
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    /* ─── 正文排版基础 ──────────────────────────────── */
+    .main-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 80px 40px 120px;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.5em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+
+    .prose {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: #3a3020;
+      margin-bottom: 20px;
+    }
+
+    /* 装饰分割线 */
+    .ornament-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 56px 0;
+    }
+    .ornament-divider::before, .ornament-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(200,146,42,0.4));
+    }
+    .ornament-divider::after {
+      background: linear-gradient(to left, transparent, rgba(200,146,42,0.4));
+    }
+    .ornament-divider span {
+      font-size: 1rem;
+      color: var(--gold);
+      opacity: 0.7;
+    }
+
+    /* ─── 图文组合模块 ──────────────────────────────── */
+    .feature-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      margin: 40px 0;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+
+    .feature-item.reverse {
+      flex-direction: row-reverse;
+    }
+
+    .feature-img {
+      flex: 1;
+      height: 280px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 8px;
+      box-shadow: 0 12px 32px rgba(26,18,8,0.08);
+      border: 1px solid rgba(200,146,42,0.2);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s var(--snap-ease), box-shadow 0.4s;
+    }
+    .feature-img:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 48px rgba(26,18,8,0.12);
+    }
+    .feature-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      background: linear-gradient(to bottom, transparent 60%, rgba(200,146,42,0.08));
+      pointer-events: none;
+    }
+
+    .feature-text {
+      flex: 1;
+    }
+    .feature-text h4 {
+      font-size: 1.35rem;
+      color: var(--ink);
+      margin-bottom: 16px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+    .feature-text p {
+      font-size: 0.98rem;
+      line-height: 1.9;
+      color: #4a4030;
+    }
+
+    /* ─── 物候三候卡片 ──────────────────────────────── */
+    .phenology-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin: 40px 0;
+    }
+
+    .phenology-card {
+      padding: 0 0 24px;
+      border: 1px solid rgba(200,146,42,0.2);
+      background: rgba(255,255,255,0.5);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform 0.3s var(--snap-ease), box-shadow 0.3s;
+    }
+    .phenology-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(200,146,42,0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .phenology-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(200,146,42,0.12);
+    }
+
+    /* 卡片内配图 */
+    .card-photo {
+      width: 100%;
+      height: 150px;
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(200,146,42,0.15);
+      position: relative;
+      z-index: 1;
+      transition: transform 0.4s var(--snap-ease);
+    }
+    .phenology-card:hover .card-photo {
+      transform: scale(1.04);
+    }
+
+    .card-num {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: rgba(200,146,42,0.15);
+      line-height: 1;
+      margin: 0 20px 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--ink);
+      margin: 0 20px 8px;
+      position: relative;
+      z-index: 1;
+    }
+    .card-desc {
+      font-size: 0.82rem;
+      color: #6a5a40;
+      line-height: 1.7;
+      margin: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── 诗词引用块 ─────────────────────────────────── */
+    .verse-block {
+      margin: 48px 0;
+      padding: 36px 40px;
+      border-left: 3px solid var(--gold);
+      background: linear-gradient(to right, rgba(200,146,42,0.06), transparent);
+      position: relative;
+    }
+    .verse-block::before {
+      content: '❝';
+      position: absolute;
+      top: 12px; left: 14px;
+      font-size: 2rem;
+      color: var(--gold);
+      opacity: 0.3;
+      line-height: 1;
+    }
+    .verse-text {
+      font-size: 1.15rem;
+      line-height: 2.2;
+      letter-spacing: 0.12em;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+    .verse-source {
+      font-size: 0.78rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+    }
+
+    /* ─── 时令食单 ───────────────────────────────────── */
+    .food-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 24px 0;
+    }
+    .food-tag {
+      padding: 7px 18px;
+      border: 1px solid rgba(74,124,89,0.35);
+      background: rgba(74,124,89,0.06);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      color: var(--green);
+      transition: all 0.2s;
+      cursor: default;
+    }
+    .food-tag:hover {
+      background: rgba(74,124,89,0.14);
+      border-color: var(--green);
+    }
+
+    /* ─── Footer ─────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 48px 20px;
+      border-top: 1px solid rgba(200,146,42,0.15);
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: rgba(100,80,40,0.5);
+    }
+
+    /* ─── Keyframe 动画 ──────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50%       { transform: rotate(45deg) translateY(6px); }
+    }
+    @keyframes drift {
+      0%   { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.15; }
+      90%  { opacity: 0.10; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* IntersectionObserver 触发的滚动淡入 */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s var(--snap-ease), transform 0.7s var(--snap-ease);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── 响应式 ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .feature-item,
+      .feature-item.reverse {
+        flex-direction: column;
+        gap: 24px;
+      }
+      .feature-img {
+        width: 100%;
+        height: 220px;
+        flex: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .phenology-grid { grid-template-columns: 1fr; }
+      .navbar { padding: 0 20px; }
+      .nav-links { gap: 18px; }
+      .main-content { padding: 48px 24px 80px; }
+      .cover-circle.c1 { width: 320px; height: 320px; }
+      .cover-circle.c2 { width: 220px; height: 220px; }
+      .cover-circle.c3 { width: 130px; height: 130px; }
+    }
+
+    /* AI 助手容器基础 */
+    .ai-section {
+        position: sticky;
+        top: var(--nav-h);
+        z-index: 99;
+        width: 100%;
+        background: transparent;
+        pointer-events: none;
+    }
+
+    .ai-container {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 16px 20px;
+        pointer-events: auto;
+    }
+
+    /* 提问栏基础样式 */
+    .ai-input-group {
+        display: flex;
+        align-items: center;
+        background: #FFFFFF;
+        padding: 10px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(26, 18, 8, 0.05), 0 10px 20px -5px rgba(200, 146, 42, 0.12);
+        border: 1px solid rgba(200, 146, 42, 0.15);
+        transition: all 0.4s var(--snap-ease);
+    }
+
+    /* 重点：当处于悬浮(is-sticky)且未展开时，禁用输入框点击，让点击由父级捕获 */
+    .ai-section.is-sticky:not(.is-expanded) #user-input {
+        pointer-events: none;
+    }
+    .ai-section.is-sticky:not(.is-expanded) .ai-input-group {
+        cursor: pointer;
+    }
+
+    /* 回答内容区基础状态 */
+    #ai-content {
+        max-height: 0;
+        overflow: hidden; /* 改为 hidden 确保完全收起 */
+        opacity: 0;
+        background: var(--mist);
+        border-radius: 12px;
+        transition: all 0.5s var(--snap-ease);
+        margin-top: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em; /* 提问与回答间隔半行 */
+    }
+
+    /* 状态 A: 在页面顶部时，只要有 active 类就显示 */
+    .ai-section:not(.is-sticky) #ai-content.active {
+        max-height: 400px;
+        opacity: 1;
+        margin-top: 10px;
+        padding: 15px;
+        overflow-y: auto;
+    }
+
+    /* 状态 B: 悬浮时，必须拥有 is-expanded 类才显示 */
+    .ai-section.is-sticky.is-expanded #ai-content {
+        max-height: 400px;
+        opacity: 1;
+        margin-top: 10px;
+        padding: 15px;
+        overflow-y: auto;
+    }
+
+    /* 输入框和按钮样式保持不变... */
+    .ai-input-group input { flex: 1; border: none; background: transparent; outline: none; }
+    .ai-send-btn { background: transparent; border: none; color: var(--gold); cursor: pointer; border-left: 1px solid rgba(200, 146, 42, 0.2); padding-left: 15px; margin-left: 10px; }
+
+    .msg {
+        line-height: 2.2;         /* 进一步加宽行距，提升阅读舒适度 */
+        font-size: 1.05rem;
+        color: #3a3020;
+        margin-bottom: 12px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+    /* 提问文字样式：使用深色主题色区分 */
+    .msg.user {
+        color: var(--ink);      /* 使用深色墨色[cite: 2] */
+        font-weight: 700;
+        padding: 5px 10px;
+        background: rgba(200, 146, 42, 0.08); /* 略微加深提问背景 */
+        border-radius: 4px;
+    }
+
+    /* 回答文字样式 */
+    .msg.ai {
+        padding: 5px 10px 5px 20px; /* 左侧留出空间给小方块 */
+        text-indent: 2em;
+    }
+
+    .msg.ai::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.7em;             /* 随行高调整位置 */
+        width: 7px;
+        height: 7px;
+        background-color: var(--gold);
+        transform: rotate(45deg);
+    }
+
+    .ai-section.is-sticky.is-expanded #ai-content {
+        background: rgba(250, 246, 238, 0.98); /* 接近不透明的纸张色，确保文字清晰 */
+        box-shadow: 0 12px 30px rgba(26, 18, 8, 0.15); /* 增加投影增强层级感 */
+        max-height: 450px;
+        padding: 20px;
+        opacity: 1;
+        margin-top: 12px;
+    }
+
+    /* 修正 Markdown 内部段落的缩进 */
+    .msg.ai p {
+        text-indent: 2em;
+        margin-bottom: 1.2em;
+    }
+
+    /* 正在加载的特殊处理（不缩进） */
+    .msg.ai:has(.loading-dots) {
+        text-indent: 0;
+    }
+    .msg.ai:has(.loading-dots)::before {
+        display: none;
+    }
+      
+    /* 引导标签容器 */
+    .ai-prompts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.5s var(--snap-ease);
+        pointer-events: none;
+    }
+
+    .ai-prompts.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    /* 修改单个标签样式，提高不透明度 */
+    .prompt-tag {
+        font-size: 0.85rem;
+        color: var(--ink); /* 使用深色墨色提升对比度 */
+        background: rgba(250, 246, 238, 0.9); /* 增加背景不透明度，类似于宣纸感 */
+        border: 1px solid rgba(200, 146, 42, 0.3);
+        padding: 6px 14px;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(26, 18, 8, 0.05); /* 增加微弱投影增强浮现感 */
+    }
+
+    .prompt-tag:hover {
+        background: rgba(250, 246, 238, 0.9);
+        border-color: var(--gold);
+        color: var(--gold);
+        transform: translateY(-1px);
+    }
+
+        /* ─── 农事谚语列表（新增样式适配） ───────────────── */
+    .proverb-list {
+      list-style: none;
+      margin: 32px 0;
+      padding-left: 20px;
+    }
+    .proverb-list li {
+      font-size: 1.05rem;
+      line-height: 2.2;
+      color: #3a3020;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .proverb-list li::before {
+      content: '◆';
+      position: absolute;
+      left: -20px;
+      color: var(--gold);
+      opacity: 0.7;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header id="cover">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+    <div class="cover-circle c1"></div>
+    <div class="cover-circle c2"></div>
+    <div class="cover-circle c3"></div>
+
+    <span class="petal" style="left:10%; animation-duration:14s; animation-delay:-3s;  top:-20px">❀</span>
+    <span class="petal" style="left:25%; animation-duration:18s; animation-delay:-8s;  top:-20px">✿</span>
+    <span class="petal" style="left:60%; animation-duration:12s; animation-delay:-1s;  top:-20px">❁</span>
+    <span class="petal" style="left:78%; animation-duration:20s; animation-delay:-11s; top:-20px">❀</span>
+    <span class="petal" style="left:45%; animation-duration:16s; animation-delay:-6s;  top:-20px">✾</span>
+
+    <div class="cover-content">
+      <p class="cover-sub">二十四节气 · 第三节气</p>
+      <h1 class="cover-title">
+        <span>惊</span><span>蛰</span>
+      </h1>
+      <div class="cover-divider"></div>
+      <p class="cover-date">正月中旬 &ensp;·&ensp; 太阳到达黄经345°</p>
+    </div>
+    
+    <div class="scroll-hint">
+      <span>向 下 探 索</span>
+      <div class="scroll-hint-arrow"></div>
+    </div>
+  </header>
+
+  <div class="content-wrapper" id="content-wrapper">
+
+    <nav class="navbar" id="navbar">
+      <div class="nav-logo">惊<em>蛰</em></div>
+      <ul class="nav-links">
+        <li><a href="#intro">节气</a></li>
+        <li><a href="#phenology">三候</a></li>
+        <li><a href="#verse">诗词</a></li>
+        <li><a href="#diet">时令</a></li>
+        <li><a href="#customs">习俗</a></li>
+        <li><a href="#health">养生</a></li>
+        <li><a href="#proverb">谚语</a></li>
+        <li><a href="#region">地域</a></li>
+        <li><a href="#legend">传说</a></li>
+      </ul>
+    </nav>
+
+    <section class="ai-section" id="ai-section">
+      <div class="ai-container" id="ai-container">
+        <div class="ai-input-group" id="ai-click-area">
+          <input type="text" id="user-input" placeholder="向惊蛰助手提问..." 
+                onkeypress="if(event.keyCode==13) sendMessage()">
+          <button class="ai-send-btn" onclick="sendMessage(); event.stopPropagation();">发送</button>
+        </div>
+        <div class="ai-prompts" id="ai-prompts"></div>
+        <div id="ai-content"></div>
+      </div>
+    </section>
+
+    <main class="main-content">
+
+      <section id="intro" style="padding-top: 24px;">
+        <p class="section-label reveal">节气释义</p>
+        <h2 class="section-title reveal">惊雷启蛰，万物生发</h2>
+
+        <div class="feature-item reveal" style="margin-top: 32px; margin-bottom: 40px;">
+          <div class="feature-text">
+            <h4>惊蛰的由来</h4>
+            <p>惊蛰为春季第三个节气，太阳抵达黄经 345°，多在仲春时节。自此春雷始发，地气通透，深埋土中的蛰虫闻声苏醒；暖风渐盛，冻土消融，天地挣脱冬之沉寂，草木抽荣，山河苏醒，万物于惊雷之中次第生发，春日生机愈发繁茂。</p>
+          </div>
+          <div class="feature-img" style="background-image: url('./images/astronomy_jingzhe.jpg');"></div>
+        </div>
+
+        <div class="ornament-divider reveal"><span>气 候 变 化</span></div>
+
+        <div class="feature-grid">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/weather1_jingzhe.jpg');"></div>
+            <div class="feature-text">
+              <h4>春雷始发，蛰虫惊醒</h4>
+              <p>惊蛰最显著的气候特征便是春雷初鸣，雷声震彻大地，唤醒深埋土中蛰伏一冬的昆虫与生灵，阴寒之气渐散，天地阳气升腾，仲春的生机自此正式拉开帷幕。</p>
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/weather2_jingzhe.jpg');"></div>
+            <div class="feature-text">
+              <h4>暖风渐盛，冻土消融</h4>
+              <p>仲春暖风拂面，残留的冻土彻底消融，土壤变得松软湿润，地气通透通畅，为草木生长、农耕劳作提供了绝佳的自然条件，大地处处洋溢着复苏的气息。</p>
+            </div>
+          </div>
+
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/weather3_jingzhe.jpg');"></div>
+            <div class="feature-text">
+              <h4>冷暖无常，春燥初起</h4>
+              <p>惊蛰时节气温起伏较大，乍暖还寒易出现倒春寒，同时空气干燥春燥渐生，需顺应气候特点做好防护，兼顾保暖与润燥，守护身体健康。</p>
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/weather4_jingzhe.jpg');"></div>
+            <div class="feature-text">
+              <h4>草木抽荣，生机繁茂</h4>
+              <p>惊雷唤醒生灵，也催发草木生长，枝头抽芽、繁花初绽，原野褪去最后一丝枯寂，山河焕发出蓬勃生机，春日的盛景就此徐徐展开。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="phenology">
+        <div class="ornament-divider reveal"><span>三 候</span></div>
+        <p class="section-label reveal">节气物候</p>
+        <h2 class="section-title reveal">惊蛰三候</h2>
+
+        <div class="phenology-grid">
+          <div class="phenology-card reveal">
+            <div class="card-photo" style="background-image: url('./images/hou1_jingzhe.jpg');"></div>
+            <div class="card-num">一</div>
+            <div class="card-title">桃始华</div>
+            <div class="card-desc">春雷轻震，东风送暖，遍野桃花迎着春寒次第盛放，粉霞漫染郊野。枝头花苞尽绽，幽香漫溢大地，以烂漫花色，开启仲春锦绣时序。</div>
+          </div>
+          <div class="phenology-card reveal">
+            <div class="card-photo" style="background-image: url('./images/hou2_jingzhe.jpg');"></div>
+            <div class="card-num">二</div>
+            <div class="card-title">仓庚鸣</div>
+            <div class="card-desc">仓庚振羽出林，婉转啼鸣不绝于耳。黄鹂清声穿梭阡陌林间，褪去冬日寂寥，声声和鸣应和春雷，为尘世谱写春日清雅乐章。</div>
+          </div>
+          <div class="phenology-card reveal">
+            <div class="card-photo" style="background-image: url('./images/hou3_jingzhe.jpg');"></div>
+            <div class="card-num">三</div>
+            <div class="card-title">鹰化为鸠</div>
+            <div class="card-desc">春气生发，肃杀之势渐敛，猛鹰隐于深林蛰伏。布谷飞鸟四处翩飞，天地气场由肃转和，生灵更迭往复，尽显自然轮回之玄妙。</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="verse">
+        <div class="ornament-divider reveal"><span>诗 词</span></div>
+        <p class="section-label reveal">古人之咏</p>
+        <h2 class="section-title reveal">雷动春醒</h2>
+
+        <div class="verse-block reveal">
+          <p class="verse-text">微雨众卉新，一雷惊蛰始。<br>田家几日闲，耕种从此起。</p>
+          <p class="verse-source">—— 唐 · 韦应物《惊蛰》</p>
+        </div>
+
+        <div class="verse-block reveal">
+          <p class="verse-text">微雨洒芳尘，韶光遍四邻。<br>惊雷催蛰醒，万物共逢春。</p>
+          <p class="verse-source">—— 唐 · 韦应物《观田家》</p>
+        </div>
+      </section>
+
+      <section id="diet">
+        <div class="ornament-divider reveal"><span>时 令</span></div>
+        <p class="section-label reveal">应时而食</p>
+        <h2 class="section-title reveal">惊蛰食单</h2>
+        <p class="prose reveal">
+          自古惊蛰有「吃梨安春」「祛毒迎春」之俗，顺天时清内热、润春燥；春日时鲜荟萃，清养为本，食时令鲜物以应春雷，以饮食调和春气。
+        </p>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/food1_jingzhe.jpg');"></div>
+            <div class="feature-text">
+              <h4>冰糖炖雪梨</h4>
+              <p>惊蛰食梨是传承千年的食俗，雪梨润燥清肺、消解春燥，冰糖炖煮后温润适口，顺应节气清养身体，驱散仲春燥气，守护咽喉与肺部健康。</p>
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/food2_jingzhe.jpg');"></div>
+            <div class="feature-text">
+              <h4>春笋荠菜羹</h4>
+              <p>惊蛰时节春笋鲜嫩、荠菜清香，二者同烹清鲜爽口，契合春日清养之道，既尝时令鲜滋味，又能疏肝健脾，适配惊蛰养生之需。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-list">
+          <span class="food-tag reveal">雪梨</span>
+          <span class="food-tag reveal">春笋</span>
+          <span class="food-tag reveal">蒜苗</span>
+          <span class="food-tag reveal">荠菜</span>
+          <span class="food-tag reveal">银耳</span>
+          <span class="food-tag reveal">青梅</span>
+          <span class="food-tag reveal">山药</span>
+          <span class="food-tag reveal">菌菇</span>
+          <span class="food-tag reveal">枇杷</span>
+        </div>
+      </section>
+
+      <section id="customs">
+        <div class="ornament-divider reveal"><span>习 俗</span></div>
+        <p class="section-label reveal">传统风俗</p>
+        <h2 class="section-title reveal">惊蛰纳福</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/custom1_jingzhe.jpg');"></div>
+            <div class="feature-text">
+              <h4>祭白虎 · 吃惊蛰梨</h4>
+              <p>民间于惊蛰祭拜白虎神兽，化解口舌是非，祈整年安稳无忧；生食或炖煮雪梨，润燥清肺，消解仲春燥气，护身健体，是惊蛰专属食俗与祈福仪式。</p>
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/custom2_jingzhe.jpg');"></div>
+            <div class="feature-text">
+              <h4>打小人 · 擂鼓驱虫</h4>
+              <p>借春日阳气勃发，举行打小人仪式驱晦避煞，扫除霉运，求得身心顺遂；效仿天雷之势击鼓鸣响，震慑毒虫，护宅院清净，远离虫患侵扰。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="health">
+        <div class="ornament-divider reveal"><span>养 生</span></div>
+        <p class="section-label reveal">节气养生</p>
+        <h2 class="section-title reveal">疏肝理气 清热润燥</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/health_jingzhe.jpg');"></div>
+            <div class="feature-text">
+              <h4>惊蛰养生要诀</h4>
+              <p>古人云：惊蛰养肝，顺木之性。此节冷暖无常，春燥初起，养生当以**疏肝理气、清热润燥**为要。饮食忌辛辣燥热，宜食清润食材；恪守春捂古训，严防倒春寒侵体；情志平和少怒，适配肝木生发；多踏青缓行，舒展筋骨，调和周身气机。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="proverb">
+        <div class="ornament-divider reveal"><span>谚 语</span></div>
+        <p class="section-label reveal">农事谚语</p>
+        <h2 class="section-title reveal">农时智慧</h2>
+
+        <div class="prose reveal">
+          惊蛰是春耕的关键节点，民间谚语凝结着古人对节气与农事的深刻洞察，指引着春耕劳作的节奏：
+        </div>
+        <ul class="proverb-list reveal">
+          <li>惊蛰春雷响，遍地好耕种</li>
+          <li>惊蛰不下雨，年头缺米粮</li>
+          <li>冷惊蛰，暖春分</li>
+          <li>惊蛰刮北风，从头另过冬</li>
+          <li>草木惊蛰醒，农忙自此兴</li>
+        </ul>
+      </section>
+
+      <section id="region">
+        <div class="ornament-divider reveal"><span>地 域</span></div>
+        <p class="section-label reveal">地域风俗</p>
+        <h2 class="section-title reveal">一方水土一方俗</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/region1_jingzhe.jpg');"></div>
+            <div class="feature-text">
+              <h4>岭南 · 江南</h4>
+              <p>岭南地区盛行惊蛰打小人、祭白虎仪式，是当地传承千年的迎春民俗；江南城乡多食梨花糕、炖雪梨，以食俗抵御春燥，温润养身。</p>
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/region2_jingzhe.jpg');"></div>
+            <div class="feature-text">
+              <h4>华北 · 西南</h4>
+              <p>华北农家抢抓惊蛰农时，耕地松土、育苗整地，开启全年农耕序幕；西南乡间有熏艾驱虫之习，以草木烟气祛除毒虫疫病，护佑家人安康。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="legend">
+        <div class="ornament-divider reveal"><span>传 说</span></div>
+        <p class="section-label reveal">节气传说</p>
+        <h2 class="section-title reveal">雷神启蛰</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/legend_jingzhe.jpg');"></div>
+            <div class="feature-text">
+              <h4>惊蛰的由来</h4>
+              <p>上古之时，万物入冬皆蛰伏休眠，毒虫潜藏地下扰人。天帝遣雷神执掌春雷，每至惊蛰便击鼓震世，雷鸣震散阴寒，惊醒蛰居生灵，震慑邪虫毒物。久而久之，人们敬雷神、惧春雷，逐渐形成驱虫、祈福、食润的惊蛰民俗，世代绵延流传。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      惊蛰 &ensp;·&ensp; 二十四节气 &ensp;·&ensp; 桃始华，仓庚鸣，鹰化为鸠
+    </footer>
+  </div>
+  <script>
+    /**
+     * ─── 滚动优化 ──────────────────────────────────────────
+     *
+     * 1. IntersectionObserver 替代 scroll 事件
+     * 2. Navbar position:sticky + translateZ(0) ── 合成层，不触发重排
+     * ──────────────────────────────────────────────────────────
+     */
+
+    const cover  = document.getElementById('cover');
+    const navbar = document.getElementById('navbar');
+
+    /* ── 1. Navbar 滚动深度阴影（IntersectionObserver，零 scroll 事件） ── */
+    const navObserver = new IntersectionObserver(
+      ([entry]) => {
+        navbar.classList.toggle('scrolled', !entry.isIntersecting);
+      },
+      { threshold: 0, rootMargin: `-${getComputedStyle(document.documentElement)
+          .getPropertyValue('--nav-h')} 0px 0px 0px` }
+    );
+    navObserver.observe(cover);
+
+    /* ── 2. 滚动淡入动画 ─────────────────────────────────────── */
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target); // 仅触发一次
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    /* ── 3. 锚点平滑跳转（原生合成器，不触发重排） ────────────── */
+    document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    const cloudbaseUrl = "https://coze-proxy-zuromvhmkb.cn-hangzhou.fcapp.run/";
+
+    async function sendMessage() {
+        const input = document.getElementById('user-input');
+        const content = document.getElementById('ai-content');
+        const text = input.value.trim();
+        
+        if (!text) return;
+
+        // 展开对话框
+        content.classList.add('active');
+        
+        // 添加用户消息
+        appendMessage('user', text);
+        input.value = '';
+        
+        // 调用 AI
+        fetchAIResponse(text);
+    }
+
+    function appendMessage(role, text) {
+        const content = document.getElementById('ai-content');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `msg ${role}`;
+        
+        if (role === 'ai') {
+            // 使用 marked 解析，渲染出带有 <p> 标签的结构以应用段落样式[cite: 2]
+            msgDiv.innerHTML = marked.parse(text);
+        } else {
+            msgDiv.textContent = text;
+        }
+        
+        content.appendChild(msgDiv);
+        // 滚动到底部时预留一点间距，不显得局促
+        content.scrollTo({ 
+            top: content.scrollHeight + 20, 
+            behavior: 'smooth' 
+        });
+    }
+
+    async function fetchAIResponse(query) {
+        const content = document.getElementById('ai-content');
+        
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'msg ai';
+        msgDiv.innerHTML = '<span class="loading-dots">正在为您采撷春光...</span>';
+        content.appendChild(msgDiv);
+        content.scrollTop = content.scrollHeight;
+
+        let fullText = "";
+        let currentEvent = ""; 
+
+        try {
+            const response = await fetch(cloudbaseUrl, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'text/event-stream' 
+                },
+                body: JSON.stringify({ query: query })
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            msgDiv.innerHTML = ""; 
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    const eventMatch = line.match(/^event:(.*)$/);
+                    if (eventMatch) {
+                        currentEvent = eventMatch[1].trim();
+                        continue;
+                    }
+
+                    if (line.startsWith('data:')) {
+                        const rawData = line.slice(5).trim();
+                        if (!rawData || rawData === '[DONE]') continue;
+
+                        try {
+                            const data = JSON.parse(rawData);
+                            if (currentEvent === 'conversation.message.delta' && data.content) {
+                                if (data.content.startsWith('{')) continue;
+                                fullText += data.content;
+                                // 实时解析 Markdown 并滚动
+                                msgDiv.innerHTML = marked.parse(fullText);
+                                content.scrollTop = content.scrollHeight;
+                            }
+                        } catch (e) {}
+                    }
+                }
+            }
+        } catch (e) {
+            msgDiv.innerHTML = "❌ 连线失败：" + e.message;
+        }
+    }
+
+    /* --- AI 助手状态与交互逻辑 --- */
+    const aiSection = document.getElementById('ai-section');
+    const aiContent = document.getElementById('ai-content');
+    const userInput = document.getElementById('user-input');
+
+    // 1. 哨兵监测：检测是否进入 sticky 状态
+    const stickySentinel = document.createElement('div');
+    aiSection.parentNode.insertBefore(stickySentinel, aiSection);
+
+    const stickyObserver = new IntersectionObserver(([entry]) => {
+        const isSticky = !entry.isIntersecting;
+        aiSection.classList.toggle('is-sticky', isSticky);
+        // 回到顶部时，如果已经有内容，确保它是可见的
+        if (!isSticky) {
+            aiSection.classList.remove('is-expanded');
+        }
+    }, { threshold: [0] });
+    stickyObserver.observe(stickySentinel);
+
+    // 2. 全局点击监听：处理展开与外部点击折叠
+    document.addEventListener('click', (e) => {
+        const isInsideAI = aiSection.contains(e.target);
+        const isSticky = aiSection.classList.contains('is-sticky');
+
+        if (isSticky) {
+            if (isInsideAI) {
+                // 在悬浮状态下，点击任意位置（且未展开时）触发展开
+                if (!aiSection.classList.contains('is-expanded')) {
+                    expandAI();
+                }
+            } else {
+                // 点击外部，且处于展开状态时，折叠
+                if (aiSection.classList.contains('is-expanded')) {
+                    collapseAI();
+                }
+            }
+        }
+    });
+
+    function expandAI() {
+        aiSection.classList.add('is-expanded');
+        setTimeout(() => userInput.focus(), 200);
+    }
+
+    function collapseAI() {
+        aiSection.classList.remove('is-expanded');
+        userInput.blur();
+    }
+
+    // 3. 重构后的发送函数（替换你原有的两个 sendMessage）
+    async function sendMessage() {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        // 无论什么状态，提问后都要显示内容
+        aiContent.classList.add('active'); 
+        if (aiSection.classList.contains('is-sticky')) {
+            aiSection.classList.add('is-expanded');
+        }
+
+        appendMessage('user', text);
+        userInput.value = '';
+        
+        // 调用原有的 AI 请求逻辑
+        fetchAIResponse(text);
+        
+        // 如果在移动端，滚动到视口顶部
+        if (window.innerWidth < 768) {
+            aiSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+// 1. 扩展问题库，每个板块增加更多问题
+const sectionPrompts = {
+    'intro': ['惊蛰为何是全年雷声出现最早的节气？', '惊蛰古时为何曾命名为「启蛰」？', '惊蛰的气温变化为何呈现南北两极分化？', '黄经度数的变化如何对应惊蛰昼夜长短差异？', '惊蛰为何是农耕时序中关键的分界节点？'],
+    'phenology': ['除桃花外，还有哪些花木会在惊蛰首轮绽放？', '仓庚为何只在仲春时节集中鸣叫？', '鹰化为鸠是自然现象还是古人认知误区？', '不同地域的惊蛰三候物候存在哪些差异？', '蛰虫苏醒的先后顺序受哪些自然条件影响？'],
+    'verse': ['古代文人为何偏爱以惊雷入惊蛰诗作？', '还有哪些冷门经典惊蛰古诗词流传于世？', '惊蛰诗词中常出现的意象有哪些固定寓意？', '南北诗人描写惊蛰景色为何风格截然不同？', '田园诗派为何高频创作惊蛰农耕题材诗作？'],
+    'diet': ['惊蛰吃梨的习俗最早起源于哪个朝代？', '不同地域惊蛰专属特色小吃分别是什么？', '惊蛰时节为何不宜多食温补类食材？', '古时惊蛰是否存在专属祭祀供品饮食？', '惊蛰食疗搭配有哪些古法配伍讲究？'],
+    'customs': ['祭白虎所用祭品有着怎样的固定讲究？', '古代皇家在惊蛰会举行哪些专属礼仪？', '惊蛰驱虫在古代有哪些特制古法器具？', '打小人习俗最初的由来与神话关联是什么？', '惊蛰传统习俗为何多围绕「驱煞」展开？'],
+    'health': ['惊蛰肝气旺盛易引发哪些隐性身体问题？', '古法惊蛰茶饮有哪些经典养生配方？', '倒春寒对惊蛰养生的具体危害是什么？', '惊蛰时节作息调整有哪些古老禁忌？', '传统推拿古法如何适配惊蛰养生需求？'],
+    'proverb': ['惊蛰谚语大多诞生于哪些农耕区域？', '古农书之中记载了哪些冷门惊蛰农谚？', '惊蛰农谚的气象预测原理是否具备科学性？', '沿海地区专属惊蛰农事谚语有哪些？', '惊蛰农谚如何指导古代果蔬种植时序？'],
+    'region': ['西北小众地区存在哪些独特惊蛰风俗？', '少数民族有哪些独具特色的惊蛰传统？', '惊蛰风俗在现代城市中发生了哪些演变？', '沿海渔村惊蛰会开展哪些渔业相关习俗？', '各地惊蛰风俗差异与地理环境有何关联？'],
+    'legend': ['雷神掌管惊蛰春雷的神话完整体系是什么？', '民间有无惊蛰毒虫相关的精怪传说？', '惊蛰祈福最早是皇家还是民间率先兴起？', '不同神话体系中对惊蛰的记载有何不同？', '惊蛰为何极少出现盛大神话庆典活动？']
+};
+
+// 2. 随机抽取函数
+function getRandomPrompts(array, count = 2) {
+    const shuffled = [...array].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+}
+
+// 3. 综合所有板块的问题池，用于顶部展示
+const allPrompts = Object.values(sectionPrompts).flat();
+
+const promptContainer = document.getElementById('ai-prompts');
+
+// 4. 更新标签的函数
+function updatePrompts(sectionId) {
+    let promptsToDisplay = [];
+    
+    if (sectionId === 'cover' || !sectionId) {
+        // 划到顶上时，从全量池中随机选两个
+        promptsToDisplay = getRandomPrompts(allPrompts, 2);
+    } else {
+        // 划到指定板块，从该板块随机选两个
+        const pool = sectionPrompts[sectionId] || sectionPrompts['general'];
+        promptsToDisplay = getRandomPrompts(pool, 2);
+    }
+
+    promptContainer.classList.remove('visible');
+    
+    setTimeout(() => {
+        promptContainer.innerHTML = '';
+        promptsToDisplay.forEach(text => {
+            const span = document.createElement('span');
+            span.className = 'prompt-tag';
+            span.textContent = text;
+            span.onclick = (e) => {
+                e.stopPropagation(); // 防止触发 AI 盒子的折叠逻辑
+                document.getElementById('user-input').value = text;
+                sendMessage();
+            };
+            promptContainer.appendChild(span);
+        });
+        promptContainer.classList.add('visible');
+    }, 300);
+}
+
+// 5. 监听逻辑：增加对 Cover (顶部) 的监听
+const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            // 如果回到 Cover 区域，则展示随机全量问题
+            updatePrompts(entry.target.id);
+        }
+    });
+}, { threshold: [0.5] });
+
+// 监听正文 section 以及封面 header
+document.querySelectorAll('section[id], header[id]').forEach(el => {
+    sectionObserver.observe(el);
+});
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+</body>
+</html>
