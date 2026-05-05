@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>立春</title>
+  <title>立夏</title>
   <style>
     /* ─── Reset & Variables ─────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -732,6 +732,28 @@
         color: var(--gold);
         transform: translateY(-1px);
     }
+    
+        /* ─── 农事谚语列表（新增样式适配） ───────────────── */
+    .proverb-list {
+      list-style: none;
+      margin: 32px 0;
+      padding-left: 20px;
+    }
+    .proverb-list li {
+      font-size: 1.05rem;
+      line-height: 2.2;
+      color: #3a3020;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .proverb-list li::before {
+      content: '◆';
+      position: absolute;
+      left: -20px;
+      color: var(--gold);
+      opacity: 0.7;
+    }
+
   </style>
 </head>
 <body>
@@ -753,12 +775,12 @@
     <span class="petal" style="left:45%; animation-duration:16s; animation-delay:-6s;  top:-20px">✾</span>
 
     <div class="cover-content">
-      <p class="cover-sub">二十四节气 · 第一节气</p>
+      <p class="cover-sub">二十四节气 · 第七节气</p>
       <h1 class="cover-title">
-        <span>立</span><span>春</span>
+        <span>立</span><span>夏</span>
       </h1>
       <div class="cover-divider"></div>
-      <p class="cover-date">正月初七前后 &ensp;·&ensp; 太阳到达黄经315°</p>
+      <p class="cover-date">公历5月5-7日 &ensp;·&ensp; 太阳到达黄经45°</p>
     </div>
 
     <div class="scroll-hint">
@@ -770,24 +792,27 @@
   <div class="content-wrapper" id="content-wrapper">
 
     <nav class="navbar" id="navbar">
-      <div class="nav-logo">立<em>春</em></div>
+      <div class="nav-logo">立<em>夏</em></div>
       <ul class="nav-links">
         <li><a href="#intro">节气</a></li>
         <li><a href="#phenology">三候</a></li>
         <li><a href="#verse">诗词</a></li>
         <li><a href="#diet">时令</a></li>
         <li><a href="#customs">习俗</a></li>
+        <li><a href="#health">养生</a></li>
+        <li><a href="#proverb">谚语</a></li>
+        <li><a href="#region">地域</a></li>
+        <li><a href="#legend">传说</a></li>
       </ul>
     </nav>
 
     <section class="ai-section" id="ai-section">
       <div class="ai-container" id="ai-container">
         <div class="ai-input-group" id="ai-click-area">
-          <input type="text" id="user-input" placeholder="向立春助手提问..." 
+          <input type="text" placeholder="向立夏助手提问..." 
                 onkeypress="if(event.keyCode==13) sendMessage()">
           <button class="ai-send-btn" onclick="sendMessage(); event.stopPropagation();">发送</button>
         </div>
-        <!-- 动态引导标签容器 -->
         <div class="ai-prompts" id="ai-prompts"></div>
         <div id="ai-content"></div>
       </div>
@@ -797,48 +822,48 @@
 
       <section id="intro" style="padding-top: 24px;">
         <p class="section-label reveal">节气释义</p>
-        <h2 class="section-title reveal">春回大地，万象更新</h2>
+        <h2 class="section-title reveal">万物并秀 夏日初长</h2>
 
         <div class="feature-item reveal" style="margin-top: 32px; margin-bottom: 40px;">
           <div class="feature-text">
-            <h4>立春的由来</h4>
-            <p>立春，是二十四节气之首，亦是春季开始的节气。"立"者，开始也；"春"者，温暖、生长也。古人云"一年之计在于春"，当太阳到达黄经315°时为立春，此时大地开始解冻，万物闭藏状态解除。立春不仅标志着新一年农耕生产的开始，更承载着中国人对物候、时令最深切的感知。</p>
+            <h4>立夏的由来</h4>
+            <p>立夏为二十四节气之第七，夏季之始，公历5月5日至7日交节，太阳行至黄经45°。古人云：“立，建始也；夏，假也，物至此时皆假大也。” 此时气温显著升高，雷雨增多，春播作物进入旺盛生长期，南方早稻插秧，北方春收夏种，天地间一片蓬勃生机。自此日起，绿荫渐浓，蛙鸣初起，人间在暖风中，迎来夏日的序章。</p>
           </div>
-          <div class="feature-img" style="background-image: url('./images/astronomy.jpg');"></div>
+          <div class="feature-img" style="background-image: url('./images/astronomy_lixia.jpg');"></div>
         </div>
 
         <div class="ornament-divider reveal"><span>气 候 变 化</span></div>
 
         <div class="feature-grid">
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/weather1.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather1_lixia.jpg');"></div>
             <div class="feature-text">
-              <h4>气温回升，告别极寒</h4>
-              <p>立春不仅是农历上的转折，更是大自然温度计的跃动。随着太阳直射点的北移，虽然北方依然寒气未消，但南方已能明显感觉到空气中寒意的褪去。微风不再凛冽刺骨，暖意开始在阳光下悄然滋生。</p>
+              <h4>春尽夏启 气温攀升</h4>
+              <p>春日落幕，夏日正式开启，整体气温稳步上升，暖意转燥热，天地阳气持续生发，万物加速生长。
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/weather2.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather2_lixia.jpg');"></div>
             <div class="feature-text">
-              <h4>霜枝待暖，冰散春归</h4>
-              <p>冬寒渐退，地气初升。沉睡一冬的冻土顺着暖意，由表及里缓缓舒活。河湖冰封尽数消融，往日凝寒如镜的厚冰，化作涓涓细流，漫过广袤沃土。晴空枝静，寒尽新生。</p>
+              <h4>雷雨渐增 雨热同频</h4>
+              <p>冷暖气流交汇频繁，降水明显增多，阵雨多发，雨热同步滋养田地，为作物生长提供充足水分。
             </div>
           </div>
 
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/weather3.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather3_lixia.jpg');"></div>
             <div class="feature-text">
-              <h4>万物萌发，绿意之始</h4>
-              <p>这种变化最初是细微的，可能是杨柳枝头那一抹似有若无的鹅黄，也可能是石缝间钻出的第一根嫩芽。草木感知到了季风的问候，整装待发，准备迎接一场名为"盛放"的盛宴。</p>
+              <h4>南北农忙 时序更迭</h4>
+              <p>南方插秧播种，北方抢抓春收，南北同步进入农忙阶段，四时轮转，盛夏画卷缓缓展开。
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/weather4.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather4_lixia.jpg');"></div>
             <div class="feature-text">
-              <h4>日照延长，追逐光明</h4>
-              <p>自此日起，白昼的长度开始从冬至后的平稳中加速增长。光合作用的时间变长，阳光的角度也变得柔和而明亮。延长的日照不仅为作物提供了能量储备，也极大地改善了生物的生理节奏。</p>
+              <h4>绿荫繁茂 夏景初成</h4>
+              <p>草木枝叶舒展繁茂，绿荫层层叠叠，蛙鸣虫鸣渐起，满目清新，尽显初夏明媚风貌。
             </div>
           </div>
         </div>
@@ -847,26 +872,26 @@
       <section id="phenology">
         <div class="ornament-divider reveal"><span>三 候</span></div>
         <p class="section-label reveal">节气物候</p>
-        <h2 class="section-title reveal">立春三候</h2>
+        <h2 class="section-title reveal">立夏三候</h2>
 
         <div class="phenology-grid">
           <div class="phenology-card reveal">
-            <div class="card-photo" style="background-image: url('./images/hou1.jpg');"></div>
+            <div class="card-photo" style="background-image: url('./images/hou1_lixia.jpg');"></div>
             <div class="card-num">一</div>
-            <div class="card-title">东风解冻</div>
-            <div class="card-desc">东风送暖，大地开始解冻，冰雪消融，柔和的春风轻抚万物。</div>
+            <div class="card-title">蝼蝈鸣</div>
+            <div class="card-desc">蝼蝈感知夏气萌发，于田间啼鸣作响，清亮声响划破春日静谧，奏响初夏第一声序曲。</div>
           </div>
           <div class="phenology-card reveal">
-            <div class="card-photo" style="background-image: url('./images/hou2.jpg');"></div>
+            <div class="card-photo" style="background-image: url('./images/hou2_lixia.jpg');"></div>
             <div class="card-num">二</div>
-            <div class="card-title">蛰虫始振</div>
-            <div class="card-desc">蛰伏于地下越冬的虫类，感受到春意，开始缓缓苏醒蠕动。</div>
+            <div class="card-title">蚯蚓出</div>
+            <div class="card-desc">地气升温，蚯蚓破土而出，游走松土、疏通土质，是大地回暖、夏日降临的自然信号。</div>
           </div>
           <div class="phenology-card reveal">
-            <div class="card-photo" style="background-image: url('./images/hou3.jpg');"></div>
+            <div class="card-photo" style="background-image: url('./images/hou3_lixia.jpg');"></div>
             <div class="card-num">三</div>
-            <div class="card-title">鱼陟负冰</div>
-            <div class="card-desc">河湖中的鱼儿开始向上游动，河冰尚未完全消融，鱼儿似乎顶着碎冰前行。</div>
+            <div class="card-title">王瓜生</div>
+            <div class="card-desc">王瓜藤蔓顺势攀爬，抽枝展叶、孕育嫩果，借夏日暖风蓬勃生长，点缀乡野篱落。</div>
           </div>
         </div>
       </section>
@@ -874,77 +899,154 @@
       <section id="verse">
         <div class="ornament-divider reveal"><span>诗 词</span></div>
         <p class="section-label reveal">古人之咏</p>
-        <h2 class="section-title reveal">句摘春意</h2>
+        <h2 class="section-title reveal">诗词雅韵</h2>
 
         <div class="verse-block reveal">
-          <p class="verse-text">律回岁晚冰霜少，春到人间草木知。<br>便觉眼前生意满，东风吹水绿参差。</p>
-          <p class="verse-source">—— 宋 · 张栻《立春偶成》</p>
+          <p class="verse-text">晴日暖风生麦气，绿阴幽草胜花时。</p>
+          <p class="verse-source">—— 宋 · 杨万里《初夏即事》</p>
         </div>
 
         <div class="verse-block reveal">
-          <p class="verse-text">春已归来，看美人头上，袅袅春幡。<br>无端风雨，未肯收尽余寒。</p>
-          <p class="verse-source">—— 宋 · 辛弃疾《汉宫春·立春日》</p>
+          <p class="verse-text">梅子金黄杏子肥，麦花雪白菜花稀。</p>
+          <p class="verse-source">—— 宋 · 范成大《四时田园杂兴·其二十五》</p>
+        </div>
+
+        <div class="verse-block reveal">
+          <p class="verse-text">蚯蚓谁教出，王瓜自合生。<br>渐觉云峰好，徐徐带雨行。</p>
+          <p class="verse-source">—— 唐 · 元稹《咏廿四气诗·立夏四月节》</p>
         </div>
       </section>
 
       <section id="diet">
         <div class="ornament-divider reveal"><span>时 令</span></div>
         <p class="section-label reveal">应时而食</p>
-        <h2 class="section-title reveal">咬春食单</h2>
+        <h2 class="section-title reveal">立夏食单</h2>
         <p class="prose reveal">
-          立春有"咬春"之俗，意在迎接新春、祈盼丰收。古人讲究食物与时节相合，不仅是为了防病，更寓意着祈求身体健康、消除春困。
+          立夏饮食遵循清淡养阳、健脾开胃原则，多食初夏时鲜，少油腻燥热，适配春夏交替的体质变化，安稳入夏。
         </p>
 
         <div class="feature-grid" style="margin-top: 32px;">
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/food1.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/food1_lixia.jpg');"></div>
             <div class="feature-text">
-              <h4>春笋</h4>
-              <p>江南地区常有"立春食笋"的习惯。做法多以"腌笃鲜"或"油焖春笋"最为出名。春笋被誉为"素食第一品"，食用春笋象征着事业如竹子般节节高升，同时也代表着春意的生发与万物的更新。</p>
+              <h4>立夏蛋 · 乌米饭</h4>
+              <p>立夏斗蛋祈福安康，乌米饭清香软糯，是南北立夏标志性食俗，承载迎夏避疰夏的美好寓意。
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/food2.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/food2_lixia.jpg');"></div>
             <div class="feature-text">
-              <h4>米籺</h4>
-              <p>在广东吴川等岭南地区，立春吃"米籺"是传统习俗。米籺由大米磨粉制成，质地软糯，常配以各种馅料。它不仅是美味的节日食品，更承载着岭南人希望一年生活甜甜蜜蜜、团团圆圆的美好愿望。</p>
+              <h4>立夏三鲜</h4>
+              <p>樱桃、青梅、蚕豆应季成熟，酸甜清爽、鲜嫩适口，开胃解腻，是立夏专属时令风味。
             </div>
           </div>
         </div>
 
         <div class="food-list">
-          <span class="food-tag reveal">春饼</span>
-          <span class="food-tag reveal">萝卜</span>
-          <span class="food-tag reveal">韭黄</span>
-          <span class="food-tag reveal">香椿芽</span>
-          <span class="food-tag reveal">荠菜</span>
-          <span class="food-tag reveal">豆苗</span>
-          <span class="food-tag reveal">春笋</span>
-          <span class="food-tag reveal">枸杞叶</span>
-          <span class="food-tag reveal">马兰头</span>
+          <span class="food-tag reveal">鸡蛋</span>
+          <span class="food-tag reveal">樱桃</span>
+          <span class="food-tag reveal">青梅</span>
+          <span class="food-tag reveal">蚕豆</span>
+          <span class="food-tag reveal">糯米</span>
+          <span class="food-tag reveal">乌饭叶</span>
+          <span class="food-tag reveal">茶叶</span>
+          <span class="food-tag reveal">黄瓜</span>
+          <span class="food-tag reveal">蒜薹</span>
         </div>
       </section>
 
       <section id="customs">
         <div class="ornament-divider reveal"><span>习 俗</span></div>
         <p class="section-label reveal">传统风俗</p>
-        <h2 class="section-title reveal">迎春纳福</h2>
+        <h2 class="section-title reveal">立夏俗韵</h2>
 
         <div class="feature-grid" style="margin-top: 32px;">
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/custom1.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/custom1_lixia.jpg');"></div>
             <div class="feature-text">
-              <h4>咬春与打春</h4>
-              <p>立春日食用春饼、生萝卜、五辛盘等食物称为"咬春"。民间另有"打春"习俗，以鞭打泥塑春牛，象征劝农耕作、催促耕牛出动。妇女儿童还会剪制"春燕""春蝶"等彩纸，谓之"春幡"，处处透出对春天的热望。</p>
+              <h4>迎夏祭神 称重祈福</h4>
+              <p>南郊迎夏、祭祀炎帝祝融；全民立夏称人，祈求不疰夏、体魄康健，是立夏经典民俗。
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/custom2.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/custom2_lixia.jpg');"></div>
             <div class="feature-text">
-              <h4>祭祖祈福</h4>
-              <p>立春作为"岁始"，是人们祭祀祖先、祈求丰收的重要时刻。古时天子率三公九卿、诸侯大夫去东郊迎春；民间也会举行盛大的祭祀仪式，感恩天地的馈赠，并祈求在新的一年里风调雨顺、五谷丰登、阖家平安。</p>
+              <h4>斗蛋尝新 立夏饭</h4>
+              <p>孩童斗蛋寻趣，全家同食立夏饭、品尝三新，南北风俗各异，皆寄托夏日平安的期许。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="health">
+        <div class="ornament-divider reveal"><span>养 生</span></div>
+        <p class="section-label reveal">节气养生</p>
+        <h2 class="section-title reveal">清淡养阳 健脾开胃</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/health_lixia.jpg');"></div>
+            <div class="feature-text">
+              <h4>立夏养生要诀</h4>
+              <p>立夏恪守春夏养阳，晚睡早起顺天时；午间小憩缓解夏乏；饮食清淡健脾、少寒少辣；轻运动养阳气，静心安神，预防烦躁疰夏。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="proverb">
+        <div class="ornament-divider reveal"><span>谚 语</span></div>
+        <p class="section-label reveal">农事谚语</p>
+        <h2 class="section-title reveal">农时智慧</h2>
+
+        <div class="prose reveal">
+          立夏农事谚语凝练初夏气候与农耕规律，指引播种、防汛、田间管护，是世代农耕生活的经验总结：
+        </div>
+        <ul class="proverb-list reveal">
+          <li>立夏不下，犁耙高挂</li>
+          <li>立夏东风到，麦子水里捞</li>
+          <li>立夏种绿豆，秋后满仓收</li>
+          <li>立夏晴，好年成</li>
+          <li>立夏见三新，五谷丰登庆</li>
+        </ul>
+      </section>
+
+      <section id="region">
+        <div class="ornament-divider reveal"><span>地 域</span></div>
+        <h2 class="section-title reveal">一方水土一方俗</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/region1_lixia.jpg');"></div>
+            <div class="feature-text">
+              <h4>北方立夏习俗</h4>
+              <p>盛行吃立夏蛋、称重、杂粮立夏饭，贴合北方农耕作息，习俗朴素务实，以养生尝新为主。
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/region2_lixia.jpg');"></div>
+            <div class="feature-text">
+              <h4>南方立夏习俗</h4>
+              <p>江浙乌米饭、立夏狗；闽粤做夏食虾面、饮凉茶；江南尝三新，水乡立夏民俗丰富细腻。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="legend">
+        <div class="ornament-divider reveal"><span>传 说</span></div>
+        <p class="section-label reveal">节气传说</p>
+        <h2 class="section-title reveal">立夏传说</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/legend_lixia.jpg');"></div>
+            <div class="feature-text">
+              <h4>立夏民间传说</h4>
+              <p>流传阿斗称人、女娲斗蛋、炎帝迎夏三大民俗传说，诠释立夏经典习俗由来，承载古人迎夏祈福的美好愿景。</p>
             </div>
           </div>
         </div>
@@ -953,7 +1055,7 @@
     </main>
 
     <footer>
-      立春 &ensp;·&ensp; 二十四节气 &ensp;·&ensp; 东风解冻，蛰虫始振，鱼陟负冰
+      立夏 &ensp;·&ensp; 二十四节气 · 蝼蝈鸣，蚯蚓出，王瓜生
     </footer>
   </div>
   <script>
@@ -1179,12 +1281,15 @@
 
 // 1. 扩展问题库，每个板块增加更多问题
 const sectionPrompts = {
-    'intro': ['立春在古代为什么叫“岁首”？', '现代气象学如何定义春天？', '为什么立春有时在春节前，有时在春节后？', '“立春”这个名字最早出现在哪部典籍？'],
-    'phenology': ['“蛰虫始振”里的虫子指的是什么？', '为什么古代三候要选鱼和冰？', '三候的观测在现代还有科学价值吗？', '“鱼陟负冰”是描述什么景象？'],
-    'verse': ['《立春偶成》这首诗背后的故事是什么？', '立春诗词里最常用的意象有哪些？', '除了这几首，还有哪些经典的立春诗词？', '古人写立春时心情通常是怎样的？','《立春日》这首诗的创作背景是什么？'],
-    'diet': ['“咬春”除了吃萝卜还要吃什么？', '春饼和春卷有什么区别？', '立春为什么要吃辛辣的五辛盘？', '北方和南方的咬春习俗有什么不同？'],
-    'customs': ['“打春牛”的牛是真牛吗？', '什么是“春幡”？', '立春为什么要“躲春”？', '古代迎春仪式为什么要在东郊举行？'],
-    'general': ['二十四节气是谁发明的？', '立春之后还会冷吗？', '今年立春是哪一天？', '立春有什么养生建议？']
+    'intro': ['为什么立夏是夏季的开始，但不是一年中最热的时候？', '太阳到达黄经45°时，地球在公转轨道上与春分点的夹角是多少？', '“立夏”的“夏”字在甲骨文中是什么形态，最初代表什么含义？', '立夏之后为什么雷雨会增多，这种天气现象有什么科学依据？', '不同海拔地区的立夏，农作物生长速度会有多大差异？'],
+    'phenology': ['蝼蝈具体是哪种动物，它的鸣叫有什么生物学意义？', '蚯蚓为什么会在立夏时节破土而出，它对土壤有什么作用？', '王瓜是什么植物，它的果实有什么用途？', '除了立夏三候，还有哪些动植物的行为能准确预示夏日的到来？', '现代气候变暖背景下，立夏三候的平均出现时间提前了多少天？'],
+    'verse': ['杨万里写《初夏即事》时，正处于怎样的人生境遇？', '范成大《四时田园杂兴》中，“日长篱落无人过”反映了怎样的田园生活？', '元稹立夏诗里“仲吕”和“朱明”分别指代什么？', '除了文中提到的，还有哪些描写立夏绿荫的经典诗词？', '古代文人在立夏时节，除了写诗还有哪些独特的雅事？'],
+    'diet': ['为什么“吃立夏蛋不疰夏”有民间说法，有无科学依据？', '乌米饭所用乌饭叶是什么植物，染色原理是什么？', '“立夏见三新”还有哪些地区版本与食材？', '南北方立夏饭食材、做法有哪些本质差异？', '青梅酒为何适合在立夏前后酿造，工艺特殊在哪？'],
+    'customs': ['帝王迎夏仪式流程是什么，与民间祭祀有何区别？', '立夏斗蛋有哪些实用小技巧，如何不易破损？', '立夏称人专用大秤，背后有什么民俗讲究？', '江浙立夏狗造型特殊，承载什么美好寓意？', '还有哪些濒临失传的古老立夏民俗？'],
+    'health': ['立夏“春夏养阳”具体该如何落地践行？', '夏季午休最佳时长是多少，睡久为何更疲惫？', '湿热/气虚/阴虚不同体质，立夏怎么养生？', '运动后立刻喝冰水的危害，正确补水方式？', '夏打盹的科学原理，高效预防方法有哪些？'],
+    'proverb': ['“立夏不下，犁耙高挂”气象原理是什么？', '立夏适合播种绿豆，农学层面原因是什么？', '南北方立夏农事谚语差异巨大的原因？', '盘点小众冷门、少为人知的立夏农谚？', '传统农谚在现代设施农业还有参考价值吗？'],
+    'region': ['福建立夏虾面特色做法与节气渊源？', '江浙立夏狗除孩童食用还有什么民俗用途？', '广东立夏荔枝甜度高，和气候有什么关联？', '北方立夏蛋与南方乌米饭，寓意区别在哪？', '各少数民族有哪些小众独特的立夏习俗？'],
+    'legend': ['阿斗称人传说有哪些地域改编版本？', '立夏斗蛋女娲传说，有无史料佐证？', '炎帝祝融信仰，体现古人怎样的自然认知？', '还有哪些冷门立夏民间神话故事？', '古老立夏传说，如何影响当代民俗发展？']
 };
 
 // 2. 随机抽取函数

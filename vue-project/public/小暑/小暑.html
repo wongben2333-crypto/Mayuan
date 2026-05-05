@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>立春</title>
+  <title>小暑</title>
   <style>
     /* ─── Reset & Variables ─────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -732,6 +732,26 @@
         color: var(--gold);
         transform: translateY(-1px);
     }
+            /* ─── 农事谚语列表（新增样式适配） ───────────────── */
+    .proverb-list {
+      list-style: none;
+      margin: 32px 0;
+      padding-left: 20px;
+    }
+    .proverb-list li {
+      font-size: 1.05rem;
+      line-height: 2.2;
+      color: #3a3020;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .proverb-list li::before {
+      content: '◆';
+      position: absolute;
+      left: -20px;
+      color: var(--gold);
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
@@ -753,12 +773,12 @@
     <span class="petal" style="left:45%; animation-duration:16s; animation-delay:-6s;  top:-20px">✾</span>
 
     <div class="cover-content">
-      <p class="cover-sub">二十四节气 · 第一节气</p>
+      <p class="cover-sub">二十四节气 · 第十一节气</p>
       <h1 class="cover-title">
-        <span>立</span><span>春</span>
+        <span>小</span><span>暑</span>
       </h1>
       <div class="cover-divider"></div>
-      <p class="cover-date">正月初七前后 &ensp;·&ensp; 太阳到达黄经315°</p>
+      <p class="cover-date">公历7月6-8日 &ensp;·&ensp; 太阳到达黄经105°</p>
     </div>
 
     <div class="scroll-hint">
@@ -770,24 +790,27 @@
   <div class="content-wrapper" id="content-wrapper">
 
     <nav class="navbar" id="navbar">
-      <div class="nav-logo">立<em>春</em></div>
+      <div class="nav-logo">小<em>暑</em></div>
       <ul class="nav-links">
         <li><a href="#intro">节气</a></li>
         <li><a href="#phenology">三候</a></li>
         <li><a href="#verse">诗词</a></li>
         <li><a href="#diet">时令</a></li>
         <li><a href="#customs">习俗</a></li>
+        <li><a href="#health">养生</a></li>
+        <li><a href="#proverb">谚语</a></li>
+        <li><a href="#region">地域</a></li>
+        <li><a href="#legend">传说</a></li>
       </ul>
     </nav>
 
     <section class="ai-section" id="ai-section">
       <div class="ai-container" id="ai-container">
         <div class="ai-input-group" id="ai-click-area">
-          <input type="text" id="user-input" placeholder="向立春助手提问..." 
+          <input type="text" id="user-input" placeholder="向小暑助手提问..." 
                 onkeypress="if(event.keyCode==13) sendMessage()">
           <button class="ai-send-btn" onclick="sendMessage(); event.stopPropagation();">发送</button>
         </div>
-        <!-- 动态引导标签容器 -->
         <div class="ai-prompts" id="ai-prompts"></div>
         <div id="ai-content"></div>
       </div>
@@ -797,48 +820,48 @@
 
       <section id="intro" style="padding-top: 24px;">
         <p class="section-label reveal">节气释义</p>
-        <h2 class="section-title reveal">春回大地，万象更新</h2>
+        <h2 class="section-title reveal">温风至暑 万物初盛</h2>
 
         <div class="feature-item reveal" style="margin-top: 32px; margin-bottom: 40px;">
           <div class="feature-text">
-            <h4>立春的由来</h4>
-            <p>立春，是二十四节气之首，亦是春季开始的节气。"立"者，开始也；"春"者，温暖、生长也。古人云"一年之计在于春"，当太阳到达黄经315°时为立春，此时大地开始解冻，万物闭藏状态解除。立春不仅标志着新一年农耕生产的开始，更承载着中国人对物候、时令最深切的感知。</p>
+            <h4>小暑的由来</h4>
+            <p>小暑为二十四节气之第十一，夏季之第五，公历7月6日至8日交节，太阳行至黄经105°。古人云：“六月节……暑，热也，就热之中分为大小，月初为小，月中为大，今则热气犹小也。” 此时“三伏天”的初伏将至，气温显著升高，热浪初袭，然未达极致，故曰“小暑”。天地间阳气炽盛，万物生长繁茂，稻禾孕穗，瓜果垂枝，是夏收夏种的关键收尾期。虽暑气渐浓，却常有雷阵雨骤降，雨热同季，既滋养作物，也带来一丝清凉。自此日起，蝉鸣聒噪，荷风送香，人间在暑热的初尝与丰收的期待中，迎来盛夏的序章。</p>
           </div>
-          <div class="feature-img" style="background-image: url('./images/astronomy.jpg');"></div>
+          <div class="feature-img" style="background-image: url('./images/astronomy_xiaoshu.jpg');"></div>
         </div>
 
         <div class="ornament-divider reveal"><span>气 候 变 化</span></div>
 
         <div class="feature-grid">
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/weather1.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather1_xiaoshu.jpg');"></div>
             <div class="feature-text">
-              <h4>气温回升，告别极寒</h4>
-              <p>立春不仅是农历上的转折，更是大自然温度计的跃动。随着太阳直射点的北移，虽然北方依然寒气未消，但南方已能明显感觉到空气中寒意的褪去。微风不再凛冽刺骨，暖意开始在阳光下悄然滋生。</p>
+              <h4>温风初至 暑气渐浓</h4>
+              <p>小暑开启盛夏序章，风带温热无凉意，气温大幅攀升，初伏将至，热浪初袭却未达极致，暑气缓缓弥漫天地。
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/weather2.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather2_xiaoshu.jpg');"></div>
             <div class="feature-text">
-              <h4>霜枝待暖，冰散春归</h4>
-              <p>冬寒渐退，地气初升。沉睡一冬的冻土顺着暖意，由表及里缓缓舒活。河湖冰封尽数消融，往日凝寒如镜的厚冰，化作涓涓细流，漫过广袤沃土。晴空枝静，寒尽新生。</p>
+              <h4>阳气炽盛 万物繁茂</h4>
+              <p>天地阳气旺盛，稻禾孕穗、瓜果垂枝，草木长势迅猛，万物在温热环境中蓬勃生长，尽显夏日生机。
             </div>
           </div>
 
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/weather3.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather3_xiaoshu.jpg');"></div>
             <div class="feature-text">
-              <h4>万物萌发，绿意之始</h4>
-              <p>这种变化最初是细微的，可能是杨柳枝头那一抹似有若无的鹅黄，也可能是石缝间钻出的第一根嫩芽。草木感知到了季风的问候，整装待发，准备迎接一场名为"盛放"的盛宴。</p>
+              <h4>雨热同季 雷阵频发</h4>
+              <p>午后雷阵雨常见，骤雨来去匆匆，甘霖滋养作物，缓解暑热，同时助力夏收夏种顺利收尾。
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/weather4.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather4_xiaoshu.jpg');"></div>
             <div class="feature-text">
-              <h4>日照延长，追逐光明</h4>
-              <p>自此日起，白昼的长度开始从冬至后的平稳中加速增长。光合作用的时间变长，阳光的角度也变得柔和而明亮。延长的日照不仅为作物提供了能量储备，也极大地改善了生物的生理节奏。</p>
+              <h4>蝉鸣荷香 盛夏启幕</h4>
+              <p>蝉鸣聒噪入耳，荷塘荷花盛放、清香四溢，夏意愈发浓郁，正式拉开盛夏的帷幕。
             </div>
           </div>
         </div>
@@ -847,26 +870,26 @@
       <section id="phenology">
         <div class="ornament-divider reveal"><span>三 候</span></div>
         <p class="section-label reveal">节气物候</p>
-        <h2 class="section-title reveal">立春三候</h2>
+        <h2 class="section-title reveal">小暑三候</h2>
 
         <div class="phenology-grid">
           <div class="phenology-card reveal">
-            <div class="card-photo" style="background-image: url('./images/hou1.jpg');"></div>
+            <div class="card-photo" style="background-image: url('./images/hou1_xiaoshu.jpg');"></div>
             <div class="card-num">一</div>
-            <div class="card-title">东风解冻</div>
-            <div class="card-desc">东风送暖，大地开始解冻，冰雪消融，柔和的春风轻抚万物。</div>
+            <div class="card-title">温风至</div>
+            <div class="card-desc">暑气初盛，清风褪去凉意，风携地面温热气息拂面，如温汤浸润，天地间暖意弥漫，滋养万物生长。</div>
           </div>
           <div class="phenology-card reveal">
-            <div class="card-photo" style="background-image: url('./images/hou2.jpg');"></div>
+            <div class="card-photo" style="background-image: url('./images/hou2_xiaoshu.jpg');"></div>
             <div class="card-num">二</div>
-            <div class="card-title">蛰虫始振</div>
-            <div class="card-desc">蛰伏于地下越冬的虫类，感受到春意，开始缓缓苏醒蠕动。</div>
+            <div class="card-title">蟋蟀居宇</div>
+            <div class="card-desc">地面日渐炎热，蟋蟀从田野迁徙至庭院屋檐、墙角阴凉处栖息鸣叫，清亮鸣声点缀燥热夏日。</div>
           </div>
           <div class="phenology-card reveal">
-            <div class="card-photo" style="background-image: url('./images/hou3.jpg');"></div>
+            <div class="card-photo" style="background-image: url('./images/hou3_xiaoshu.jpg');"></div>
             <div class="card-num">三</div>
-            <div class="card-title">鱼陟负冰</div>
-            <div class="card-desc">河湖中的鱼儿开始向上游动，河冰尚未完全消融，鱼儿似乎顶着碎冰前行。</div>
+            <div class="card-title">鹰始鸷</div>
+            <div class="card-desc">老鹰感知暑气蒸腾、猎物活跃，开始练习搏击，变得凶猛矫健，盘旋高空伺机捕食，尽显力量之美。</div>
           </div>
         </div>
       </section>
@@ -874,77 +897,155 @@
       <section id="verse">
         <div class="ornament-divider reveal"><span>诗 词</span></div>
         <p class="section-label reveal">古人之咏</p>
-        <h2 class="section-title reveal">句摘春意</h2>
+        <h2 class="section-title reveal">诗词雅韵</h2>
 
         <div class="verse-block reveal">
-          <p class="verse-text">律回岁晚冰霜少，春到人间草木知。<br>便觉眼前生意满，东风吹水绿参差。</p>
-          <p class="verse-source">—— 宋 · 张栻《立春偶成》</p>
+          <p class="verse-text">倏忽温风至，因循小暑来。<br>竹喧先觉雨，山暗已闻雷。</p>
+          <p class="verse-source">—— 唐 · 元稹《咏廿四气诗·小暑六月节》</p>
         </div>
 
         <div class="verse-block reveal">
-          <p class="verse-text">春已归来，看美人头上，袅袅春幡。<br>无端风雨，未肯收尽余寒。</p>
-          <p class="verse-source">—— 宋 · 辛弃疾《汉宫春·立春日》</p>
+          <p class="verse-text">荷风送香气，竹露滴清响。<br>欲取鸣琴弹，恨无知音赏。</p>
+          <p class="verse-source">—— 唐 · 孟浩然《夏日南亭怀辛大》</p>
+        </div>
+
+        <div class="verse-block reveal">
+          <p class="verse-text">携扙来追柳外凉，画桥南畔倚胡床。<br>月明船笛参差起，风定池莲自在香。</p>
+          <p class="verse-source">—— 宋 · 秦观《纳凉》</p>
         </div>
       </section>
 
       <section id="diet">
         <div class="ornament-divider reveal"><span>时 令</span></div>
         <p class="section-label reveal">应时而食</p>
-        <h2 class="section-title reveal">咬春食单</h2>
+        <h2 class="section-title reveal">小暑食单</h2>
         <p class="prose reveal">
-          立春有"咬春"之俗，意在迎接新春、祈盼丰收。古人讲究食物与时节相合，不仅是为了防病，更寓意着祈求身体健康、消除春困。
+          小暑饮食以清热解暑、健脾开胃为核心，清润淡凉适配初伏湿热，适度温补补充体能，助力安然度过暑热初袭期。
         </p>
 
         <div class="feature-grid" style="margin-top: 32px;">
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/food1.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/food1_xiaoshu.jpg');"></div>
             <div class="feature-text">
-              <h4>春笋</h4>
-              <p>江南地区常有"立春食笋"的习惯。做法多以"腌笃鲜"或"油焖春笋"最为出名。春笋被誉为"素食第一品"，食用春笋象征着事业如竹子般节节高升，同时也代表着春意的生发与万物的更新。</p>
+              <h4>蜜汁糯米藕</h4>
+              <p>小暑标志性时令美食，莲藕清润解暑、健脾开胃，搭配糯米软糯香甜，是南北皆宜的小暑食补佳品。
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/food2.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/food2_xiaoshu.jpg');"></div>
             <div class="feature-text">
-              <h4>米籺</h4>
-              <p>在广东吴川等岭南地区，立春吃"米籺"是传统习俗。米籺由大米磨粉制成，质地软糯，常配以各种馅料。它不仅是美味的节日食品，更承载着岭南人希望一年生活甜甜蜜蜜、团团圆圆的美好愿望。</p>
+              <h4>新米 & 黄鳝</h4>
+              <p>小暑食新米庆丰收、补营养；黄鳝鲜嫩肥美，民间有“小暑黄鳝赛人参”之说，滋补又解腻。
             </div>
           </div>
         </div>
 
         <div class="food-list">
-          <span class="food-tag reveal">春饼</span>
-          <span class="food-tag reveal">萝卜</span>
-          <span class="food-tag reveal">韭黄</span>
-          <span class="food-tag reveal">香椿芽</span>
-          <span class="food-tag reveal">荠菜</span>
-          <span class="food-tag reveal">豆苗</span>
-          <span class="food-tag reveal">春笋</span>
-          <span class="food-tag reveal">枸杞叶</span>
-          <span class="food-tag reveal">马兰头</span>
+          <span class="food-tag reveal">莲藕</span>
+          <span class="food-tag reveal">新米</span>
+          <span class="food-tag reveal">羊肉</span>
+          <span class="food-tag reveal">黄鳝</span>
+          <span class="food-tag reveal">荔枝</span>
+          <span class="food-tag reveal">西瓜</span>
+          <span class="food-tag reveal">绿豆</span>
+          <span class="food-tag reveal">莲子</span>
+          <span class="food-tag reveal">荷叶</span>
         </div>
       </section>
 
       <section id="customs">
         <div class="ornament-divider reveal"><span>习 俗</span></div>
         <p class="section-label reveal">传统风俗</p>
-        <h2 class="section-title reveal">迎春纳福</h2>
+        <h2 class="section-title reveal">小暑俗韵</h2>
 
         <div class="feature-grid" style="margin-top: 32px;">
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/custom1.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/custom1_xiaoshu.jpg');"></div>
             <div class="feature-text">
-              <h4>咬春与打春</h4>
-              <p>立春日食用春饼、生萝卜、五辛盘等食物称为"咬春"。民间另有"打春"习俗，以鞭打泥塑春牛，象征劝农耕作、催促耕牛出动。妇女儿童还会剪制"春燕""春蝶"等彩纸，谓之"春幡"，处处透出对春天的热望。</p>
+              <h4>食新 晒伏</h4>
+              <p>小暑食新谷祭祀祈福、尝新庆收；晾晒衣物书籍杀菌防霉，“晒伏”习俗流传至今，兼具实用与祈福之意。
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/custom2.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/custom2_xiaoshu.jpg');"></div>
             <div class="feature-text">
-              <h4>祭祖祈福</h4>
-              <p>立春作为"岁始"，是人们祭祀祖先、祈求丰收的重要时刻。古时天子率三公九卿、诸侯大夫去东郊迎春；民间也会举行盛大的祭祀仪式，感恩天地的馈赠，并祈求在新的一年里风调雨顺、五谷丰登、阖家平安。</p>
+              <h4>吃藕 斗蟋蟀</h4>
+              <p>吃藕清热健脾、强身健体；小暑蟋蟀健壮，斗蟋蟀成为古人夏日闲趣，延续民间娱乐传统。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="health">
+        <div class="ornament-divider reveal"><span>养 生</span></div>
+        <p class="section-label reveal">节气养生</p>
+        <h2 class="section-title reveal">清热解暑 健脾祛湿</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/health_xiaoshu.jpg');"></div>
+            <div class="feature-text">
+              <h4>小暑养生要诀</h4>
+              <p>小暑适配初伏气候，晚睡早起养阳气，午间午休补精力；饮食清暑祛湿、忌生冷暴饮；运动选早晚微凉时段；静心防暑，兼顾温补，远离暑季不适。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="proverb">
+        <div class="ornament-divider reveal"><span>谚 语</span></div>
+        <p class="section-label reveal">农事谚语</p>
+        <h2 class="section-title reveal">农时智慧</h2>
+
+        <div class="prose reveal">
+          小暑农事谚语凝结古人对初伏气候与农耕的观察，指导夏收夏种、作物管护，蕴含朴素的自然智慧：
+        </div>
+        <ul class="proverb-list reveal">
+          <li>小暑大暑，上蒸下煮</li>
+          <li>小暑不热，五谷不结</li>
+          <li>小暑一声雷，倒转做黄梅</li>
+          <li>小暑种芝麻，头顶一棚花</li>
+          <li>伏天雨，赛黄金</li>
+        </ul>
+      </section>
+
+      <section id="region">
+        <div class="ornament-divider reveal"><span>地 域</span></div>
+        <p class="section-label reveal">地域风俗</p>
+        <h2 class="section-title reveal">一方水土一方俗</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/region1_xiaoshu.jpg');"></div>
+            <div class="feature-text">
+              <h4>北方 · 川蜀</h4>
+              <p>北方盛行喝羊汤、晒伏、食新米，山东羊汤滋补解暑；四川吃凉面、喝酸梅汤，清爽消夏适配暑热。
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/region2_xiaoshu.jpg');"></div>
+            <div class="feature-text">
+              <h4>南方 · 台闽 · 少数民族</h4>
+              <p>江浙吃黄鳝、两广食藕；闽台尝新米、凤梨；彝族火把节预热、傣族泼水余韵，民俗丰富多样。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="legend">
+        <div class="ornament-divider reveal"><span>传 说</span></div>
+        <p class="section-label reveal">节气传说</p>
+        <h2 class="section-title reveal">小暑传说</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/legend_xiaoshu.jpg');"></div>
+            <div class="feature-text">
+              <h4>小暑的传说</h4>
+              <p>流传送食新祈福、晒伏求好运、小暑神护佑三大民间传说，诠释小暑尝新、避暑、祈福的文化内涵，承载古人顺应天时的智慧与美好期许。</p>
             </div>
           </div>
         </div>
@@ -953,7 +1054,7 @@
     </main>
 
     <footer>
-      立春 &ensp;·&ensp; 二十四节气 &ensp;·&ensp; 东风解冻，蛰虫始振，鱼陟负冰
+      小暑 &ensp;·&ensp; 二十四节气 &ensp;·&ensp; 温风至，蟋蟀居宇，鹰始鸷
     </footer>
   </div>
   <script>
@@ -1179,12 +1280,15 @@
 
 // 1. 扩展问题库，每个板块增加更多问题
 const sectionPrompts = {
-    'intro': ['立春在古代为什么叫“岁首”？', '现代气象学如何定义春天？', '为什么立春有时在春节前，有时在春节后？', '“立春”这个名字最早出现在哪部典籍？'],
-    'phenology': ['“蛰虫始振”里的虫子指的是什么？', '为什么古代三候要选鱼和冰？', '三候的观测在现代还有科学价值吗？', '“鱼陟负冰”是描述什么景象？'],
-    'verse': ['《立春偶成》这首诗背后的故事是什么？', '立春诗词里最常用的意象有哪些？', '除了这几首，还有哪些经典的立春诗词？', '古人写立春时心情通常是怎样的？','《立春日》这首诗的创作背景是什么？'],
-    'diet': ['“咬春”除了吃萝卜还要吃什么？', '春饼和春卷有什么区别？', '立春为什么要吃辛辣的五辛盘？', '北方和南方的咬春习俗有什么不同？'],
-    'customs': ['“打春牛”的牛是真牛吗？', '什么是“春幡”？', '立春为什么要“躲春”？', '古代迎春仪式为什么要在东郊举行？'],
-    'general': ['二十四节气是谁发明的？', '立春之后还会冷吗？', '今年立春是哪一天？', '立春有什么养生建议？']
+    'intro': ['为什么小暑是初伏将至的节点，而不是夏至或大暑？', '太阳到达黄经105°时，地球在公转轨道上与夏至点的距离是多少？', '“小暑”的“暑”字在甲骨文中是什么形态，最初代表什么含义？', '小暑之后为什么雷阵雨会变得频繁，这种天气现象有什么科学依据？', '不同海拔地区的小暑，极端高温能相差多少摄氏度？'],
+    'phenology': ['为什么小暑后吹来的风会变成“温风”，与春天的风有什么本质区别？', '“蟋蟀居宇”中的“宇”字具体指什么，蟋蟀为什么会选择在这个时候迁居？', '“鹰始鸷”中的“鸷”字是什么意思，老鹰为什么会在小暑时节变得凶猛矫健？', '除了小暑三候，还有哪些动植物的行为能准确预示初伏的到来？', '现代气候变暖背景下，小暑三候的平均出现时间提前了多少天？'],
+    'verse': ['元稹的《咏廿四气诗·小暑六月节》中，“鹰鹯新习学”的“习学”具体指什么？', '孟浩然写《夏日南亭怀辛大》时，正处于怎样的人生境遇，才会有“恨无知音赏”的感慨？', '秦观的《纳凉》中，“风定池莲自在香”描绘了怎样的小暑纳凉场景？', '除了文中提到的，还有哪些描写小暑雷阵雨的经典诗词？', '古代文人在小暑时节，除了写诗还有哪些独特的避暑雅事？'],
+    'diet': ['为什么民间会有“小暑吃藕，精神抖擞”的说法，莲藕有什么神奇的功效？', '福建莆田“小暑尝新米，大暑尝荔枝”的习俗，有什么特殊的文化寓意？', '为什么说“小暑黄鳝赛人参”，小暑时节的黄鳝与其他时节的有什么不同？', '不同地区的小暑时令美食，反映了当地怎样的地理与气候特征？', '新米饭为什么要在小暑时节品尝，而不是其他收获时节？'],
+    'customs': ['食新的习俗最早起源于哪个历史时期，有什么考古依据？', '晒伏的习俗，除了杀菌消毒还有什么其他的文化寓意？', '山东“小暑喝羊汤”的习俗，为什么要在最热的初伏前喝热性的羊肉汤？', '斗蟋蟀的习俗在古代为什么会如此盛行，有哪些著名的斗蟋蟀故事？', '除了文中提到的，还有哪些已经失传的小暑传统习俗？'],
+    'health': ['为什么小暑时节要“冬病夏治”，这种养生方法的科学依据是什么？', '夏季午休的最佳时长是多少，为什么午休时间过长反而会感到疲惫？', '不同体质的人，在小暑时节的饮食和养生方法上有什么不同？', '运动后为什么不能立即喝冰水，正确的补水方式是什么？', '“心静自然凉”的说法有什么科学依据，如何通过调节情绪来降低体感温度？'],
+    'proverb': ['“小暑一声雷，倒转做黄梅”的说法，有什么气象学上的科学解释？', '“小暑种芝麻，头顶一棚花”，为什么芝麻必须在小暑时节种植？', '伏天雨，赛黄金”，三伏天的雨水对不同农作物的生长有什么影响？', '南方和北方的小暑农事谚语，为什么会存在明显的地域差异？', '除了文中提到的，还有哪些关于小暑的冷门农事谚语？'],
+    'region': ['北京、天津等地的晒伏习俗，有哪些独特的讲究和禁忌？', '江浙地区的清炒黄鳝，有哪些不同的流派，各自有什么特色？', '台湾地区的半年圆，在制作和食用上有什么特殊的仪式和寓意？', '四川的凉面，为什么会成为小暑时节的经典美食？', '少数民族地区的小暑，有哪些鲜为人知的独特习俗？'],
+    'legend': ['食新的传说，与古代的农耕文化和祭祀文化有什么密切关联？', '晒伏的传说，在不同地区有哪些不同的版本？', '小暑神的传说，与太阳神的传说有什么关系？', '除了文中提到的，还有哪些与小暑相关的民间神话传说？', '这些古老的传说，对现代小暑习俗的形成产生了哪些深远的影响？']
 };
 
 // 2. 随机抽取函数
