@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>立春</title>
+  <title>春分</title>
   <style>
     /* ─── Reset & Variables ─────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -732,6 +732,26 @@
         color: var(--gold);
         transform: translateY(-1px);
     }
+            /* ─── 农事谚语列表（新增样式适配） ───────────────── */
+    .proverb-list {
+      list-style: none;
+      margin: 32px 0;
+      padding-left: 20px;
+    }
+    .proverb-list li {
+      font-size: 1.05rem;
+      line-height: 2.2;
+      color: #3a3020;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .proverb-list li::before {
+      content: '◆';
+      position: absolute;
+      left: -20px;
+      color: var(--gold);
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
@@ -753,12 +773,12 @@
     <span class="petal" style="left:45%; animation-duration:16s; animation-delay:-6s;  top:-20px">✾</span>
 
     <div class="cover-content">
-      <p class="cover-sub">二十四节气 · 第一节气</p>
+      <p class="cover-sub">二十四节气 · 第四节气</p>
       <h1 class="cover-title">
-        <span>立</span><span>春</span>
+        <span>春</span><span>分</span>
       </h1>
       <div class="cover-divider"></div>
-      <p class="cover-date">正月初七前后 &ensp;·&ensp; 太阳到达黄经315°</p>
+      <p class="cover-date">公历3月20-22日 &ensp;·&ensp; 太阳到达黄经0°</p>
     </div>
 
     <div class="scroll-hint">
@@ -770,24 +790,27 @@
   <div class="content-wrapper" id="content-wrapper">
 
     <nav class="navbar" id="navbar">
-      <div class="nav-logo">立<em>春</em></div>
+      <div class="nav-logo">春<em>分</em></div>
       <ul class="nav-links">
         <li><a href="#intro">节气</a></li>
         <li><a href="#phenology">三候</a></li>
         <li><a href="#verse">诗词</a></li>
         <li><a href="#diet">时令</a></li>
         <li><a href="#customs">习俗</a></li>
+        <li><a href="#health">养生</a></li>
+        <li><a href="#proverb">谚语</a></li>
+        <li><a href="#region">地域</a></li>
+        <li><a href="#legend">传说</a></li>
       </ul>
     </nav>
 
     <section class="ai-section" id="ai-section">
       <div class="ai-container" id="ai-container">
         <div class="ai-input-group" id="ai-click-area">
-          <input type="text" id="user-input" placeholder="向立春助手提问..." 
+          <input type="text" placeholder="向春分助手提问..." 
                 onkeypress="if(event.keyCode==13) sendMessage()">
           <button class="ai-send-btn" onclick="sendMessage(); event.stopPropagation();">发送</button>
         </div>
-        <!-- 动态引导标签容器 -->
         <div class="ai-prompts" id="ai-prompts"></div>
         <div id="ai-content"></div>
       </div>
@@ -797,48 +820,48 @@
 
       <section id="intro" style="padding-top: 24px;">
         <p class="section-label reveal">节气释义</p>
-        <h2 class="section-title reveal">春回大地，万象更新</h2>
+        <h2 class="section-title reveal">阴阳相半 春和景明</h2>
 
         <div class="feature-item reveal" style="margin-top: 32px; margin-bottom: 40px;">
           <div class="feature-text">
-            <h4>立春的由来</h4>
-            <p>立春，是二十四节气之首，亦是春季开始的节气。"立"者，开始也；"春"者，温暖、生长也。古人云"一年之计在于春"，当太阳到达黄经315°时为立春，此时大地开始解冻，万物闭藏状态解除。立春不仅标志着新一年农耕生产的开始，更承载着中国人对物候、时令最深切的感知。</p>
+            <h4>春分的由来</h4>
+            <p>春分为二十四节气之第四，春季之第四，公历3月20日至22日交节，太阳行至黄经0°。古人云：“春分者，阴阳相半也，故昼夜均而寒暑平。” 此日太阳直射赤道，全球昼夜等长，此后北半球昼渐长夜渐短，阳气渐盛，阴气渐衰。气温快速回升，冰雪消融，雨水充沛，万物复苏，杨柳抽芽，桃李争艳，正是春耕春种的黄金时节。自此日起，春和景明，惠风和畅，人间在融融春光中，迎来一年中最温柔美好的时光。</p>
           </div>
-          <div class="feature-img" style="background-image: url('./images/astronomy.jpg');"></div>
+          <div class="feature-img" style="background-image: url('./images/astronomy_chunfen.jpg');"></div>
         </div>
 
         <div class="ornament-divider reveal"><span>气 候 变 化</span></div>
 
         <div class="feature-grid">
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/weather1.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather1_chunfen.jpg');"></div>
             <div class="feature-text">
-              <h4>气温回升，告别极寒</h4>
-              <p>立春不仅是农历上的转折，更是大自然温度计的跃动。随着太阳直射点的北移，虽然北方依然寒气未消，但南方已能明显感觉到空气中寒意的褪去。微风不再凛冽刺骨，暖意开始在阳光下悄然滋生。</p>
+              <h4>昼夜均分 寒暑平衡</h4>
+              <p>太阳直射赤道，昼夜时长均等，冷暖气候趋于平和，天地阴阳均衡，万物平稳生长。
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/weather2.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather2_chunfen.jpg');"></div>
             <div class="feature-text">
-              <h4>霜枝待暖，冰散春归</h4>
-              <p>冬寒渐退，地气初升。沉睡一冬的冻土顺着暖意，由表及里缓缓舒活。河湖冰封尽数消融，往日凝寒如镜的厚冰，化作涓涓细流，漫过广袤沃土。晴空枝静，寒尽新生。</p>
+              <h4>气温回升 春雨渐多</h4>
+              <p>寒意褪去，暖意持续扩散，冷暖气流交汇增多，降雨愈发频繁，滋养田野草木。
             </div>
           </div>
 
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/weather3.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather3_chunfen.jpg');"></div>
             <div class="feature-text">
-              <h4>万物萌发，绿意之始</h4>
-              <p>这种变化最初是细微的，可能是杨柳枝头那一抹似有若无的鹅黄，也可能是石缝间钻出的第一根嫩芽。草木感知到了季风的问候，整装待发，准备迎接一场名为"盛放"的盛宴。</p>
+              <h4>春雷初动 万物萌发</h4>
+              <p>阴阳相争始发春雷，蛰伏生灵苏醒，草木抽枝开花，全面进入春耕大忙时期。
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/weather4.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather4_chunfen.jpg');"></div>
             <div class="feature-text">
-              <h4>日照延长，追逐光明</h4>
-              <p>自此日起，白昼的长度开始从冬至后的平稳中加速增长。光合作用的时间变长，阳光的角度也变得柔和而明亮。延长的日照不仅为作物提供了能量储备，也极大地改善了生物的生理节奏。</p>
+              <h4>桃李芬芳 春色正好</h4>
+              <p>杨柳依依，百花盛放，燕归春临，满目温润春色，是仲春最美的风景。
             </div>
           </div>
         </div>
@@ -847,26 +870,26 @@
       <section id="phenology">
         <div class="ornament-divider reveal"><span>三 候</span></div>
         <p class="section-label reveal">节气物候</p>
-        <h2 class="section-title reveal">立春三候</h2>
+        <h2 class="section-title reveal">春分三候</h2>
 
         <div class="phenology-grid">
           <div class="phenology-card reveal">
-            <div class="card-photo" style="background-image: url('./images/hou1.jpg');"></div>
+            <div class="card-photo" style="background-image: url('./images/hou1_chunfen.jpg');"></div>
             <div class="card-num">一</div>
-            <div class="card-title">东风解冻</div>
-            <div class="card-desc">东风送暖，大地开始解冻，冰雪消融，柔和的春风轻抚万物。</div>
+            <div class="card-title">玄鸟至</div>
+            <div class="card-desc">玄鸟即燕子，春分北归，衔泥筑巢、穿梭街巷田野，是仲春归来的标志性生灵，满载春日生机。</div>
           </div>
           <div class="phenology-card reveal">
-            <div class="card-photo" style="background-image: url('./images/hou2.jpg');"></div>
+            <div class="card-photo" style="background-image: url('./images/hou2_chunfen.jpg');"></div>
             <div class="card-num">二</div>
-            <div class="card-title">蛰虫始振</div>
-            <div class="card-desc">蛰伏于地下越冬的虫类，感受到春意，开始缓缓苏醒蠕动。</div>
+            <div class="card-title">雷乃发声</div>
+            <div class="card-desc">阳气升腾、阴阳相搏，春雷缓缓响起，打破冬日沉寂，唤醒大地草木与万物生灵。</div>
           </div>
           <div class="phenology-card reveal">
-            <div class="card-photo" style="background-image: url('./images/hou3.jpg');"></div>
+            <div class="card-photo" style="background-image: url('./images/hou3_chunfen.jpg');"></div>
             <div class="card-num">三</div>
-            <div class="card-title">鱼陟负冰</div>
-            <div class="card-desc">河湖中的鱼儿开始向上游动，河冰尚未完全消融，鱼儿似乎顶着碎冰前行。</div>
+            <div class="card-title">始电</div>
+            <div class="card-desc">春雨时节雷电相伴，闪电划破夜空，雨露甘霖随之而降，润泽大地，助力作物生长。</div>
           </div>
         </div>
       </section>
@@ -874,77 +897,154 @@
       <section id="verse">
         <div class="ornament-divider reveal"><span>诗 词</span></div>
         <p class="section-label reveal">古人之咏</p>
-        <h2 class="section-title reveal">句摘春意</h2>
+        <h2 class="section-title reveal">诗词雅韵</h2>
 
         <div class="verse-block reveal">
-          <p class="verse-text">律回岁晚冰霜少，春到人间草木知。<br>便觉眼前生意满，东风吹水绿参差。</p>
-          <p class="verse-source">—— 宋 · 张栻《立春偶成》</p>
+          <p class="verse-text">雨霁风光，春分天气。千花百卉争明媚。</p>
+          <p class="verse-source">—— 欧阳修《踏莎行·雨霁风光》</p>
         </div>
 
         <div class="verse-block reveal">
-          <p class="verse-text">春已归来，看美人头上，袅袅春幡。<br>无端风雨，未肯收尽余寒。</p>
-          <p class="verse-source">—— 宋 · 辛弃疾《汉宫春·立春日》</p>
+          <p class="verse-text">仲春初四日，春色正中分。绿野徘徊月，晴天断续云。</p>
+          <p class="verse-source">—— 唐 · 徐铉《春分日》</p>
+        </div>
+
+        <div class="verse-block reveal">
+          <p class="verse-text">雪入春分省见稀，半开桃李不胜威。</p>
+          <p class="verse-source">—— 宋 · 苏轼《癸丑春分后雪》</p>
         </div>
       </section>
 
       <section id="diet">
         <div class="ornament-divider reveal"><span>时 令</span></div>
         <p class="section-label reveal">应时而食</p>
-        <h2 class="section-title reveal">咬春食单</h2>
+        <h2 class="section-title reveal">春分食单</h2>
         <p class="prose reveal">
-          立春有"咬春"之俗，意在迎接新春、祈盼丰收。古人讲究食物与时节相合，不仅是为了防病，更寓意着祈求身体健康、消除春困。
+          春分阴阳均衡，饮食以调和气血、养肝健脾为主，多食春日时蔬，清淡温润，顺应昼夜平衡的节气特点。
         </p>
 
         <div class="feature-grid" style="margin-top: 32px;">
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/food1.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/food1_chunfen.jpg');"></div>
             <div class="feature-text">
-              <h4>春笋</h4>
-              <p>江南地区常有"立春食笋"的习惯。做法多以"腌笃鲜"或"油焖春笋"最为出名。春笋被誉为"素食第一品"，食用春笋象征着事业如竹子般节节高升，同时也代表着春意的生发与万物的更新。</p>
+              <h4>春日时蔬</h4>
+              <p>香椿、春笋、荠菜、韭菜鲜嫩应季，疏肝健脾、中和体感，是春分养生必食的天然时鲜。
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/food2.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/food2_chunfen.jpg');"></div>
             <div class="feature-text">
-              <h4>米籺</h4>
-              <p>在广东吴川等岭南地区，立春吃"米籺"是传统习俗。米籺由大米磨粉制成，质地软糯，常配以各种馅料。它不仅是美味的节日食品，更承载着岭南人希望一年生活甜甜蜜蜜、团团圆圆的美好愿望。</p>
+              <h4>春分特色食俗</h4>
+              <p>太阳糕、春汤、糯米汤圆各具地域特色，寓意平安康健、五谷丰登，承载春分民俗文化。
             </div>
           </div>
         </div>
 
         <div class="food-list">
-          <span class="food-tag reveal">春饼</span>
-          <span class="food-tag reveal">萝卜</span>
-          <span class="food-tag reveal">韭黄</span>
-          <span class="food-tag reveal">香椿芽</span>
-          <span class="food-tag reveal">荠菜</span>
-          <span class="food-tag reveal">豆苗</span>
+          <span class="food-tag reveal">春菜</span>
           <span class="food-tag reveal">春笋</span>
-          <span class="food-tag reveal">枸杞叶</span>
-          <span class="food-tag reveal">马兰头</span>
+          <span class="food-tag reveal">香椿</span>
+          <span class="荠菜</span>
+          <span class="food-tag reveal">韭菜</span>
+          <span class="food-tag reveal">鸡蛋</span>
+          <span class="food-tag reveal">糯米</span>
+          <span class="food-tag reveal">草莓</span>
+          <span class="food-tag reveal">蜂蜜</span>
         </div>
       </section>
 
       <section id="customs">
         <div class="ornament-divider reveal"><span>习 俗</span></div>
         <p class="section-label reveal">传统风俗</p>
-        <h2 class="section-title reveal">迎春纳福</h2>
+        <h2 class="section-title reveal">春分俗韵</h2>
 
         <div class="feature-grid" style="margin-top: 32px;">
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/custom1.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/custom1_chunfen.jpg');"></div>
             <div class="feature-text">
-              <h4>咬春与打春</h4>
-              <p>立春日食用春饼、生萝卜、五辛盘等食物称为"咬春"。民间另有"打春"习俗，以鞭打泥塑春牛，象征劝农耕作、催促耕牛出动。妇女儿童还会剪制"春燕""春蝶"等彩纸，谓之"春幡"，处处透出对春天的热望。</p>
+              <h4>竖蛋祭日 祈福迎春</h4>
+              <p>春分竖蛋平衡天地之气，帝王祭日敬奉太阳神，祈求风调雨顺，是流传千年的经典民俗。
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/custom2.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/custom2_chunfen.jpg');"></div>
             <div class="feature-text">
-              <h4>祭祖祈福</h4>
-              <p>立春作为"岁始"，是人们祭祀祖先、祈求丰收的重要时刻。古时天子率三公九卿、诸侯大夫去东郊迎春；民间也会举行盛大的祭祀仪式，感恩天地的馈赠，并祈求在新的一年里风调雨顺、五谷丰登、阖家平安。</p>
+              <h4>吃春菜 送春牛</h4>
+              <p>岭南饮春汤健体，民间送春牛图贺丰，粘雀子嘴护庄稼，南北民俗各具意趣。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="health">
+        <div class="ornament-divider reveal"><span>养 生</span></div>
+        <p class="section-label reveal">节气养生</p>
+        <h2 class="section-title reveal">阴阳平衡 养肝健脾</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/health_chunfen.jpg');"></div>
+            <div class="feature-text">
+              <h4>春分养生要诀</h4>
+              <p>春分恪守阴阳平衡，坚持春捂防倒春寒；饮食清淡调和、疏肝健脾；适度春游舒缓情绪；规律作息、调和气血，平稳度过仲春。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="proverb">
+        <div class="ornament-divider reveal"><span>谚 语</span></div>
+        <p class="section-label reveal">农事谚语</p>
+        <h2 class="section-title reveal">农时智慧</h2>
+
+        <div class="prose reveal">
+          春分农谚凝练仲春气候与农耕规律，指导田间管护、作物种植与防灾避险，是古人长久的生产智慧：
+        </div>
+        <ul class="proverb-list reveal">
+          <li>春分麦起身，肥水要紧跟</li>
+          <li>春分有雨到清明，清明下雨无路行</li>
+          <li>春分不暖，秋分不凉</li>
+          <li>春分刮北风，旱到五月中</li>
+          <li>春分前后怕春霜，一见春霜麦苗伤</li>
+        </ul>
+      </section>
+
+      <section id="region">
+        <div class="ornament-divider reveal"><span>地 域</span></div>
+        <h2 class="section-title reveal">一方水土一方俗</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/region1_chunfen.jpg');"></div>
+            <div class="feature-text">
+              <h4>北方春分风俗</h4>
+              <p>以祭日、食太阳糕、竖蛋比赛为主，围绕农耕祈丰，习俗庄重质朴，贴合北方农事节奏。
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/region2_chunfen.jpg');"></div>
+            <div class="feature-text">
+              <h4>南方春分风俗</h4>
+              <p>岭南吃春菜饮春汤，江南送春牛、品青团，闽台食润饭、竖蛋游乐，水乡民俗温柔细腻。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="legend">
+        <div class="ornament-divider reveal"><span>传 说</span></div>
+        <p class="section-label reveal">节气传说</p>
+        <h2 class="section-title reveal">春分传说</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/legend_chunfen.jpg');"></div>
+            <div class="feature-text">
+              <h4>春分民间传说</h4>
+              <p>流传女娲竖蛋、神牛耕田、炎帝祭日三大古老传说，诠释春分平衡理念与农耕信仰，承载春日祈福内涵。</p>
             </div>
           </div>
         </div>
@@ -953,7 +1053,7 @@
     </main>
 
     <footer>
-      立春 &ensp;·&ensp; 二十四节气 &ensp;·&ensp; 东风解冻，蛰虫始振，鱼陟负冰
+      春分 &ensp;·&ensp; 二十四节气 · 玄鸟至，雷乃发声，始电
     </footer>
   </div>
   <script>
@@ -1179,12 +1279,15 @@
 
 // 1. 扩展问题库，每个板块增加更多问题
 const sectionPrompts = {
-    'intro': ['立春在古代为什么叫“岁首”？', '现代气象学如何定义春天？', '为什么立春有时在春节前，有时在春节后？', '“立春”这个名字最早出现在哪部典籍？'],
-    'phenology': ['“蛰虫始振”里的虫子指的是什么？', '为什么古代三候要选鱼和冰？', '三候的观测在现代还有科学价值吗？', '“鱼陟负冰”是描述什么景象？'],
-    'verse': ['《立春偶成》这首诗背后的故事是什么？', '立春诗词里最常用的意象有哪些？', '除了这几首，还有哪些经典的立春诗词？', '古人写立春时心情通常是怎样的？','《立春日》这首诗的创作背景是什么？'],
-    'diet': ['“咬春”除了吃萝卜还要吃什么？', '春饼和春卷有什么区别？', '立春为什么要吃辛辣的五辛盘？', '北方和南方的咬春习俗有什么不同？'],
-    'customs': ['“打春牛”的牛是真牛吗？', '什么是“春幡”？', '立春为什么要“躲春”？', '古代迎春仪式为什么要在东郊举行？'],
-    'general': ['二十四节气是谁发明的？', '立春之后还会冷吗？', '今年立春是哪一天？', '立春有什么养生建议？']
+    'intro': ['为什么春分是最早被确定的四个节气之一？', '太阳直射赤道时两极昼夜状况是怎样的？', '“春分”的“分”字甲骨文形态与本义是什么？', '春分后气温快速回升的气象原因？', '不同纬度春分昼夜时长差异有多大？'],
+    'phenology': ['燕子为何能精准按时在春分归来？', '为什么春分前后才会出现春雷？', '闪电形成的必要条件是什么？', '除三候外还有哪些物候预示阴阳平衡？', '气候变暖让春分三候提前了多少天？'],
+    'verse': ['欧阳修创作《踏莎行·雨霁风光》时的人生境遇？', '徐铉《春分日》描绘了哪些仲春景象？', '苏轼春分雪诗为何感慨世事难料？', '有哪些描写春分放风筝的经典古诗？', '古代春分文人有哪些小众雅趣活动？'],
+    'diet': ['春分竖蛋更容易成功的科学原理？', '太阳糕造型背后的文化寓意？', '岭南春分春菜是什么植物，为何此时最佳？', '南北方春酒酿造与口感有何差异？', '草莓成为春分时令水果的营养优势？'],
+    'customs': ['古代帝王春分祭日完整仪式流程？', '送春牛“说春”有哪些固定祝词套路？', '粘雀子嘴除防鸟还有什么寓意？', '春分吃春菜习俗起源于哪个朝代？', '还有哪些已经失传的春分古老民俗？'],
+    'health': ['春分如何在起居饮食上做到阴阳平衡？', '春分阶段“春捂秋冻”具体怎么做？', '阴虚/湿热/气虚人群春分养生区别？', '春分放风筝有哪些专业养生作用？', '春困的科学成因与高效缓解办法？'],
+    'proverb': ['“春分麦起身，肥水要紧跟”农学原理？', '“春分有雨到清明”气象逻辑是什么？', '春分北风易干旱的气候成因？', '南北春分农谚差异巨大的原因？', '小众冷门的春分农事谚语有哪些？'],
+    'region': ['北京太阳糕有哪些经典口味与做法？', '江浙青团除艾草外还有哪些原料？', '福建润饼和北方春饼核心区别？', '台湾春饭的食用仪式与美好寓意？', '各少数民族有哪些冷门春分习俗？'],
+    'legend': ['女娲春分造人与竖蛋习俗有无考古佐证？', '春牛传说存在哪些地方改编版本？', '炎帝太阳神传说体现了怎样农耕认知？', '还有哪些冷门春分民间神话？', '古老春分传说对现代民俗的影响？']
 };
 
 // 2. 随机抽取函数
