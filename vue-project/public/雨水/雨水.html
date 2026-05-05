@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>立春</title>
+  <title>雨水</title>
   <style>
     /* ─── Reset & Variables ─────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -62,7 +62,7 @@
           rgba(245,239,227,0.55) 0%,
           rgba(250,246,238,0.65) 50%,
           rgba(240,236,224,0.75) 100%),
-        url('./images/background_large.jpg') center / cover no-repeat;
+        url('./images/background_large.jpg') center / cover no-repeat; /* 替换为雨水背景图 */
       z-index: 0;
     }
 
@@ -500,6 +500,27 @@
       border-color: var(--green);
     }
 
+    /* ─── 农事谚语列表（新增样式适配） ───────────────── */
+    .proverb-list {
+      list-style: none;
+      margin: 32px 0;
+      padding-left: 20px;
+    }
+    .proverb-list li {
+      font-size: 1.05rem;
+      line-height: 2.2;
+      color: #3a3020;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .proverb-list li::before {
+      content: '◆';
+      position: absolute;
+      left: -20px;
+      color: var(--gold);
+      opacity: 0.7;
+    }
+
     /* ─── Footer ─────────────────────────────────────── */
     footer {
       text-align: center;
@@ -753,12 +774,12 @@
     <span class="petal" style="left:45%; animation-duration:16s; animation-delay:-6s;  top:-20px">✾</span>
 
     <div class="cover-content">
-      <p class="cover-sub">二十四节气 · 第一节气</p>
+      <p class="cover-sub">二十四节气 · 第二节气</p>
       <h1 class="cover-title">
-        <span>立</span><span>春</span>
+        <span>雨</span><span>水</span>
       </h1>
       <div class="cover-divider"></div>
-      <p class="cover-date">正月初七前后 &ensp;·&ensp; 太阳到达黄经315°</p>
+      <p class="cover-date">正月中旬 &ensp;·&ensp; 太阳到达黄经330°</p>
     </div>
 
     <div class="scroll-hint">
@@ -770,20 +791,24 @@
   <div class="content-wrapper" id="content-wrapper">
 
     <nav class="navbar" id="navbar">
-      <div class="nav-logo">立<em>春</em></div>
+      <div class="nav-logo">雨<em>水</em></div>
       <ul class="nav-links">
         <li><a href="#intro">节气</a></li>
         <li><a href="#phenology">三候</a></li>
         <li><a href="#verse">诗词</a></li>
         <li><a href="#diet">时令</a></li>
         <li><a href="#customs">习俗</a></li>
+        <li><a href="#health">养生</a></li>
+        <li><a href="#proverb">谚语</a></li>
+        <li><a href="#region">地域</a></li>
+        <li><a href="#legend">传说</a></li>
       </ul>
     </nav>
 
     <section class="ai-section" id="ai-section">
       <div class="ai-container" id="ai-container">
         <div class="ai-input-group" id="ai-click-area">
-          <input type="text" id="user-input" placeholder="向立春助手提问..." 
+          <input type="text" id="user-input" placeholder="向雨水助手提问..." 
                 onkeypress="if(event.keyCode==13) sendMessage()">
           <button class="ai-send-btn" onclick="sendMessage(); event.stopPropagation();">发送</button>
         </div>
@@ -797,48 +822,48 @@
 
       <section id="intro" style="padding-top: 24px;">
         <p class="section-label reveal">节气释义</p>
-        <h2 class="section-title reveal">春回大地，万象更新</h2>
+        <h2 class="section-title reveal">春雨润物，山川复苏</h2>
 
         <div class="feature-item reveal" style="margin-top: 32px; margin-bottom: 40px;">
           <div class="feature-text">
-            <h4>立春的由来</h4>
-            <p>立春，是二十四节气之首，亦是春季开始的节气。"立"者，开始也；"春"者，温暖、生长也。古人云"一年之计在于春"，当太阳到达黄经315°时为立春，此时大地开始解冻，万物闭藏状态解除。立春不仅标志着新一年农耕生产的开始，更承载着中国人对物候、时令最深切的感知。</p>
+            <h4>雨水的由来</h4>
+            <p>雨水，是二十四节气之次，正月中气（太阳黄经330°）；自此日起，气温稳步回暖，冰雪消融殆尽，降水由雪转雨、雨量渐增，春雨润物无声，山川万物滋长复苏，天地间尽是湿润氤氲的生机。</p>
           </div>
-          <div class="feature-img" style="background-image: url('./images/astronomy.jpg');"></div>
+          <div class="feature-img" style="background-image: url('./images/astronomy_rain.jpg');"></div> <!-- 替换为雨水天文相关图 -->
         </div>
 
         <div class="ornament-divider reveal"><span>气 候 变 化</span></div>
 
         <div class="feature-grid">
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/weather1.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather1_rain.jpg');"></div> <!-- 替换为雨水气候图1 -->
             <div class="feature-text">
-              <h4>气温回升，告别极寒</h4>
-              <p>立春不仅是农历上的转折，更是大自然温度计的跃动。随着太阳直射点的北移，虽然北方依然寒气未消，但南方已能明显感觉到空气中寒意的褪去。微风不再凛冽刺骨，暖意开始在阳光下悄然滋生。</p>
+              <h4>气温回暖，雪尽成雨</h4>
+              <p>雨水节气是寒潮天气的收尾，气温告别骤降的凛冽，步入稳步回升的节奏。北方残雪消融，南方细雨初濛，降水形态从固态雪转为液态雨，空气湿度渐增，天地间初现"沾衣欲湿杏花雨"的温润。</p>
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/weather2.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather2_rain.jpg');"></div> <!-- 替换为雨水气候图2 -->
             <div class="feature-text">
-              <h4>霜枝待暖，冰散春归</h4>
-              <p>冬寒渐退，地气初升。沉睡一冬的冻土顺着暖意，由表及里缓缓舒活。河湖冰封尽数消融，往日凝寒如镜的厚冰，化作涓涓细流，漫过广袤沃土。晴空枝静，寒尽新生。</p>
+              <h4>细雨如酥，浸润万物</h4>
+              <p>春雨至则地气升，绵绵细雨落在冻土之上，既解冬旱之渴，又为草木积蓄生长之力。泥土吸饱水分，原本枯寂的原野开始酝酿生机，每一滴雨都是写给春天的注脚。</p>
             </div>
           </div>
 
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/weather3.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather3_rain.jpg');"></div> <!-- 替换为雨水气候图3 -->
             <div class="feature-text">
-              <h4>万物萌发，绿意之始</h4>
-              <p>这种变化最初是细微的，可能是杨柳枝头那一抹似有若无的鹅黄，也可能是石缝间钻出的第一根嫩芽。草木感知到了季风的问候，整装待发，准备迎接一场名为"盛放"的盛宴。</p>
+              <h4>湿气初生，春寒未退</h4>
+              <p>雨水虽暖，却仍有"倒春寒"之虞，且空气湿度上升易致湿邪侵袭。古人谓"春捂秋冻"，正是顺应此时乍暖还寒、湿气渐生的气候特征，护养体内阳气。</p>
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/weather4.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/weather4_rain.jpg');"></div> <!-- 替换为雨水气候图4 -->
             <div class="feature-text">
-              <h4>日照延长，追逐光明</h4>
-              <p>自此日起，白昼的长度开始从冬至后的平稳中加速增长。光合作用的时间变长，阳光的角度也变得柔和而明亮。延长的日照不仅为作物提供了能量储备，也极大地改善了生物的生理节奏。</p>
+              <h4>万物待苏，生机暗涌</h4>
+              <p>雨水的滋养让蛰伏一冬的生命开始苏醒：土壤中的种子吸胀萌发，枝头的芽苞蓄势待放，水中的游鱼活跃如初，天地间的生机从隐秘的角落，慢慢铺满视野所及的每一寸土地。</p>
             </div>
           </div>
         </div>
@@ -847,26 +872,26 @@
       <section id="phenology">
         <div class="ornament-divider reveal"><span>三 候</span></div>
         <p class="section-label reveal">节气物候</p>
-        <h2 class="section-title reveal">立春三候</h2>
+        <h2 class="section-title reveal">雨水三候</h2>
 
         <div class="phenology-grid">
           <div class="phenology-card reveal">
-            <div class="card-photo" style="background-image: url('./images/hou1.jpg');"></div>
+            <div class="card-photo" style="background-image: url('./images/hou1_rain.jpg');"></div> <!-- 替换为獭祭鱼图 -->
             <div class="card-num">一</div>
-            <div class="card-title">东风解冻</div>
-            <div class="card-desc">东风送暖，大地开始解冻，冰雪消融，柔和的春风轻抚万物。</div>
+            <div class="card-title">獭祭鱼</div>
+            <div class="card-desc">春水生暖，冰泮溪活，水獭捕鱼陈列于岸，仿若献祭天地，以生灵之姿迎候春雨，尽显自然对时节的敬畏与灵秀。</div>
           </div>
           <div class="phenology-card reveal">
-            <div class="card-photo" style="background-image: url('./images/hou2.jpg');"></div>
+            <div class="card-photo" style="background-image: url('./images/hou2_rain.jpg');"></div> <!-- 替换为鸿雁来图 -->
             <div class="card-num">二</div>
-            <div class="card-title">蛰虫始振</div>
-            <div class="card-desc">蛰伏于地下越冬的虫类，感受到春意，开始缓缓苏醒蠕动。</div>
+            <div class="card-title">鸿雁来</div>
+            <div class="card-desc">北雁感知春信，辞别江南暖境，结队振翅北归，穿云渡水奔赴故地，为苍茫天地捎来最鲜活的春日讯息。</div>
           </div>
           <div class="phenology-card reveal">
-            <div class="card-photo" style="background-image: url('./images/hou3.jpg');"></div>
+            <div class="card-photo" style="background-image: url('./images/hou3_rain.jpg');"></div> <!-- 替换为草木萌动图 -->
             <div class="card-num">三</div>
-            <div class="card-title">鱼陟负冰</div>
-            <div class="card-desc">河湖中的鱼儿开始向上游动，河冰尚未完全消融，鱼儿似乎顶着碎冰前行。</div>
+            <div class="card-title">草木萌动</div>
+            <div class="card-desc">甘霖浸润大地，草木汲足春雨滋养，嫩芽破土而出，新枝悄然抽条，原野褪去枯寂，点点青绿铺展山河。</div>
           </div>
         </div>
       </section>
@@ -874,77 +899,150 @@
       <section id="verse">
         <div class="ornament-divider reveal"><span>诗 词</span></div>
         <p class="section-label reveal">古人之咏</p>
-        <h2 class="section-title reveal">句摘春意</h2>
+        <h2 class="section-title reveal">句摘雨意</h2>
 
         <div class="verse-block reveal">
-          <p class="verse-text">律回岁晚冰霜少，春到人间草木知。<br>便觉眼前生意满，东风吹水绿参差。</p>
-          <p class="verse-source">—— 宋 · 张栻《立春偶成》</p>
+          <p class="verse-text">好雨知时节，当春乃发生。<br>随风潜入夜，润物细无声。</p>
+          <p class="verse-source">—— 唐 · 杜甫《春夜喜雨》</p>
         </div>
 
         <div class="verse-block reveal">
-          <p class="verse-text">春已归来，看美人头上，袅袅春幡。<br>无端风雨，未肯收尽余寒。</p>
-          <p class="verse-source">—— 宋 · 辛弃疾《汉宫春·立春日》</p>
+          <p class="verse-text">天街小雨润如酥，草色遥看近却无。<br>最是一年春好处，绝胜烟柳满皇都。</p>
+          <p class="verse-source">—— 唐 · 韩愈《早春呈水部张十八员外》</p>
         </div>
       </section>
 
       <section id="diet">
         <div class="ornament-divider reveal"><span>时 令</span></div>
         <p class="section-label reveal">应时而食</p>
-        <h2 class="section-title reveal">咬春食单</h2>
+        <h2 class="section-title reveal">雨水食单</h2>
         <p class="prose reveal">
-          立春有"咬春"之俗，意在迎接新春、祈盼丰收。古人讲究食物与时节相合，不仅是为了防病，更寓意着祈求身体健康、消除春困。
+          雨水湿气初生，养生以健脾养胃为要，多食甘温鲜蔬，忌生冷寒凉之物；顺应春生之气，食时令鲜物以尝春，亦以饮食调养生机。
         </p>
 
         <div class="feature-grid" style="margin-top: 32px;">
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/food1.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/food1_rain.jpg');"></div> <!-- 替换为春笋鲫鱼汤图 -->
             <div class="feature-text">
-              <h4>春笋</h4>
-              <p>江南地区常有"立春食笋"的习惯。做法多以"腌笃鲜"或"油焖春笋"最为出名。春笋被誉为"素食第一品"，食用春笋象征着事业如竹子般节节高升，同时也代表着春意的生发与万物的更新。</p>
+              <h4>春笋鲫鱼汤</h4>
+              <p>江南雨水时节，春笋鲜嫩、鲫鱼肥美，二者同烹，汤头鲜醇，既取春笋"节节高升"的吉祥之意，又借鲫鱼健脾利湿之效，应和雨水祛湿养脾的养生之道。</p>
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/food2.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/food2_rain.jpg');"></div> <!-- 替换为荠菜豆腐羹图 -->
             <div class="feature-text">
-              <h4>米籺</h4>
-              <p>在广东吴川等岭南地区，立春吃"米籺"是传统习俗。米籺由大米磨粉制成，质地软糯，常配以各种馅料。它不仅是美味的节日食品，更承载着岭南人希望一年生活甜甜蜜蜜、团团圆圆的美好愿望。</p>
+              <h4>荠菜豆腐羹</h4>
+              <p>荠菜为初春第一鲜，豆腐甘平健脾，二者熬羹，清润适口。雨水食之，既可尝春日野趣，又能健脾祛湿，契合此时"少酸多甘"的饮食准则。</p>
             </div>
           </div>
         </div>
 
         <div class="food-list">
-          <span class="food-tag reveal">春饼</span>
-          <span class="food-tag reveal">萝卜</span>
-          <span class="food-tag reveal">韭黄</span>
-          <span class="food-tag reveal">香椿芽</span>
-          <span class="food-tag reveal">荠菜</span>
-          <span class="food-tag reveal">豆苗</span>
           <span class="food-tag reveal">春笋</span>
-          <span class="food-tag reveal">枸杞叶</span>
-          <span class="food-tag reveal">马兰头</span>
+          <span class="food-tag reveal">荠菜</span>
+          <span class="food-tag reveal">山药</span>
+          <span class="food-tag reveal">红枣</span>
+          <span class="food-tag reveal">薏米</span>
+          <span class="food-tag reveal">韭菜</span>
+          <span class="food-tag reveal">鲫鱼</span>
+          <span class="food-tag reveal">豆腐</span>
+          <span class="food-tag reveal">百合</span>
         </div>
       </section>
 
       <section id="customs">
         <div class="ornament-divider reveal"><span>习 俗</span></div>
         <p class="section-label reveal">传统风俗</p>
-        <h2 class="section-title reveal">迎春纳福</h2>
+        <h2 class="section-title reveal">雨水纳福</h2>
 
         <div class="feature-grid" style="margin-top: 32px;">
           <div class="feature-item reveal">
-            <div class="feature-img" style="background-image: url('./images/custom1.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/custom1_rain.jpg');"></div> <!-- 替换为回娘屋图 -->
             <div class="feature-text">
-              <h4>咬春与打春</h4>
-              <p>立春日食用春饼、生萝卜、五辛盘等食物称为"咬春"。民间另有"打春"习俗，以鞭打泥塑春牛，象征劝农耕作、催促耕牛出动。妇女儿童还会剪制"春燕""春蝶"等彩纸，谓之"春幡"，处处透出对春天的热望。</p>
+              <h4>回娘屋 & 接寿</h4>
+              <p>出嫁女儿携女婿归宁父母，敬献礼品孝亲感恩，为雨水节专属礼俗；子女亦为长辈赠礼祈福，祝福寿安康，顺应春生养身的自然之理，以孝心迎春雨，以感恩盼顺遂。</p>
             </div>
           </div>
 
           <div class="feature-item reverse reveal">
-            <div class="feature-img" style="background-image: url('./images/custom2.jpg');"></div>
+            <div class="feature-img" style="background-image: url('./images/custom2_rain.jpg');"></div> <!-- 替换为撞拜寄+占稻色图 -->
             <div class="feature-text">
-              <h4>祭祖祈福</h4>
-              <p>立春作为"岁始"，是人们祭祀祖先、祈求丰收的重要时刻。古时天子率三公九卿、诸侯大夫去东郊迎春；民间也会举行盛大的祭祀仪式，感恩天地的馈赠，并祈求在新的一年里风调雨顺、五谷丰登、阖家平安。</p>
+              <h4>撞拜寄 & 占稻色</h4>
+              <p>民间为孩童认干亲，祈愿孩子平安顺遂、如春雨滋养般茁壮成长；又有爆炒糯米花占卜年景之俗，米花成色愈佳，寄寓农人对五谷丰登的殷殷期许。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="health">
+        <div class="ornament-divider reveal"><span>养 生</span></div>
+        <p class="section-label reveal">节气养生</p>
+        <h2 class="section-title reveal">健脾祛湿 防寒养阳</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/health_rain.jpg');"></div> <!-- 替换为雨水养生图 -->
+            <div class="feature-text">
+              <h4>雨水养生要诀</h4>
+              <p>古人云：雨水湿气升，春寒尚未退。养生核心为<strong>健脾祛湿、防寒养阳</strong>。饮食宜少酸多甘，多食山药、红枣、薏米等甘温食材；起居早睡早起，顺应春生之气；衣着谨记“春捂”，护好腰腹、足踝；运动择散步、太极等温和之法，忌大汗淋漓，顾护体内阳气。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="proverb">
+        <div class="ornament-divider reveal"><span>谚 语</span></div>
+        <p class="section-label reveal">农事谚语</p>
+        <h2 class="section-title reveal">农时智慧</h2>
+
+        <div class="prose reveal">
+          雨水是农耕的关键节点，民间谚语凝结着古人对节气与农事的深刻洞察，指引着春耕播种的节奏：
+        </div>
+        <ul class="proverb-list reveal">
+          <li>雨水有雨，一年多水；雨水无雨，少雨干旱</li>
+          <li>春雨贵如油，点滴遍田畴</li>
+          <li>雨水前后，种瓜点豆</li>
+          <li>冷雨水，暖惊蛰；暖雨水，冷惊蛰</li>
+          <li>雨水节，栽菜秧，一季收成有保障</li>
+        </ul>
+      </section>
+
+      <section id="region">
+        <div class="ornament-divider reveal"><span>地 域</span></div>
+        <p class="section-label reveal">地域风俗</p>
+        <h2 class="section-title reveal">一方水土一方俗</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/region1_rain.jpg');"></div> <!-- 替换为川西撞拜寄图 -->
+            <div class="feature-text">
+              <h4>川西 & 客家</h4>
+              <p>川西地区盛行「撞拜寄」，清晨于路边为孩童认干亲，祈愿孩童无灾无难、茁壮成长；客家地区爆炒糯米花占卜年成，米花越白越繁，寓意当年稻谷丰收、仓廪充实。</p>
+            </div>
+          </div>
+
+          <div class="feature-item reverse reveal">
+            <div class="feature-img" style="background-image: url('./images/region2_rain.jpg');"></div> <!-- 替换为江南+北方食俗图 -->
+            <div class="feature-text">
+              <h4>江南 & 北方</h4>
+              <p>江南地区烹春笋鲫鱼汤、荠菜豆腐羹，大食时令鲜蔬，以尝春之味应和雨水节气；北方地区卷食春饼，裹韭菜、萝卜等鲜蔬，承袭春日食鲜的传统习俗。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="legend">
+        <div class="ornament-divider reveal"><span>传 说</span></div>
+        <p class="section-label reveal">节气传说</p>
+        <h2 class="section-title reveal">雨润苍生</h2>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+          <div class="feature-item reveal">
+            <div class="feature-img" style="background-image: url('./images/legend_rain.jpg');"></div> <!-- 替换为雨水传说图 -->
+            <div class="feature-text">
+              <h4>雨水的由来</h4>
+              <p>民间相传，上古天地久旱枯槁，万物濒临凋零，女娲补天后，天帝感念苍生疾苦，命龙王于正月中气普降甘霖。龙王醒后，化作绵绵春雨洒落人间，冰雪消融，草木复生，人间重焕生机，自此便定此日为「雨水」。又传雨水为孝亲之节，古时远嫁女子逢此日必归宁省亲，孝心感天，春雨绵绵不绝，孝亲习俗也随之世代传承。</p>
             </div>
           </div>
         </div>
@@ -953,7 +1051,7 @@
     </main>
 
     <footer>
-      立春 &ensp;·&ensp; 二十四节气 &ensp;·&ensp; 东风解冻，蛰虫始振，鱼陟负冰
+      雨水 &ensp;·&ensp; 二十四节气 &ensp;·&ensp; 獭祭鱼，鸿雁来，草木萌动
     </footer>
   </div>
   <script>
@@ -1179,12 +1277,15 @@
 
 // 1. 扩展问题库，每个板块增加更多问题
 const sectionPrompts = {
-    'intro': ['立春在古代为什么叫“岁首”？', '现代气象学如何定义春天？', '为什么立春有时在春节前，有时在春节后？', '“立春”这个名字最早出现在哪部典籍？'],
-    'phenology': ['“蛰虫始振”里的虫子指的是什么？', '为什么古代三候要选鱼和冰？', '三候的观测在现代还有科学价值吗？', '“鱼陟负冰”是描述什么景象？'],
-    'verse': ['《立春偶成》这首诗背后的故事是什么？', '立春诗词里最常用的意象有哪些？', '除了这几首，还有哪些经典的立春诗词？', '古人写立春时心情通常是怎样的？','《立春日》这首诗的创作背景是什么？'],
-    'diet': ['“咬春”除了吃萝卜还要吃什么？', '春饼和春卷有什么区别？', '立春为什么要吃辛辣的五辛盘？', '北方和南方的咬春习俗有什么不同？'],
-    'customs': ['“打春牛”的牛是真牛吗？', '什么是“春幡”？', '立春为什么要“躲春”？', '古代迎春仪式为什么要在东郊举行？'],
-    'general': ['二十四节气是谁发明的？', '立春之后还会冷吗？', '今年立春是哪一天？', '立春有什么养生建议？']
+    'intro': ['雨水节气的含义是什么？', '雨水时节为什么雨量渐增？', '雨水为什么会“倒春寒”？'],
+    'phenology': [ '獭祭鱼描述的是什么景象？', '雨水二候鸿雁来是什么意思？', '雨水三候草木萌动有什么寓意？','为什么雨水节气鸿雁振翅北归？'],
+    'verse': ['《春夜喜雨》讲述了雨水怎样的特点？', '韩愈描写雨水的诗句特色是什么？', '雨水经典诗词有哪些核心意象？', '古人如何通过诗词描绘春雨？'],
+    'diet': ['雨水时节适合吃什么食材？', '雨水时令美食春笋鲫鱼汤有什么功效？', '雨水养生为什么要健脾养胃？', '雨水饮食为什么要忌生冷寒凉？'],
+    'customs': ['雨水有哪些地方传统习俗？', '雨水回娘屋接寿是什么习俗？', '什么是雨水撞拜寄习俗？', '雨水占稻色习俗的寓意是什么？'],
+    'health': ['雨水养生核心是什么？', '雨水为什么要春捂？', '雨水时节如何健脾祛湿？', '雨水养生适合做什么运动？'],
+    'proverb': ['雨水农事谚语有哪些？', '春雨贵如油是什么意思？', '雨水节气对农耕有什么指导意义？', '冷雨水暖惊蛰是什么含义？'],
+    'region': ['川西雨水撞拜寄习俗是什么？', '江南雨水食俗有哪些特点？', '客家雨水占稻色习俗怎么做？', '北方雨水食俗和南方有什么差异？'],
+    'legend': ['雨水节气有什么传说故事？', '雨水节气和孝亲习俗有什么关系？', '雨水节气的由来传说是什么？']
 };
 
 // 2. 随机抽取函数
