@@ -1170,40 +1170,67 @@
 
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
-            msgDiv.innerHTML = ""; 
+            
+            let buffer = ""; // 【新增】用于暂存未读完的碎片数据
 
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
 
-                const chunk = decoder.decode(value, { stream: true });
-                const lines = chunk.split('\n');
+                // 将新收到的字节流和之前的残余字符串拼接
+                buffer += decoder.decode(value, { stream: true });
+                
+                // 按换行符切分
+                const lines = buffer.split('\n');
+                
+                // 重要：最后一行可能是不完整的，把它留给下一个 chunk
+                buffer = lines.pop(); 
 
                 for (const line of lines) {
-                    const eventMatch = line.match(/^event:(.*)$/);
-                    if (eventMatch) {
-                        currentEvent = eventMatch[1].trim();
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine) continue;
+
+                    console.log("收到原始行数据:", trimmedLine); // 🔍 调试利器：看看控制台有没有打印这个！
+
+                    // 匹配事件类型
+                    if (trimmedLine.startsWith('event:')) {
+                        currentEvent = trimmedLine.replace('event:', '').trim();
                         continue;
                     }
 
-                    if (line.startsWith('data:')) {
-                        const rawData = line.slice(5).trim();
+                    // 匹配数据内容
+                    if (trimmedLine.startsWith('data:')) {
+                        const rawData = trimmedLine.replace('data:', '').trim();
                         if (!rawData || rawData === '[DONE]') continue;
 
                         try {
                             const data = JSON.parse(rawData);
+                            
+                            // Coze 的流式文本事件名通常是 conversation.message.delta
                             if (currentEvent === 'conversation.message.delta' && data.content) {
+                                
+                                // 过滤掉可能存在的 JSON 字符串（Coze 有时会发复合包）
                                 if (data.content.startsWith('{')) continue;
+                                
+                                // 第一次收到真正的数据时，清空“正在采撷春光...”的加载动画
+                                if (fullText === "") {
+                                    msgDiv.innerHTML = ""; 
+                                }
+
                                 fullText += data.content;
+                                
                                 // 实时解析 Markdown 并滚动
                                 msgDiv.innerHTML = marked.parse(fullText);
                                 content.scrollTop = content.scrollHeight;
                             }
-                        } catch (e) {}
+                        } catch (e) {
+                            console.warn("JSON 解析单行失败:", rawData, e);
+                        }
                     }
                 }
             }
         } catch (e) {
+            console.error("Fetch 发生错误:", e);
             msgDiv.innerHTML = "❌ 连线失败：" + e.message;
         }
     }
